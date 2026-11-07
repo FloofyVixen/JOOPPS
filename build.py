@@ -436,7 +436,27 @@ def main():
         f.write(";\n")
     with open(CACHE_FILE, "w") as f:
         json.dump(CACHE, f)
+    stamp_versions()
     print(f"wrote {OUT}")
+
+
+def stamp_versions():
+    """Add ?v=<content hash> to the site's own files in index.html, so browsers
+    fetch the new version after every update instead of a cached copy."""
+    docs = os.path.join(ROOT, "docs")
+    index = os.path.join(docs, "index.html")
+    with open(index) as f:
+        page = f.read()
+
+    def repl(m):
+        name = m.group(2)
+        with open(os.path.join(docs, name), "rb") as g:
+            v = hashlib.sha256(g.read()).hexdigest()[:10]
+        return f'{m.group(1)}="{name}?v={v}"'
+
+    page = re.sub(r'(src|href)="(app\.js|editor\.js|styles\.css|course-data\.js)(?:\?v=\w+)?"', repl, page)
+    with open(index, "w") as f:
+        f.write(page)
 
 
 if __name__ == "__main__":
