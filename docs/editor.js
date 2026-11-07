@@ -38,8 +38,11 @@
       return { code: code, text: c.textContent.replace(/\n+$/, "") };
     }
 
+    // CheerpJ's /str/ area holds files but not folders, so sources go straight into /str/.
+    // A file written again with the same name replaces the old one.
     function write(path, text) {
-      window.cheerpjAddStringFile(path, new TextEncoder().encode(text));
+      var add = window.cheerpOSAddStringFile || window.cheerpjAddStringFile;
+      add(path, new TextEncoder().encode(text));
     }
 
     // Compile `files` ([[name, src]...]) into outDir. `extraCp` lets test files see the learner's classes.
@@ -60,7 +63,7 @@
     function newRun() {
       runCount += 1;
       var id = "run" + Date.now().toString(36) + runCount;
-      return { src: "/str/" + id + "/", testSrc: "/str/" + id + "t/", out: "/files/" + id + "/" };
+      return { src: "/str/", testSrc: "/str/", out: "/files/" + id + "/" };
     }
 
     return {
