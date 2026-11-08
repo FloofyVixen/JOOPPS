@@ -384,6 +384,7 @@ def main():
     sys.path.insert(0, os.path.join(ROOT, "content"))
     course = load(os.path.join(ROOT, "content", "course.py"))
     TASKS.update(load(os.path.join(ROOT, "content", "tasks_intro.py")).TASKS)
+    TASKS.update(load(os.path.join(ROOT, "content", "tasks_classes.py")).TASKS)
     lessons = {}
     ex_ids = set()
     for section in course.SECTIONS:

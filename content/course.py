@@ -16,7 +16,8 @@ SECTIONS = [
         "title": "Classes and objects",
         "blurb": "Design your own types: fields, constructors, toString, private data and arrays of objects.",
         "lessons": ["classes-first-class", "classes-constructors", "classes-tostring",
-                    "classes-encapsulation", "classes-arrays", "classes-project-parking"],
+                    "classes-encapsulation", "classes-arrays", "classes-project-parking",
+                    "classes-workshop"],
     },
     {
         "id": "inheritance",

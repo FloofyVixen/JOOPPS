@@ -27,7 +27,8 @@ window.COURSE = {
     "classes-tostring",
     "classes-encapsulation",
     "classes-arrays",
-    "classes-project-parking"
+    "classes-project-parking",
+    "classes-workshop"
    ]
   },
   {
@@ -2646,6 +2647,139 @@ window.COURSE = {
      ],
      "answer": 1,
      "explain": "The class is the blueprint, and objects are built from it. Only the class you run needs a <code>main</code> method; <code>Song</code> has none."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-planet",
+     "mode": "independent",
+     "title": "A class with fields and a method",
+     "goal": "Write a <code>Planet</code> class with two public fields, <code>name</code> (<code>String</code>) and <code>moons</code> (<code>int</code>), and a method <code>describe()</code> that prints <code>Moons of &lt;name&gt;: &lt;moons&gt;</code>. Then write <code>PlanetTester</code>, whose <code>main</code> makes two planets and calls <code>describe()</code> on each.",
+     "requirements": [
+      "Two files: <code>Planet.java</code> and <code>PlanetTester.java</code>",
+      "<code>describe()</code> has no <code>static</code> and uses the object's own fields"
+     ],
+     "files": [
+      "Planet.java",
+      "PlanetTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckPlanet.java",
+       "public class CheckPlanet {\n    public static void main(String[] args) {\n        Planet p = new Planet();\n        p.name = \"Testworld\";\n        p.moons = 16;\n        p.describe();\n\n        Planet q = new Planet();\n        q.name = \"Emptyworld\";\n        q.describe();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckPlanet",
+     "hints": [
+      "<code>Planet</code> is like <code>Song</code> in the lesson: fields at the top, then the method.",
+      "In the tester, <code>Planet first = new Planet();</code> then set <code>first.name</code> and <code>first.moons</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "new\\s+Planet\\s*\\(",
+       "message": "Create <code>Planet</code> objects with <code>new Planet()</code>."
+      }
+     ],
+     "run": "PlanetTester",
+     "output": "Moons of Earth: 1\nMoons of Mars: 2",
+     "testsOutput": "Moons of Testworld: 16\nMoons of Emptyworld: 0",
+     "solution": [
+      [
+       "Planet.java",
+       "public class Planet {\n    public String name;\n    public int moons;\n\n    public void describe() {\n        System.out.println(\"Moons of \" + name + \": \" + moons);\n    }\n}\n"
+      ],
+      [
+       "PlanetTester.java",
+       "public class PlanetTester {\n    public static void main(String[] args) {\n        Planet first = new Planet();\n        first.name = \"Earth\";\n        first.moons = 1;\n\n        Planet second = new Planet();\n        second.name = \"Mars\";\n        second.moons = 2;\n\n        first.describe();\n        second.describe();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-counter",
+     "mode": "independent",
+     "title": "Objects keep their own values",
+     "goal": "Write a <code>Counter</code> class with a public <code>int</code> field <code>count</code> and two methods: <code>click()</code> adds one to <code>count</code>, and <code>reset()</code> sets it back to 0. In <code>CounterTester</code>, click counter <code>a</code> three times and counter <code>b</code> once, print both, then reset only <code>a</code> and print both again.",
+     "requirements": [
+      "Resetting <code>a</code> must not change <code>b</code>"
+     ],
+     "files": [
+      "Counter.java",
+      "CounterTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCounter.java",
+       "public class CheckCounter {\n    public static void main(String[] args) {\n        Counter c = new Counter();\n        for (int i = 0; i < 5; i++) {\n            c.click();\n        }\n        System.out.println(\"after 5 clicks: \" + c.count);\n        c.reset();\n        c.click();\n        System.out.println(\"after reset and 1 click: \" + c.count);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCounter",
+     "hints": [
+      "Inside <code>click()</code>, <code>count = count + 1;</code> changes the count of whichever object you called it on."
+     ],
+     "checks": [],
+     "run": "CounterTester",
+     "output": "a: 3\nb: 1\na after reset: 0\nb after reset: 1",
+     "testsOutput": "after 5 clicks: 5\nafter reset and 1 click: 1",
+     "solution": [
+      [
+       "Counter.java",
+       "public class Counter {\n    public int count;\n\n    public void click() {\n        count = count + 1;\n    }\n\n    public void reset() {\n        count = 0;\n    }\n}\n"
+      ],
+      [
+       "CounterTester.java",
+       "public class CounterTester {\n    public static void main(String[] args) {\n        Counter a = new Counter();\n        Counter b = new Counter();\n        a.click();\n        a.click();\n        a.click();\n        b.click();\n        System.out.println(\"a: \" + a.count);\n        System.out.println(\"b: \" + b.count);\n\n        a.reset();\n        System.out.println(\"a after reset: \" + a.count);\n        System.out.println(\"b after reset: \" + b.count);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-lamp",
+     "mode": "independent",
+     "title": "A boolean field",
+     "goal": "Write a <code>Lamp</code> class with a public <code>boolean</code> field <code>on</code>, a method <code>toggle()</code> that switches it, and a method <code>showStatus()</code> that prints <code>The lamp is on.</code> or <code>The lamp is off.</code> In <code>LampTester</code>, show the status, toggle, show it, toggle twice more, and show it again.",
+     "requirements": [
+      "A new lamp starts off (remember the default value of a <code>boolean</code> field)"
+     ],
+     "files": [
+      "Lamp.java",
+      "LampTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckLamp.java",
+       "public class CheckLamp {\n    public static void main(String[] args) {\n        Lamp a = new Lamp();\n        Lamp b = new Lamp();\n        a.toggle();\n        a.showStatus();\n        b.showStatus();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckLamp",
+     "hints": [
+      "<code>!</code> means \"not\": <code>on = !on;</code> makes <code>on</code> the opposite of what it was.",
+      "You can also write it with <code>if (on) { on = false; } else { on = true; }</code>."
+     ],
+     "checks": [],
+     "run": "LampTester",
+     "output": "The lamp is off.\nThe lamp is on.\nThe lamp is on.",
+     "testsOutput": "The lamp is on.\nThe lamp is off.",
+     "solution": [
+      [
+       "Lamp.java",
+       "public class Lamp {\n    public boolean on;\n\n    public void toggle() {\n        on = !on;\n    }\n\n    public void showStatus() {\n        if (on) {\n            System.out.println(\"The lamp is on.\");\n        } else {\n            System.out.println(\"The lamp is off.\");\n        }\n    }\n}\n"
+      ],
+      [
+       "LampTester.java",
+       "public class LampTester {\n    public static void main(String[] args) {\n        Lamp desk = new Lamp();\n        desk.showStatus();\n        desk.toggle();\n        desk.showStatus();\n        desk.toggle();\n        desk.toggle();\n        desk.showStatus();\n    }\n}\n"
+      ]
+     ]
     }
    ],
    "sources": [
@@ -2960,6 +3094,136 @@ window.COURSE = {
      ],
      "answer": 1,
      "explain": "A constructor has the class's exact name and no return type. The other choices are methods (or invalid code), so <code>new Lamp()</code> would not run them."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-concert",
+     "mode": "independent",
+     "title": "A parameterized constructor",
+     "goal": "Write a <code>Concert</code> class with public fields <code>artist</code>, <code>city</code> (both <code>String</code>) and <code>year</code> (<code>int</code>), a constructor that takes all three, and a <code>describe()</code> method. In <code>ConcertTester</code>, create two concerts in one line each and describe them.",
+     "requirements": [
+      "The constructor's parameters are in the order artist, city, year",
+      "Use <code>this.</code> to store each parameter in its field"
+     ],
+     "files": [
+      "Concert.java",
+      "ConcertTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckConcert.java",
+       "public class CheckConcert {\n    public static void main(String[] args) {\n        Concert c = new Concert(\"Kesh\", \"Orono\", 2030);\n        c.describe();\n        System.out.println(\"city field: \" + c.city);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckConcert",
+     "hints": [
+      "If the output says <code>null in null (0)</code>, look for a missing <code>this.</code> in the constructor."
+     ],
+     "checks": [
+      {
+       "pattern": "this\\.\\w+\\s*=",
+       "message": "Store the parameters with <code>this.field = parameter;</code>."
+      }
+     ],
+     "run": "ConcertTester",
+     "output": "Mira Holt in Bangor (2026)\nThe Lanterns in Portland (2027)",
+     "testsOutput": "Kesh in Orono (2030)\ncity field: Orono",
+     "solution": [
+      [
+       "Concert.java",
+       "public class Concert {\n    public String artist;\n    public String city;\n    public int year;\n\n    public Concert(String artist, String city, int year) {\n        this.artist = artist;\n        this.city = city;\n        this.year = year;\n    }\n\n    public void describe() {\n        System.out.println(artist + \" in \" + city + \" (\" + year + \")\");\n    }\n}\n"
+      ],
+      [
+       "ConcertTester.java",
+       "public class ConcertTester {\n    public static void main(String[] args) {\n        Concert one = new Concert(\"Mira Holt\", \"Bangor\", 2026);\n        Concert two = new Concert(\"The Lanterns\", \"Portland\", 2027);\n        one.describe();\n        two.describe();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-rectangle",
+     "mode": "independent",
+     "title": "Two constructors",
+     "goal": "Write a <code>Rectangle</code> class with public <code>int</code> fields <code>width</code> and <code>height</code>. Give it a default constructor that makes a 1 by 1 rectangle, a constructor that takes the width and height, and a method <code>area()</code> that returns the area.",
+     "requirements": [
+      "Both constructors are named exactly like the class and have no return type",
+      "<code>area()</code> returns an <code>int</code>; it doesn't print"
+     ],
+     "files": [
+      "Rectangle.java",
+      "RectangleTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckRectangle.java",
+       "public class CheckRectangle {\n    public static void main(String[] args) {\n        System.out.println(\"area of 3 x 7: \" + new Rectangle(3, 7).area());\n        Rectangle d = new Rectangle();\n        System.out.println(\"default: \" + d.width + \" x \" + d.height);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRectangle",
+     "hints": [],
+     "checks": [],
+     "run": "RectangleTester",
+     "output": "unit: 1\nbig: 20",
+     "testsOutput": "area of 3 x 7: 21\ndefault: 1 x 1",
+     "solution": [
+      [
+       "Rectangle.java",
+       "public class Rectangle {\n    public int width;\n    public int height;\n\n    public Rectangle() {\n        width = 1;\n        height = 1;\n    }\n\n    public Rectangle(int width, int height) {\n        this.width = width;\n        this.height = height;\n    }\n\n    public int area() {\n        return width * height;\n    }\n}\n"
+      ],
+      [
+       "RectangleTester.java",
+       "public class RectangleTester {\n    public static void main(String[] args) {\n        Rectangle unit = new Rectangle();\n        Rectangle big = new Rectangle(4, 5);\n        System.out.println(\"unit: \" + unit.area());\n        System.out.println(\"big: \" + big.area());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-player",
+     "mode": "independent",
+     "title": "A constructor that sets a starting value",
+     "goal": "Write a <code>Player</code> class with public fields <code>name</code> and <code>score</code>. The constructor takes only the name; every player starts with a score of 0. Add <code>addPoints(int points)</code>.",
+     "requirements": [
+      "<code>new Player(&quot;Sam&quot;)</code> is the only constructor call you need"
+     ],
+     "files": [
+      "Player.java",
+      "PlayerTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckPlayer.java",
+       "public class CheckPlayer {\n    public static void main(String[] args) {\n        Player p = new Player(\"Lee\");\n        p.addPoints(7);\n        p.addPoints(7);\n        System.out.println(p.name + \": \" + p.score);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckPlayer",
+     "hints": [
+      "A constructor can set fields that aren't parameters: <code>score = 0;</code>"
+     ],
+     "checks": [],
+     "run": "PlayerTester",
+     "output": "Sam: 15\nAna: 0",
+     "testsOutput": "Lee: 14",
+     "solution": [
+      [
+       "Player.java",
+       "public class Player {\n    public String name;\n    public int score;\n\n    public Player(String name) {\n        this.name = name;\n        score = 0;\n    }\n\n    public void addPoints(int points) {\n        score = score + points;\n    }\n}\n"
+      ],
+      [
+       "PlayerTester.java",
+       "public class PlayerTester {\n    public static void main(String[] args) {\n        Player sam = new Player(\"Sam\");\n        sam.addPoints(10);\n        sam.addPoints(5);\n        Player ana = new Player(\"Ana\");\n        System.out.println(sam.name + \": \" + sam.score);\n        System.out.println(ana.name + \": \" + ana.score);\n    }\n}\n"
+      ]
+     ]
     }
    ],
    "sources": [
@@ -3239,6 +3503,133 @@ window.COURSE = {
      ],
      "answer": 2,
      "explain": "<code>s.title</code> is already a <code>String</code> field, so it's printed directly. The other three need <code>s</code> as text: printing it, joining it with <code>+</code>, or calling the method yourself."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-point",
+     "mode": "independent",
+     "title": "A toString with punctuation",
+     "goal": "Write a <code>Point</code> class with public <code>int</code> fields <code>x</code> and <code>y</code>, a constructor, and a <code>toString</code> that returns the point as <code>(3, 4)</code>.",
+     "requirements": [],
+     "files": [
+      "Point.java",
+      "PointTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckPoint.java",
+       "public class CheckPoint {\n    public static void main(String[] args) {\n        System.out.println(new Point(10, -7));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckPoint",
+     "hints": [
+      "Build the text from pieces: <code>&quot;(&quot; + x + &quot;, &quot; + y + &quot;)&quot;</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "public\\s+String\\s+toString\\s*\\(\\s*\\)",
+       "message": "Write <code>public String toString()</code>."
+      }
+     ],
+     "run": "PointTester",
+     "output": "(3, 4)\nStart: (-2, 0)",
+     "testsOutput": "(10, -7)",
+     "solution": [
+      [
+       "Point.java",
+       "public class Point {\n    public int x;\n    public int y;\n\n    public Point(int x, int y) {\n        this.x = x;\n        this.y = y;\n    }\n\n    @Override\n    public String toString() {\n        return \"(\" + x + \", \" + y + \")\";\n    }\n}\n"
+      ],
+      [
+       "PointTester.java",
+       "public class PointTester {\n    public static void main(String[] args) {\n        System.out.println(new Point(3, 4));\n        Point start = new Point(-2, 0);\n        System.out.println(\"Start: \" + start);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-clock",
+     "mode": "independent",
+     "title": "A toString with a decision in it",
+     "goal": "Write a <code>Clock</code> class with public fields <code>hour</code> and <code>minute</code>, a constructor, and a <code>toString</code> that returns the time like <code>9:05</code> or <code>14:30</code>. Minutes below 10 need a leading zero.",
+     "requirements": [
+      "<code>toString</code> returns the text; it doesn't print"
+     ],
+     "files": [
+      "Clock.java",
+      "ClockTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckClock.java",
+       "public class CheckClock {\n    public static void main(String[] args) {\n        System.out.println(new Clock(0, 0));\n        System.out.println(new Clock(12, 10));\n        System.out.println(new Clock(7, 59));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckClock",
+     "hints": [
+      "Use an <code>if</code>: when <code>minute &lt; 10</code>, put <code>&quot;0&quot;</code> before it.",
+      "The test tries <code>0:00</code> and <code>12:10</code>. Check both edges of your condition."
+     ],
+     "checks": [],
+     "run": "ClockTester",
+     "output": "9:05\n14:30",
+     "testsOutput": "0:00\n12:10\n7:59",
+     "solution": [
+      [
+       "Clock.java",
+       "public class Clock {\n    public int hour;\n    public int minute;\n\n    public Clock(int hour, int minute) {\n        this.hour = hour;\n        this.minute = minute;\n    }\n\n    @Override\n    public String toString() {\n        if (minute < 10) {\n            return hour + \":0\" + minute;\n        }\n        return hour + \":\" + minute;\n    }\n}\n"
+      ],
+      [
+       "ClockTester.java",
+       "public class ClockTester {\n    public static void main(String[] args) {\n        System.out.println(new Clock(9, 5));\n        System.out.println(new Clock(14, 30));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-card",
+     "mode": "independent",
+     "title": "toString inside other text",
+     "goal": "Write a <code>Card</code> class with public <code>String</code> fields <code>rank</code> and <code>suit</code>, a constructor, and a <code>toString</code> that returns <code>Queen of Hearts</code>. In the tester, print a card on its own and inside a sentence.",
+     "requirements": [],
+     "files": [
+      "Card.java",
+      "CardTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCard.java",
+       "public class CheckCard {\n    public static void main(String[] args) {\n        Card c = new Card(\"Ace\", \"Spades\");\n        String text = c.toString();\n        System.out.println(text + \" has \" + text.length() + \" characters\");\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCard",
+     "hints": [
+      "<code>&quot;You drew the &quot; + drawn + &quot;.&quot;</code> calls <code>toString()</code> for you."
+     ],
+     "checks": [],
+     "run": "CardTester",
+     "output": "You drew the Queen of Hearts.\n7 of Clubs",
+     "testsOutput": "Ace of Spades has 13 characters",
+     "solution": [
+      [
+       "Card.java",
+       "public class Card {\n    public String rank;\n    public String suit;\n\n    public Card(String rank, String suit) {\n        this.rank = rank;\n        this.suit = suit;\n    }\n\n    @Override\n    public String toString() {\n        return rank + \" of \" + suit;\n    }\n}\n"
+      ],
+      [
+       "CardTester.java",
+       "public class CardTester {\n    public static void main(String[] args) {\n        Card drawn = new Card(\"Queen\", \"Hearts\");\n        System.out.println(\"You drew the \" + drawn + \".\");\n        System.out.println(new Card(\"7\", \"Clubs\"));\n    }\n}\n"
+      ]
+     ]
     }
    ],
    "sources": [
@@ -3491,6 +3882,149 @@ window.COURSE = {
      ],
      "answer": 1,
      "explain": "<code>private</code> limits a member to the class that declares it. Other classes have to go through the methods <code>Counter</code> chooses to make <code>public</code>."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-bankaccount",
+     "mode": "independent",
+     "title": "Private data with checks",
+     "goal": "Write a <code>BankAccount</code> class with a private <code>double balance</code>, a constructor that takes the starting balance, <code>getBalance()</code>, <code>deposit(double)</code> (positive amounts only) and <code>withdraw(double)</code> (positive amounts, and never more than the balance). There is no <code>setBalance</code>.",
+     "requirements": [
+      "<code>balance</code> is <code>private</code>",
+      "Bad amounts are ignored; the balance doesn't change"
+     ],
+     "files": [
+      "BankAccount.java",
+      "BankAccountTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBankAccount.java",
+       "public class CheckBankAccount {\n    public static void main(String[] args) {\n        BankAccount a = new BankAccount(10.0);\n        a.deposit(-5.0);\n        System.out.println(\"deposit(-5): \" + a.getBalance());\n        a.withdraw(-3.0);\n        System.out.println(\"withdraw(-3): \" + a.getBalance());\n        a.withdraw(4.0);\n        System.out.println(\"withdraw(4): \" + a.getBalance());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBankAccount",
+     "hints": [
+      "Withdrawing exactly the whole balance is allowed, so compare with <code>&lt;=</code>.",
+      "The test tries negative amounts. A negative deposit shouldn't lower the balance."
+     ],
+     "checks": [
+      {
+       "pattern": "private\\s+double\\s+balance",
+       "message": "Make the field <code>private double balance</code>."
+      }
+     ],
+     "run": "BankAccountTester",
+     "output": "After deposit: 75.0\nAfter big withdrawal: 75.0\nAfter withdrawing everything: 0.0",
+     "testsOutput": "deposit(-5): 10.0\nwithdraw(-3): 10.0\nwithdraw(4): 6.0",
+     "solution": [
+      [
+       "BankAccount.java",
+       "public class BankAccount {\n    private double balance;\n\n    public BankAccount(double balance) {\n        this.balance = balance;\n    }\n\n    public double getBalance() {\n        return balance;\n    }\n\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance = balance + amount;\n        }\n    }\n\n    public void withdraw(double amount) {\n        if (amount > 0 && amount <= balance) {\n            balance = balance - amount;\n        }\n    }\n}\n"
+      ],
+      [
+       "BankAccountTester.java",
+       "public class BankAccountTester {\n    public static void main(String[] args) {\n        BankAccount account = new BankAccount(50.0);\n        account.deposit(25.0);\n        System.out.println(\"After deposit: \" + account.getBalance());\n        account.withdraw(100.0);\n        System.out.println(\"After big withdrawal: \" + account.getBalance());\n        account.withdraw(75.0);\n        System.out.println(\"After withdrawing everything: \" + account.getBalance());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-speaker",
+     "mode": "independent",
+     "title": "A setter that refuses bad values",
+     "goal": "Write a <code>Speaker</code> class with a private <code>int volume</code> that starts at 5. <code>setVolume</code> accepts values from 0 to 10; anything else prints <code>Volume must be 0 to 10.</code> and leaves the volume unchanged. Add <code>getVolume()</code>.",
+     "requirements": [],
+     "files": [
+      "Speaker.java",
+      "SpeakerTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckSpeaker.java",
+       "public class CheckSpeaker {\n    public static void main(String[] args) {\n        Speaker s = new Speaker();\n        s.setVolume(0);\n        System.out.println(s.getVolume());\n        s.setVolume(-1);\n        System.out.println(s.getVolume());\n        s.setVolume(10);\n        System.out.println(s.getVolume());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSpeaker",
+     "hints": [
+      "The parameter and the field are both named <code>volume</code>, so the setter needs <code>this.volume</code>.",
+      "0 and 10 are both allowed. Check that your condition includes them."
+     ],
+     "checks": [
+      {
+       "pattern": "private\\s+int\\s+volume",
+       "message": "Make the field <code>private int volume</code>."
+      }
+     ],
+     "run": "SpeakerTester",
+     "output": "Start: 5\nNow: 8\nVolume must be 0 to 10.\nStill: 8",
+     "testsOutput": "0\nVolume must be 0 to 10.\n0\n10",
+     "solution": [
+      [
+       "Speaker.java",
+       "public class Speaker {\n    private int volume;\n\n    public Speaker() {\n        volume = 5;\n    }\n\n    public int getVolume() {\n        return volume;\n    }\n\n    public void setVolume(int volume) {\n        if (volume >= 0 && volume <= 10) {\n            this.volume = volume;\n        } else {\n            System.out.println(\"Volume must be 0 to 10.\");\n        }\n    }\n}\n"
+      ],
+      [
+       "SpeakerTester.java",
+       "public class SpeakerTester {\n    public static void main(String[] args) {\n        Speaker speaker = new Speaker();\n        System.out.println(\"Start: \" + speaker.getVolume());\n        speaker.setVolume(8);\n        System.out.println(\"Now: \" + speaker.getVolume());\n        speaker.setVolume(11);\n        System.out.println(\"Still: \" + speaker.getVolume());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-person",
+     "mode": "independent",
+     "title": "Getters, a setter and a boolean method",
+     "goal": "Write a <code>Person</code> class with private fields <code>name</code> and <code>age</code>, a constructor, <code>getName()</code>, <code>getAge()</code>, <code>setAge(int)</code> that ignores negative ages, and <code>isAdult()</code>, which returns <code>true</code> at 18 or older.",
+     "requirements": [],
+     "files": [
+      "Person.java",
+      "PersonTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckPerson.java",
+       "public class CheckPerson {\n    public static void main(String[] args) {\n        Person kai = new Person(\"Kai\", 30);\n        System.out.println(kai.isAdult());\n        kai.setAge(-1);\n        System.out.println(kai.getAge());\n        System.out.println(new Person(\"Bo\", 0).isAdult());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckPerson",
+     "hints": [
+      "<code>isAdult</code> can return the comparison directly: <code>return age &gt;= 18;</code>"
+     ],
+     "checks": [
+      {
+       "pattern": "private\\s+String\\s+name",
+       "message": "Make <code>name</code> a <code>private String</code> field."
+      },
+      {
+       "pattern": "private\\s+int\\s+age",
+       "message": "Make <code>age</code> a <code>private int</code> field."
+      }
+     ],
+     "run": "PersonTester",
+     "output": "Riley is 17. Adult: false\nRiley is 18. Adult: true\n18",
+     "testsOutput": "true\n30\nfalse",
+     "solution": [
+      [
+       "Person.java",
+       "public class Person {\n    private String name;\n    private int age;\n\n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getAge() {\n        return age;\n    }\n\n    public void setAge(int age) {\n        if (age >= 0) {\n            this.age = age;\n        }\n    }\n\n    public boolean isAdult() {\n        return age >= 18;\n    }\n}\n"
+      ],
+      [
+       "PersonTester.java",
+       "public class PersonTester {\n    public static void main(String[] args) {\n        Person riley = new Person(\"Riley\", 17);\n        System.out.println(riley.getName() + \" is \" + riley.getAge() + \". Adult: \" + riley.isAdult());\n        riley.setAge(18);\n        System.out.println(riley.getName() + \" is \" + riley.getAge() + \". Adult: \" + riley.isAdult());\n        riley.setAge(-4);\n        System.out.println(riley.getAge());\n    }\n}\n"
+      ]
+     ]
     }
    ],
    "sources": [
@@ -3865,6 +4399,151 @@ window.COURSE = {
      ],
      "answer": 2,
      "explain": "<code>new Song[5]</code> creates an array with 5 empty slots, each holding <code>null</code>. No <code>Song</code> constructor runs until you write <code>new Song(...)</code> for a slot."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-fridge",
+     "mode": "independent",
+     "title": "Loop over an array and skip empty slots",
+     "goal": "Write <code>Food</code> (private <code>name</code> and <code>calories</code>, a constructor and getters) and <code>Fridge</code>, which keeps a private <code>Food[]</code> whose size is given to its constructor. <code>Fridge</code> has <code>put(int slot, Food food)</code>, <code>count()</code> (how many slots hold food) and <code>totalCalories()</code>. Then write <code>FridgeTester</code>.",
+     "requirements": [
+      "Three files: <code>Food.java</code>, <code>Fridge.java</code>, <code>FridgeTester.java</code>",
+      "Both loops check for <code>null</code> before using a slot"
+     ],
+     "files": [
+      "Food.java",
+      "Fridge.java",
+      "FridgeTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckFridge.java",
+       "public class CheckFridge {\n    public static void main(String[] args) {\n        Fridge empty = new Fridge(3);\n        System.out.println(\"empty: \" + empty.count() + \" items, \" + empty.totalCalories() + \" calories\");\n        Fridge one = new Fridge(1);\n        one.put(0, new Food(\"Soup\", 200));\n        System.out.println(\"one item: \" + one.count() + \" items, \" + one.totalCalories() + \" calories\");\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckFridge",
+     "hints": [
+      "Slots 1 and 3 stay empty in the tester. Without a null check, you'll see a <code>NullPointerException</code>.",
+      "<code>for (Food food : items)</code> visits every slot, empty or not."
+     ],
+     "checks": [],
+     "run": "FridgeTester",
+     "output": "Items: 3\nCalories: 355",
+     "testsOutput": "empty: 0 items, 0 calories\none item: 1 items, 200 calories",
+     "solution": [
+      [
+       "Food.java",
+       "public class Food {\n    private String name;\n    private int calories;\n\n    public Food(String name, int calories) {\n        this.name = name;\n        this.calories = calories;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getCalories() {\n        return calories;\n    }\n}\n"
+      ],
+      [
+       "Fridge.java",
+       "public class Fridge {\n    private Food[] items;\n\n    public Fridge(int size) {\n        items = new Food[size];\n    }\n\n    public void put(int slot, Food food) {\n        items[slot] = food;\n    }\n\n    public int count() {\n        int count = 0;\n        for (Food food : items) {\n            if (food != null) {\n                count++;\n            }\n        }\n        return count;\n    }\n\n    public int totalCalories() {\n        int total = 0;\n        for (Food food : items) {\n            if (food != null) {\n                total = total + food.getCalories();\n            }\n        }\n        return total;\n    }\n}\n"
+      ],
+      [
+       "FridgeTester.java",
+       "public class FridgeTester {\n    public static void main(String[] args) {\n        Fridge fridge = new Fridge(5);\n        fridge.put(0, new Food(\"Apple\", 95));\n        fridge.put(2, new Food(\"Yogurt\", 150));\n        fridge.put(4, new Food(\"Cheese\", 110));\n        System.out.println(\"Items: \" + fridge.count());\n        System.out.println(\"Calories: \" + fridge.totalCalories());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-zoo",
+     "mode": "independent",
+     "title": "Search an array of objects",
+     "goal": "Write <code>Animal</code> (private <code>name</code> and <code>species</code>, a constructor, <code>getName()</code>, and a <code>toString</code> like <code>Max the otter</code>) and <code>Zoo</code>, which keeps a private <code>Animal[]</code>. <code>Zoo</code> has <code>set(int slot, Animal animal)</code> and <code>find(String name)</code>, which returns the matching animal or <code>null</code>.",
+     "requirements": [],
+     "files": [
+      "Animal.java",
+      "Zoo.java",
+      "ZooTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckZoo.java",
+       "public class CheckZoo {\n    public static void main(String[] args) {\n        Zoo z = new Zoo(4);\n        z.set(3, new Animal(\"Pip\", \"penguin\"));\n        System.out.println(z.find(\"Pip\"));\n        System.out.println(z.find(\"pip\"));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckZoo",
+     "hints": [
+      "Compare names with <code>equals</code>, not <code>==</code>.",
+      "Check <code>animal != null</code> before calling <code>getName()</code>, with <code>&amp;&amp;</code> between them."
+     ],
+     "checks": [
+      {
+       "pattern": "\\.equals\\s*\\(",
+       "message": "Compare the names with <code>.equals(...)</code>."
+      }
+     ],
+     "run": "ZooTester",
+     "output": "Max the otter\nnull",
+     "testsOutput": "Pip the penguin\nnull",
+     "solution": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n    private String species;\n\n    public Animal(String name, String species) {\n        this.name = name;\n        this.species = species;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" the \" + species;\n    }\n}\n"
+      ],
+      [
+       "Zoo.java",
+       "public class Zoo {\n    private Animal[] animals;\n\n    public Zoo(int size) {\n        animals = new Animal[size];\n    }\n\n    public void set(int slot, Animal animal) {\n        animals[slot] = animal;\n    }\n\n    public Animal find(String name) {\n        for (Animal animal : animals) {\n            if (animal != null && animal.getName().equals(name)) {\n                return animal;\n            }\n        }\n        return null;\n    }\n}\n"
+      ],
+      [
+       "ZooTester.java",
+       "public class ZooTester {\n    public static void main(String[] args) {\n        Zoo zoo = new Zoo(3);\n        zoo.set(0, new Animal(\"Rosie\", \"giraffe\"));\n        zoo.set(2, new Animal(\"Max\", \"otter\"));\n        System.out.println(zoo.find(\"Max\"));\n        System.out.println(zoo.find(\"Leo\"));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-inbox",
+     "mode": "independent",
+     "title": "Fill the first empty slot",
+     "goal": "Write <code>Message</code> (private <code>sender</code> and <code>text</code>, a constructor, <code>getSender()</code>) and <code>Inbox</code>, which keeps a private <code>Message[]</code>. <code>receive(Message m)</code> stores the message in the first empty slot and returns <code>true</code>, or returns <code>false</code> if the inbox is full. <code>countFrom(String sender)</code> counts that sender's messages.",
+     "requirements": [],
+     "files": [
+      "Message.java",
+      "Inbox.java",
+      "InboxTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckInbox.java",
+       "public class CheckInbox {\n    public static void main(String[] args) {\n        Inbox tiny = new Inbox(1);\n        System.out.println(tiny.receive(new Message(\"X\", \"one\")));\n        System.out.println(tiny.receive(new Message(\"X\", \"two\")));\n        System.out.println(tiny.countFrom(\"X\"));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckInbox",
+     "hints": [
+      "<code>receive</code> needs the slot number, so use an index loop and <code>return true;</code> as soon as you store the message.",
+      "If the loop ends without finding a gap, the inbox is full: <code>return false;</code>"
+     ],
+     "checks": [],
+     "run": "InboxTester",
+     "output": "2\n0\ntrue\nfalse",
+     "testsOutput": "true\nfalse\n1",
+     "solution": [
+      [
+       "Message.java",
+       "public class Message {\n    private String sender;\n    private String text;\n\n    public Message(String sender, String text) {\n        this.sender = sender;\n        this.text = text;\n    }\n\n    public String getSender() {\n        return sender;\n    }\n}\n"
+      ],
+      [
+       "Inbox.java",
+       "public class Inbox {\n    private Message[] messages;\n\n    public Inbox(int size) {\n        messages = new Message[size];\n    }\n\n    public boolean receive(Message m) {\n        for (int i = 0; i < messages.length; i++) {\n            if (messages[i] == null) {\n                messages[i] = m;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public int countFrom(String sender) {\n        int count = 0;\n        for (Message m : messages) {\n            if (m != null && m.getSender().equals(sender)) {\n                count++;\n            }\n        }\n        return count;\n    }\n}\n"
+      ],
+      [
+       "InboxTester.java",
+       "public class InboxTester {\n    public static void main(String[] args) {\n        Inbox inbox = new Inbox(4);\n        inbox.receive(new Message(\"Ana\", \"Hi!\"));\n        inbox.receive(new Message(\"Sam\", \"Lunch?\"));\n        inbox.receive(new Message(\"Ana\", \"See you at 1\"));\n        System.out.println(inbox.countFrom(\"Ana\"));\n        System.out.println(inbox.countFrom(\"Lee\"));\n        System.out.println(inbox.receive(new Message(\"Lee\", \"Hello\")));\n        System.out.println(inbox.receive(new Message(\"Lee\", \"Anyone?\")));\n    }\n}\n"
+      ]
+     ]
     }
    ],
    "sources": [
@@ -4454,6 +5133,102 @@ window.COURSE = {
      "collapsed": true,
      "caption": "One possible solution",
      "after": null
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-parking-rebuild",
+     "mode": "independent",
+     "title": "Rebuild the parking lot from the spec",
+     "goal": "Without looking back at the steps above, write all three files of the parking-lot project from its specification: <code>Car</code>, <code>ParkingLot</code> (6 spots, <code>getName</code>, <code>park</code>, <code>leave</code>, <code>toString</code> returning the count) and the full <code>ParkingLotTester</code> from Step 5.",
+     "requirements": [
+      "Follow the specification at the top of this page exactly; the test checks a full lot and out-of-range spots"
+     ],
+     "files": [
+      "Car.java",
+      "ParkingLot.java",
+      "ParkingLotTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckParkingLot.java",
+       "public class CheckParkingLot {\n    public static void main(String[] args) {\n        ParkingLot lot = new ParkingLot(\"Test\");\n        for (int i = 0; i < 6; i++) {\n            lot.park(new Car(\"T-\" + i, \"Civic\"));\n        }\n        System.out.println(lot.park(new Car(\"X\", \"Extra\")));\n        System.out.println(lot.leave(-1));\n        System.out.println(lot.leave(6));\n        System.out.println(lot.leave(2));\n        System.out.println(lot);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckParkingLot",
+     "hints": [
+      "Write <code>Car</code> first and run the tester with only the parts that exist, one method at a time.",
+      "<code>leave</code> must save the car in a variable before emptying the spot."
+     ],
+     "checks": [],
+     "run": "ParkingLotTester",
+     "output": "Elm Street Garage\n0\n5\n3\nOutback got spot 1\n4",
+     "testsOutput": "-1\nnull\nnull\nCivic (T-2)\n5",
+     "solution": [
+      [
+       "Car.java",
+       "public class Car {\n    private String plate;\n    private String model;\n\n    public Car(String plate, String model) {\n        this.plate = plate;\n        this.model = model;\n    }\n\n    @Override\n    public String toString() {\n        return model + \" (\" + plate + \")\";\n    }\n}\n"
+      ],
+      [
+       "ParkingLot.java",
+       "public class ParkingLot {\n    private Car[] spots;\n    private String name;\n\n    public ParkingLot(String name) {\n        this.name = name;\n        spots = new Car[6];\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int park(Car car) {\n        for (int i = 0; i < spots.length; i++) {\n            if (spots[i] == null) {\n                spots[i] = car;\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public Car leave(int spot) {\n        if (spot < 0 || spot >= spots.length) {\n            return null;\n        }\n        Car gone = spots[spot];\n        spots[spot] = null;\n        return gone;\n    }\n\n    @Override\n    public String toString() {\n        int parked = 0;\n        for (int i = 0; i < spots.length; i++) {\n            if (spots[i] != null) {\n                parked++;\n            }\n        }\n        return \"\" + parked;\n    }\n}\n"
+      ],
+      [
+       "ParkingLotTester.java",
+       "public class ParkingLotTester {\n    public static void main(String[] args) {\n        ParkingLot lot = new ParkingLot(\"Elm Street Garage\");\n        System.out.println(lot.getName());\n        System.out.println(lot);\n\n        for (int i = 1; i <= 5; i++) {\n            lot.park(new Car(\"ME-10\" + i, \"Civic\"));\n        }\n        System.out.println(lot);\n\n        lot.leave(1);\n        lot.leave(3);\n        System.out.println(lot);\n\n        int spot = lot.park(new Car(\"NH-2090\", \"Outback\"));\n        System.out.println(\"Outback got spot \" + spot);\n        System.out.println(lot);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-bikerack",
+     "mode": "independent",
+     "title": "A new problem with the same shape",
+     "goal": "Write <code>Bike</code> (private <code>owner</code> and <code>color</code>, a constructor, <code>getOwner()</code>, and <code>toString</code> like <code>red bike (Ana)</code>) and <code>BikeRack</code>, which always has 4 spots. <code>lock(Bike)</code> uses the first empty spot and returns its number, or -1 when full. <code>unlock(String owner)</code> removes and returns that owner's bike, or <code>null</code>. <code>toString</code> returns text like <code>2 of 4 spots used</code>.",
+     "requirements": [],
+     "files": [
+      "Bike.java",
+      "BikeRack.java",
+      "BikeRackTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBikeRack.java",
+       "public class CheckBikeRack {\n    public static void main(String[] args) {\n        BikeRack rack = new BikeRack();\n        for (int i = 0; i < 4; i++) {\n            rack.lock(new Bike(\"Owner\" + i, \"black\"));\n        }\n        System.out.println(rack.lock(new Bike(\"Late\", \"pink\")));\n        System.out.println(rack.unlock(\"Nobody\"));\n        System.out.println(rack);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBikeRack",
+     "hints": [
+      "<code>lock</code> is <code>park</code> from the project. <code>unlock</code> searches by owner, like <code>find</code> in the arrays lesson.",
+      "In <code>unlock</code>, save the bike before setting its spot to <code>null</code>."
+     ],
+     "checks": [],
+     "run": "BikeRackTester",
+     "output": "0 of 4 spots used\n0\n1\n2 of 4 spots used\nred bike (Ana)\nnull\n1 of 4 spots used\n0",
+     "testsOutput": "-1\nnull\n4 of 4 spots used",
+     "solution": [
+      [
+       "Bike.java",
+       "public class Bike {\n    private String owner;\n    private String color;\n\n    public Bike(String owner, String color) {\n        this.owner = owner;\n        this.color = color;\n    }\n\n    public String getOwner() {\n        return owner;\n    }\n\n    @Override\n    public String toString() {\n        return color + \" bike (\" + owner + \")\";\n    }\n}\n"
+      ],
+      [
+       "BikeRack.java",
+       "public class BikeRack {\n    private Bike[] spots;\n\n    public BikeRack() {\n        spots = new Bike[4];\n    }\n\n    public int lock(Bike bike) {\n        for (int i = 0; i < spots.length; i++) {\n            if (spots[i] == null) {\n                spots[i] = bike;\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public Bike unlock(String owner) {\n        for (int i = 0; i < spots.length; i++) {\n            if (spots[i] != null && spots[i].getOwner().equals(owner)) {\n                Bike bike = spots[i];\n                spots[i] = null;\n                return bike;\n            }\n        }\n        return null;\n    }\n\n    @Override\n    public String toString() {\n        int used = 0;\n        for (Bike bike : spots) {\n            if (bike != null) {\n                used++;\n            }\n        }\n        return used + \" of \" + spots.length + \" spots used\";\n    }\n}\n"
+      ],
+      [
+       "BikeRackTester.java",
+       "public class BikeRackTester {\n    public static void main(String[] args) {\n        BikeRack rack = new BikeRack();\n        System.out.println(rack);\n        System.out.println(rack.lock(new Bike(\"Ana\", \"red\")));\n        System.out.println(rack.lock(new Bike(\"Sam\", \"blue\")));\n        System.out.println(rack);\n        System.out.println(rack.unlock(\"Ana\"));\n        System.out.println(rack.unlock(\"Ana\"));\n        System.out.println(rack);\n        System.out.println(rack.lock(new Bike(\"Lee\", \"green\")));\n    }\n}\n"
+      ]
+     ]
     }
    ],
    "sources": [
@@ -4479,6 +5254,443 @@ window.COURSE = {
      "title": "Object.toString()",
      "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#toString()",
      "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Part 4.2: Objects in a list",
+     "url": "https://java-programming.mooc.fi/part-4/2-objects-in-a-list",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "classes-workshop": {
+   "id": "classes-workshop",
+   "section": "classes",
+   "title": "Workshop: classes and objects",
+   "summary": "Design classes from scratch: two guided builds, then two you write on your own.",
+   "goals": [
+    "Write classes with private fields, constructors, getters and <code>toString</code> without starter code",
+    "Build a manager class around an array of your own objects",
+    "Grow a program step by step, running it after every change"
+   ],
+   "cos225": "The COS 225 exam guide says you may need to \"construct classes from scratch, along with constructors and other methods\", graded more on whether each piece is right than on exact syntax. The independent tasks here are that kind of question. Try writing each one on paper before you type it in.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Before you start"
+    },
+    {
+     "type": "p",
+     "html": "Each guided task builds a program across several files. A step tells you which file to create or change, and it's done when your program's output matches. Your code carries over from step to step. The independent tasks give only the specification, the expected output and a test file, just like an assignment."
+    },
+    {
+     "type": "p",
+     "html": "Read the whole task before you write anything. The exam guide's last piece of advice applies here too: spend a few minutes reading each coding problem before you start writing."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: a playlist"
+    },
+    {
+     "type": "write",
+     "id": "ws-classes-playlist",
+     "mode": "guided",
+     "title": "A playlist",
+     "goal": "Build a <code>Song</code> class and a <code>Playlist</code> that holds songs in an array, with a total length and the longest song.",
+     "requirements": [],
+     "files": [
+      "Song.java",
+      "PlaylistTester.java",
+      "Playlist.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "The Song class",
+       "text": "Create <code>Song.java</code> with private fields <code>title</code> (<code>String</code>) and <code>seconds</code> (<code>int</code>), a constructor that takes both, and the getters <code>getTitle()</code> and <code>getSeconds()</code>. Create <code>PlaylistTester.java</code> whose <code>main</code> makes the song \"Blue Hour\" (214 seconds) and prints it using the getters.",
+       "hint": "<code>System.out.println(first.getTitle() + &quot;: &quot; + first.getSeconds() + &quot; seconds&quot;);</code>",
+       "files": [
+        "Song.java",
+        "PlaylistTester.java"
+       ],
+       "run": "PlaylistTester",
+       "output": "Blue Hour: 214 seconds",
+       "checks": [
+        {
+         "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
+         "message": "Make the fields <code>private</code>."
+        }
+       ],
+       "solution": [
+        [
+         "Song.java",
+         "public class Song {\n    private String title;\n    private int seconds;\n\n    public Song(String title, int seconds) {\n        this.title = title;\n        this.seconds = seconds;\n    }\n\n    public String getTitle() {\n        return title;\n    }\n\n    public int getSeconds() {\n        return seconds;\n    }\n}\n"
+        ],
+        [
+         "PlaylistTester.java",
+         "public class PlaylistTester {\n    public static void main(String[] args) {\n        Song first = new Song(\"Blue Hour\", 214);\n        System.out.println(first.getTitle() + \": \" + first.getSeconds() + \" seconds\");\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Minutes and seconds",
+       "text": "Give <code>Song</code> a <code>toString</code> that shows the length as minutes and seconds, like <code>Blue Hour (3:34)</code>. Seconds below 10 need a leading zero. Change the tester to print two songs directly: \"Blue Hour\" (214) and \"Low Tide\" (187).",
+       "hint": "Minutes are <code>seconds / 60</code> and the rest is <code>seconds % 60</code>. This is the same leading-zero problem as the <code>Clock</code> task.",
+       "files": [
+        "Song.java",
+        "PlaylistTester.java"
+       ],
+       "run": "PlaylistTester",
+       "output": "Blue Hour (3:34)\nLow Tide (3:07)",
+       "checks": [],
+       "solution": [
+        [
+         "Song.java",
+         "public class Song {\n    private String title;\n    private int seconds;\n\n    public Song(String title, int seconds) {\n        this.title = title;\n        this.seconds = seconds;\n    }\n\n    public String getTitle() {\n        return title;\n    }\n\n    public int getSeconds() {\n        return seconds;\n    }\n\n    @Override\n    public String toString() {\n        int minutes = seconds / 60;\n        int rest = seconds % 60;\n        if (rest < 10) {\n            return title + \" (\" + minutes + \":0\" + rest + \")\";\n        }\n        return title + \" (\" + minutes + \":\" + rest + \")\";\n    }\n}\n"
+        ],
+        [
+         "PlaylistTester.java",
+         "public class PlaylistTester {\n    public static void main(String[] args) {\n        Song first = new Song(\"Blue Hour\", 214);\n        Song second = new Song(\"Low Tide\", 187);\n        System.out.println(first);\n        System.out.println(second);\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "The Playlist class",
+       "text": "Create <code>Playlist.java</code> with a private <code>Song[]</code> sized by the constructor. <code>add(Song)</code> puts the song in the first empty slot and returns <code>true</code>, or <code>false</code> when full. <code>toString</code> returns every song, each followed by a line break (<code>&quot;\\n&quot;</code>). In the tester, make a playlist of size 3, print what <code>add</code> returns for four songs, and finish with <code>System.out.print(trip);</code>.",
+       "hint": "Use <code>print</code>, not <code>println</code>, for the playlist, because <code>toString</code> already ends with a line break.",
+       "files": [
+        "Song.java",
+        "PlaylistTester.java",
+        "Playlist.java"
+       ],
+       "run": "PlaylistTester",
+       "output": "true\ntrue\ntrue\nfalse\nBlue Hour (3:34)\nLow Tide (3:07)\nNorthbound (4:00)",
+       "checks": [
+        {
+         "pattern": "!=\\s*null",
+         "message": "Skip empty slots with a <code>!= null</code> check."
+        }
+       ],
+       "solution": [
+        [
+         "Song.java",
+         "public class Song {\n    private String title;\n    private int seconds;\n\n    public Song(String title, int seconds) {\n        this.title = title;\n        this.seconds = seconds;\n    }\n\n    public String getTitle() {\n        return title;\n    }\n\n    public int getSeconds() {\n        return seconds;\n    }\n\n    @Override\n    public String toString() {\n        int minutes = seconds / 60;\n        int rest = seconds % 60;\n        if (rest < 10) {\n            return title + \" (\" + minutes + \":0\" + rest + \")\";\n        }\n        return title + \" (\" + minutes + \":\" + rest + \")\";\n    }\n}\n"
+        ],
+        [
+         "PlaylistTester.java",
+         "public class PlaylistTester {\n    public static void main(String[] args) {\n        Playlist trip = new Playlist(3);\n        System.out.println(trip.add(new Song(\"Blue Hour\", 214)));\n        System.out.println(trip.add(new Song(\"Low Tide\", 187)));\n        System.out.println(trip.add(new Song(\"Northbound\", 240)));\n        System.out.println(trip.add(new Song(\"One Too Many\", 100)));\n        System.out.print(trip);\n    }\n}\n"
+        ],
+        [
+         "Playlist.java",
+         "public class Playlist {\n    private Song[] songs;\n\n    public Playlist(int size) {\n        songs = new Song[size];\n    }\n\n    public boolean add(Song song) {\n        for (int i = 0; i < songs.length; i++) {\n            if (songs[i] == null) {\n                songs[i] = song;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"\";\n        for (Song song : songs) {\n            if (song != null) {\n                result = result + song + \"\\n\";\n            }\n        }\n        return result;\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Total and longest",
+       "text": "Add <code>totalSeconds()</code> and <code>longest()</code> to <code>Playlist</code>. <code>longest()</code> returns the song with the most seconds, or <code>null</code> for an empty playlist. Update the tester to match the expected output: a size-4 playlist with three songs, then an empty playlist of size 2.",
+       "hint": "In <code>longest()</code>, keep the best song so far in a variable that starts as <code>null</code>. A song beats it if <code>best == null</code> or the song is longer.",
+       "files": [
+        "Song.java",
+        "PlaylistTester.java",
+        "Playlist.java"
+       ],
+       "run": "PlaylistTester",
+       "output": "Total: 641 seconds\nLongest: Northbound (4:00)\nLongest in an empty playlist: null",
+       "checks": [],
+       "solution": [
+        [
+         "Song.java",
+         "public class Song {\n    private String title;\n    private int seconds;\n\n    public Song(String title, int seconds) {\n        this.title = title;\n        this.seconds = seconds;\n    }\n\n    public String getTitle() {\n        return title;\n    }\n\n    public int getSeconds() {\n        return seconds;\n    }\n\n    @Override\n    public String toString() {\n        int minutes = seconds / 60;\n        int rest = seconds % 60;\n        if (rest < 10) {\n            return title + \" (\" + minutes + \":0\" + rest + \")\";\n        }\n        return title + \" (\" + minutes + \":\" + rest + \")\";\n    }\n}\n"
+        ],
+        [
+         "PlaylistTester.java",
+         "public class PlaylistTester {\n    public static void main(String[] args) {\n        Playlist trip = new Playlist(4);\n        trip.add(new Song(\"Blue Hour\", 214));\n        trip.add(new Song(\"Low Tide\", 187));\n        trip.add(new Song(\"Northbound\", 240));\n        System.out.println(\"Total: \" + trip.totalSeconds() + \" seconds\");\n        System.out.println(\"Longest: \" + trip.longest());\n\n        Playlist empty = new Playlist(2);\n        System.out.println(\"Longest in an empty playlist: \" + empty.longest());\n    }\n}\n"
+        ],
+        [
+         "Playlist.java",
+         "public class Playlist {\n    private Song[] songs;\n\n    public Playlist(int size) {\n        songs = new Song[size];\n    }\n\n    public boolean add(Song song) {\n        for (int i = 0; i < songs.length; i++) {\n            if (songs[i] == null) {\n                songs[i] = song;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public int totalSeconds() {\n        int total = 0;\n        for (Song song : songs) {\n            if (song != null) {\n                total = total + song.getSeconds();\n            }\n        }\n        return total;\n    }\n\n    public Song longest() {\n        Song best = null;\n        for (Song song : songs) {\n            if (song != null && (best == null || song.getSeconds() > best.getSeconds())) {\n                best = song;\n            }\n        }\n        return best;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"\";\n        for (Song song : songs) {\n            if (song != null) {\n                result = result + song + \"\\n\";\n            }\n        }\n        return result;\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: a small bank"
+    },
+    {
+     "type": "write",
+     "id": "ws-classes-bank",
+     "mode": "guided",
+     "title": "A small bank",
+     "goal": "Build an <code>Account</code> class that protects its balance, and a <code>Bank</code> that opens accounts and finds the richest one.",
+     "requirements": [],
+     "files": [
+      "Account.java",
+      "BankTester.java",
+      "Bank.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "The Account class",
+       "text": "Create <code>Account.java</code> with private fields <code>id</code> (<code>int</code>), <code>owner</code> (<code>String</code>) and <code>balance</code> (<code>double</code>). The constructor takes the id and the owner, and the balance starts at 0. Add the three getters and <code>deposit(double)</code>, which ignores amounts that aren't positive. In <code>BankTester</code>, deposit 40.0 and then -10.0 into Ana's account and print her balance.",
+       "hint": null,
+       "files": [
+        "Account.java",
+        "BankTester.java"
+       ],
+       "run": "BankTester",
+       "output": "Ana has $40.0",
+       "checks": [
+        {
+         "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
+         "message": "Make the fields <code>private</code>."
+        }
+       ],
+       "solution": [
+        [
+         "Account.java",
+         "public class Account {\n    private int id;\n    private String owner;\n    private double balance;\n\n    public Account(int id, String owner) {\n        this.id = id;\n        this.owner = owner;\n        balance = 0.0;\n    }\n\n    public int getId() {\n        return id;\n    }\n\n    public String getOwner() {\n        return owner;\n    }\n\n    public double getBalance() {\n        return balance;\n    }\n\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance = balance + amount;\n        }\n    }\n}\n"
+        ],
+        [
+         "BankTester.java",
+         "public class BankTester {\n    public static void main(String[] args) {\n        Account ana = new Account(0, \"Ana\");\n        ana.deposit(40.0);\n        ana.deposit(-10.0);\n        System.out.println(ana.getOwner() + \" has $\" + ana.getBalance());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Withdrawing",
+       "text": "Add <code>withdraw(double)</code>, which returns <code>true</code> and takes the money if the amount is positive and no more than the balance, and otherwise returns <code>false</code> and changes nothing. Print what two withdrawals return (15.0, then 100.0) and the balance after.",
+       "hint": "Return <code>true</code> inside the <code>if</code>, after changing the balance, and <code>return false;</code> after it.",
+       "files": [
+        "Account.java",
+        "BankTester.java"
+       ],
+       "run": "BankTester",
+       "output": "Ana has $40.0\ntrue\nfalse\nAna has $25.0",
+       "checks": [],
+       "solution": [
+        [
+         "Account.java",
+         "public class Account {\n    private int id;\n    private String owner;\n    private double balance;\n\n    public Account(int id, String owner) {\n        this.id = id;\n        this.owner = owner;\n        balance = 0.0;\n    }\n\n    public int getId() {\n        return id;\n    }\n\n    public String getOwner() {\n        return owner;\n    }\n\n    public double getBalance() {\n        return balance;\n    }\n\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance = balance + amount;\n        }\n    }\n\n    public boolean withdraw(double amount) {\n        if (amount > 0 && amount <= balance) {\n            balance = balance - amount;\n            return true;\n        }\n        return false;\n    }\n}\n"
+        ],
+        [
+         "BankTester.java",
+         "public class BankTester {\n    public static void main(String[] args) {\n        Account ana = new Account(0, \"Ana\");\n        ana.deposit(40.0);\n        ana.deposit(-10.0);\n        System.out.println(ana.getOwner() + \" has $\" + ana.getBalance());\n        System.out.println(ana.withdraw(15.0));\n        System.out.println(ana.withdraw(100.0));\n        System.out.println(ana.getOwner() + \" has $\" + ana.getBalance());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "The Bank class",
+       "text": "Create <code>Bank.java</code> with a private <code>Account[]</code>. <code>open(String owner)</code> creates a new account in the first empty slot, using the slot number as its id, and returns the id (or -1 when full). <code>get(int id)</code> returns the account in that slot, or <code>null</code> if the id is out of range.",
+       "hint": "<code>accounts[i] = new Account(i, owner);</code> The bank creates the account itself; the tester only passes the owner's name.",
+       "files": [
+        "Account.java",
+        "BankTester.java",
+        "Bank.java"
+       ],
+       "run": "BankTester",
+       "output": "0 1 -1\nSam has $30.0\nnull",
+       "checks": [],
+       "solution": [
+        [
+         "Account.java",
+         "public class Account {\n    private int id;\n    private String owner;\n    private double balance;\n\n    public Account(int id, String owner) {\n        this.id = id;\n        this.owner = owner;\n        balance = 0.0;\n    }\n\n    public int getId() {\n        return id;\n    }\n\n    public String getOwner() {\n        return owner;\n    }\n\n    public double getBalance() {\n        return balance;\n    }\n\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance = balance + amount;\n        }\n    }\n\n    public boolean withdraw(double amount) {\n        if (amount > 0 && amount <= balance) {\n            balance = balance - amount;\n            return true;\n        }\n        return false;\n    }\n}\n"
+        ],
+        [
+         "BankTester.java",
+         "public class BankTester {\n    public static void main(String[] args) {\n        Bank bank = new Bank(2);\n        int a = bank.open(\"Ana\");\n        int b = bank.open(\"Sam\");\n        int c = bank.open(\"Lee\");\n        System.out.println(a + \" \" + b + \" \" + c);\n\n        bank.get(1).deposit(30.0);\n        System.out.println(bank.get(1).getOwner() + \" has $\" + bank.get(1).getBalance());\n        System.out.println(bank.get(5));\n    }\n}\n"
+        ],
+        [
+         "Bank.java",
+         "public class Bank {\n    private Account[] accounts;\n\n    public Bank(int size) {\n        accounts = new Account[size];\n    }\n\n    public int open(String owner) {\n        for (int i = 0; i < accounts.length; i++) {\n            if (accounts[i] == null) {\n                accounts[i] = new Account(i, owner);\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public Account get(int id) {\n        if (id < 0 || id >= accounts.length) {\n            return null;\n        }\n        return accounts[id];\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "The richest account",
+       "text": "Add <code>richest()</code> to <code>Bank</code>, which returns the account with the highest balance, or <code>null</code> if the bank has no accounts. Update the tester as shown by the expected output.",
+       "hint": "This is the same pattern as <code>longest()</code> in the playlist.",
+       "files": [
+        "Account.java",
+        "BankTester.java",
+        "Bank.java"
+       ],
+       "run": "BankTester",
+       "output": "Richest: Sam\nnull",
+       "checks": [
+        {
+         "pattern": "!=\\s*null",
+         "message": "Skip empty slots with a <code>!= null</code> check."
+        }
+       ],
+       "solution": [
+        [
+         "Account.java",
+         "public class Account {\n    private int id;\n    private String owner;\n    private double balance;\n\n    public Account(int id, String owner) {\n        this.id = id;\n        this.owner = owner;\n        balance = 0.0;\n    }\n\n    public int getId() {\n        return id;\n    }\n\n    public String getOwner() {\n        return owner;\n    }\n\n    public double getBalance() {\n        return balance;\n    }\n\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance = balance + amount;\n        }\n    }\n\n    public boolean withdraw(double amount) {\n        if (amount > 0 && amount <= balance) {\n            balance = balance - amount;\n            return true;\n        }\n        return false;\n    }\n}\n"
+        ],
+        [
+         "BankTester.java",
+         "public class BankTester {\n    public static void main(String[] args) {\n        Bank bank = new Bank(3);\n        bank.open(\"Ana\");\n        bank.open(\"Sam\");\n        bank.open(\"Lee\");\n        bank.get(0).deposit(40.0);\n        bank.get(1).deposit(90.0);\n        bank.get(2).deposit(15.0);\n        System.out.println(\"Richest: \" + bank.richest().getOwner());\n\n        Bank empty = new Bank(2);\n        System.out.println(empty.richest());\n    }\n}\n"
+        ],
+        [
+         "Bank.java",
+         "public class Bank {\n    private Account[] accounts;\n\n    public Bank(int size) {\n        accounts = new Account[size];\n    }\n\n    public int open(String owner) {\n        for (int i = 0; i < accounts.length; i++) {\n            if (accounts[i] == null) {\n                accounts[i] = new Account(i, owner);\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public Account get(int id) {\n        if (id < 0 || id >= accounts.length) {\n            return null;\n        }\n        return accounts[id];\n    }\n\n    public Account richest() {\n        Account best = null;\n        for (Account account : accounts) {\n            if (account != null && (best == null || account.getBalance() > best.getBalance())) {\n                best = account;\n            }\n        }\n        return best;\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: an inventory"
+    },
+    {
+     "type": "write",
+     "id": "ws-classes-inventory",
+     "mode": "independent",
+     "title": "A store inventory",
+     "goal": "Write <code>Item</code> (private <code>name</code> and <code>quantity</code>, a constructor, getters, and <code>toString</code> like <code>Eraser x12</code>) and <code>Inventory</code>, which keeps a private <code>Item[]</code> sized by its constructor. <code>add(Item)</code> returns the slot used, or -1 when full. <code>remove(String name)</code> removes and returns that item, or <code>null</code>. <code>totalQuantity()</code> adds up every item's quantity. <code>toString</code> returns text like <code>3 items, 57 units</code>. Finish with <code>InventoryTester</code>.",
+     "requirements": [
+      "Three files: <code>Item.java</code>, <code>Inventory.java</code>, <code>InventoryTester.java</code>",
+      "Fields are <code>private</code>",
+      "A removed item's slot can be used again"
+     ],
+     "files": [
+      "Item.java",
+      "Inventory.java",
+      "InventoryTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckInventory.java",
+       "public class CheckInventory {\n    public static void main(String[] args) {\n        Inventory inv = new Inventory(2);\n        System.out.println(inv);\n        inv.add(new Item(\"A\", 1));\n        inv.remove(\"A\");\n        System.out.println(inv.add(new Item(\"B\", 2)));\n        System.out.println(inv);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckInventory",
+     "hints": [
+      "Write and test one method at a time. Comment out the tester lines for methods you haven't written yet.",
+      "<code>toString</code> can call <code>totalQuantity()</code> instead of adding up the quantities a second time."
+     ],
+     "checks": [
+      {
+       "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
+       "message": "Make the fields <code>private</code>."
+      },
+      {
+       "pattern": "\\.equals\\s*\\(",
+       "message": "Compare names with <code>.equals(...)</code>."
+      }
+     ],
+     "run": "InventoryTester",
+     "output": "0\n1\n2\n-1\n3 items, 57 units\nEraser x12\nnull\n2 items, 45 units",
+     "testsOutput": "0 items, 0 units\n0\n1 items, 2 units",
+     "solution": [
+      [
+       "Item.java",
+       "public class Item {\n    private String name;\n    private int quantity;\n\n    public Item(String name, int quantity) {\n        this.name = name;\n        this.quantity = quantity;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getQuantity() {\n        return quantity;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" x\" + quantity;\n    }\n}\n"
+      ],
+      [
+       "Inventory.java",
+       "public class Inventory {\n    private Item[] items;\n\n    public Inventory(int size) {\n        items = new Item[size];\n    }\n\n    public int add(Item item) {\n        for (int i = 0; i < items.length; i++) {\n            if (items[i] == null) {\n                items[i] = item;\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public Item remove(String name) {\n        for (int i = 0; i < items.length; i++) {\n            if (items[i] != null && items[i].getName().equals(name)) {\n                Item removed = items[i];\n                items[i] = null;\n                return removed;\n            }\n        }\n        return null;\n    }\n\n    public int totalQuantity() {\n        int total = 0;\n        for (Item item : items) {\n            if (item != null) {\n                total = total + item.getQuantity();\n            }\n        }\n        return total;\n    }\n\n    @Override\n    public String toString() {\n        int count = 0;\n        for (Item item : items) {\n            if (item != null) {\n                count++;\n            }\n        }\n        return count + \" items, \" + totalQuantity() + \" units\";\n    }\n}\n"
+      ],
+      [
+       "InventoryTester.java",
+       "public class InventoryTester {\n    public static void main(String[] args) {\n        Inventory shop = new Inventory(3);\n        System.out.println(shop.add(new Item(\"Pencil\", 40)));\n        System.out.println(shop.add(new Item(\"Eraser\", 12)));\n        System.out.println(shop.add(new Item(\"Ruler\", 5)));\n        System.out.println(shop.add(new Item(\"Glue\", 3)));\n        System.out.println(shop);\n        System.out.println(shop.remove(\"Eraser\"));\n        System.out.println(shop.remove(\"Tape\"));\n        System.out.println(shop);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: a class from scratch, exam-sized"
+    },
+    {
+     "type": "write",
+     "id": "ws-classes-course",
+     "mode": "independent",
+     "title": "A course with limited seats",
+     "goal": "Write a <code>Course</code> class with private fields for its name, its capacity and how many students are enrolled. The constructor takes the name and capacity; nobody is enrolled yet. <code>enroll()</code> adds one student and returns <code>true</code> if there's a seat, otherwise <code>false</code>. <code>getOpenSeats()</code> returns the seats left. <code>toString</code> returns text like <code>BIO 100: 2 of 2 seats taken</code>. Then write <code>CourseTester</code>.",
+     "requirements": [
+      "About 20 lines for <code>Course</code>, the size of an exam question",
+      "Fields are <code>private</code>"
+     ],
+     "files": [
+      "Course.java",
+      "CourseTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCourse.java",
+       "public class CheckCourse {\n    public static void main(String[] args) {\n        Course art = new Course(\"ART 101\", 30);\n        art.enroll();\n        art.enroll();\n        art.enroll();\n        System.out.println(art.getOpenSeats());\n        System.out.println(art);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCourse",
+     "hints": [
+      "Three fields, one constructor, three methods. Write the field list first, then each method header, then fill in the bodies."
+     ],
+     "checks": [
+      {
+       "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
+       "message": "Make the fields <code>private</code>."
+      }
+     ],
+     "run": "CourseTester",
+     "output": "BIO 100: 0 of 2 seats taken\ntrue\ntrue\nfalse\n0\nBIO 100: 2 of 2 seats taken",
+     "testsOutput": "27\nART 101: 3 of 30 seats taken",
+     "solution": [
+      [
+       "Course.java",
+       "public class Course {\n    private String name;\n    private int capacity;\n    private int enrolled;\n\n    public Course(String name, int capacity) {\n        this.name = name;\n        this.capacity = capacity;\n        enrolled = 0;\n    }\n\n    public boolean enroll() {\n        if (enrolled < capacity) {\n            enrolled++;\n            return true;\n        }\n        return false;\n    }\n\n    public int getOpenSeats() {\n        return capacity - enrolled;\n    }\n\n    @Override\n    public String toString() {\n        return name + \": \" + enrolled + \" of \" + capacity + \" seats taken\";\n    }\n}\n"
+      ],
+      [
+       "CourseTester.java",
+       "public class CourseTester {\n    public static void main(String[] args) {\n        Course bio = new Course(\"BIO 100\", 2);\n        System.out.println(bio);\n        System.out.println(bio.enroll());\n        System.out.println(bio.enroll());\n        System.out.println(bio.enroll());\n        System.out.println(bio.getOpenSeats());\n        System.out.println(bio);\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Providing Constructors for Your Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/constructors.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Controlling Access to Members of a Class",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Object.toString()",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#toString()",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Arrays",
+     "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html",
+     "org": "Oracle, The Java Tutorials",
      "note": null
     },
     {
