@@ -87,13 +87,12 @@ window.COURSE = {
    "id": "interfaces",
    "title": "Interfaces vs Objects",
    "blurb": "Promise what a class can do with an interface, and let one class keep several promises.",
-   "planned": [
-    "What an interface is",
-    "implements versus extends",
-    "Implementing more than one interface",
-    "Using an interface as a type",
-    "The Comparable interface",
-    "Workshop"
+   "lessons": [
+    "iface-basics",
+    "iface-multiple",
+    "iface-type",
+    "iface-comparable",
+    "ws-interfaces"
    ]
   },
   {
@@ -118,12 +117,12 @@ window.COURSE = {
    "id": "ds-arrays",
    "title": "Data Structures intro (arrays)",
    "blurb": "What a data structure is, and the array as the simplest one.",
-   "planned": [
-    "Abstract data types",
-    "Arrays in memory",
-    "Resizing an array",
-    "Generic classes with <T>",
-    "Workshop"
+   "lessons": [
+    "ds-adt",
+    "ds-memory",
+    "ds-resize",
+    "ds-generics",
+    "ws-ds-arrays"
    ]
   },
   {
@@ -131,11 +130,8 @@ window.COURSE = {
    "kind": "exam",
    "title": "Exam practice 1",
    "blurb": "Units 1 to 12: Java basics, OOP, inheritance, interfaces, abstraction and arrays, in the COS 225 exam format.",
-   "planned": [
-    "Short-answer questions",
-    "Fix the code",
-    "Fill in the method bodies",
-    "Write a class from scratch"
+   "lessons": [
+    "exam-practice-1"
    ]
   },
   {
@@ -10285,6 +10281,2313 @@ window.COURSE = {
     }
    ]
   },
+  "iface-basics": {
+   "id": "iface-basics",
+   "section": "interfaces",
+   "title": "What an interface is",
+   "summary": "An interface lists methods a class promises to have. Any class that implements it must provide every one.",
+   "goals": [
+    "Declare an interface and implement it in a class with <code>implements</code>",
+    "Explain why every interface method must be implemented, and <code>public</code>",
+    "Explain why you can't create an object of an interface"
+   ],
+   "cos225": "The exam guide describes an interface as a \"fully abstract alternative to Class\": no non-abstract methods, and only static data, which COS 225 doesn't use. A class must implement all of an interface's methods. This lesson follows that definition.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "A promise, not a class"
+    },
+    {
+     "type": "p",
+     "html": "Songs and podcasts are very different things, but a music app needs to <code>play()</code> both. An <strong>interface</strong> names that shared ability. It lists method headers with no bodies: what a class can do, not how. A class that <code>implements</code> the interface promises to provide a body for each one."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Playable.java",
+       "public interface Playable {\n    void play();\n}\n"
+      ],
+      [
+       "Song.java",
+       "public class Song implements Playable {\n    private String title;\n\n    public Song(String title) {\n        this.title = title;\n    }\n\n    @Override\n    public void play() {\n        System.out.println(\"Playing song: \" + title);\n    }\n}\n"
+      ],
+      [
+       "Podcast.java",
+       "public class Podcast implements Playable {\n    private String show;\n    private int episode;\n\n    public Podcast(String show, int episode) {\n        this.show = show;\n        this.episode = episode;\n    }\n\n    @Override\n    public void play() {\n        System.out.println(\"Playing \" + show + \", episode \" + episode);\n    }\n}\n"
+      ],
+      [
+       "PlayTester.java",
+       "public class PlayTester {\n    public static void main(String[] args) {\n        Song song = new Song(\"Blue Hour\");\n        Podcast pod = new Podcast(\"Night Shift\", 12);\n        song.play();\n        pod.play();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java PlayTester",
+      "stdout": "Playing song: Blue Hour\nPlaying Night Shift, episode 12"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>public interface Playable</code> goes in its own file, <code>Playable.java</code>, just like a class.",
+      "<code>void play();</code> has no body, only a semicolon. Methods in an interface are automatically <code>public</code> and <code>abstract</code>, so you don't write those words.",
+      "<code>implements Playable</code> makes the promise. <code>@Override</code> works here too, and catches typos the same way it does with inheritance.",
+      "<code>Song</code> and <code>Podcast</code> share no code and no parent class (other than <code>Object</code>). They share only the promise to <code>play()</code>."
+     ]
+    },
+    {
+     "type": "note",
+     "label": "Interfaces in this course",
+     "html": "Since Java 8, interfaces may also contain <code>default</code> and <code>static</code> methods with bodies. COS 225 treats interfaces as fully abstract, so this course does too: every method in our interfaces is a header that the class fills in. Interfaces can also hold constants, which are automatically <code>public static final</code>."
+    },
+    {
+     "type": "h",
+     "html": "What the compiler checks"
+    },
+    {
+     "type": "p",
+     "html": "<strong>Every method must be implemented.</strong> If a class leaves one out, it doesn't compile, and the message names the missing method."
+    },
+    {
+     "type": "error",
+     "id": "iface-missing",
+     "prompt": "This <code>Audiobook</code> claims to be <code>Playable</code> but has no <code>play()</code>.",
+     "files": [
+      [
+       "Playable.java",
+       "public interface Playable {\n    void play();\n}\n"
+      ],
+      [
+       "Audiobook.java",
+       "public class Audiobook implements Playable {\n    private String title;\n\n    public Audiobook(String title) {\n        this.title = title;\n    }\n}\n"
+      ],
+      [
+       "BookTester.java",
+       "public class BookTester {\n    public static void main(String[] args) {\n        new Audiobook(\"Night Trains\").play();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Audiobook.java BookTester.java Playable.java",
+      "text": "Audiobook.java:1: error: Audiobook is not abstract and does not override abstract method play() in Playable\npublic class Audiobook implements Playable {\n       ^\nBookTester.java:3: error: cannot find symbol\n        new Audiobook(\"Night Trains\").play();\n                                     ^\n  symbol:   method play()\n  location: class Audiobook\n2 errors"
+     },
+     "question": "How do you fix it?",
+     "choices": [
+      "Remove <code>play()</code> from the interface",
+      "Add a <code>public void play()</code> method to <code>Audiobook</code>",
+      "Change <code>implements</code> to <code>extends</code>",
+      "Create the audiobook with <code>new Playable()</code> instead"
+     ],
+     "answer": 1,
+     "explain": "<code>implements Playable</code> is a promise to have <code>play()</code>, and the compiler holds the class to it.",
+     "fixedFiles": [
+      [
+       "Playable.java",
+       "public interface Playable {\n    void play();\n}\n"
+      ],
+      [
+       "Audiobook.java",
+       "public class Audiobook implements Playable {\n    private String title;\n\n    public Audiobook(String title) {\n        this.title = title;\n    }\n\n    @Override\n    public void play() {\n        System.out.println(\"Playing audiobook: \" + title);\n    }\n}\n"
+      ],
+      [
+       "BookTester.java",
+       "public class BookTester {\n    public static void main(String[] args) {\n        new Audiobook(\"Night Trains\").play();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java BookTester",
+      "stdout": "Playing audiobook: Night Trains"
+     }
+    },
+    {
+     "type": "p",
+     "html": "**The implementing method must be <code>public</code>.** The interface's methods are public, and a class can't make a promised method harder to reach:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Playable.java",
+       "public interface Playable {\n    void play();\n}\n"
+      ],
+      [
+       "Song.java",
+       "public class Song implements Playable {\n    private String title;\n\n    public Song(String title) {\n        this.title = title;\n    }\n\n    @Override\n    void play() {\n        System.out.println(\"Playing song: \" + title);\n    }\n}\n"
+      ],
+      [
+       "PlayTester.java",
+       "public class PlayTester {\n    public static void main(String[] args) {\n        Song song = new Song(\"Blue Hour\");\n        song.play();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac PlayTester.java Playable.java Song.java",
+      "text": "Song.java:9: error: play() in Song cannot implement play() in Playable\n    void play() {\n         ^\n  attempting to assign weaker access privileges; was public\n1 error"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "\"weaker access privileges\": the interface method is <code>public</code>, but the class's version (with no access word) isn't. Add <code>public</code>."
+    },
+    {
+     "type": "p",
+     "html": "<strong>You can't create an object of an interface.</strong> An interface has no method bodies, so there would be nothing to run:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Playable.java",
+       "public interface Playable {\n    void play();\n}\n"
+      ],
+      [
+       "MakePlayable.java",
+       "public class MakePlayable {\n    public static void main(String[] args) {\n        Playable p = new Playable();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac MakePlayable.java Playable.java",
+      "text": "MakePlayable.java:3: error: Playable is abstract; cannot be instantiated\n        Playable p = new Playable();\n                     ^\n1 error"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "iface-lamp",
+     "title": "Keep the promise",
+     "prompt": "<code>Switchable</code> has two methods. Make <code>Lamp</code> implement it.",
+     "files": [
+      [
+       "Switchable.java",
+       "public interface Switchable {\n    void turnOn();\n\n    void turnOff();\n}\n"
+      ],
+      [
+       "Lamp.java",
+       "public class Lamp [[impl]] Switchable {\n    private boolean on;\n\n    @Override\n    [[acc]] void turnOn() {\n        on = true;\n        System.out.println(\"Lamp on\");\n    }\n\n    @Override\n    public void [[second]]() {\n        on = false;\n        System.out.println(\"Lamp off\");\n    }\n}\n"
+      ],
+      [
+       "LampTester.java",
+       "public class LampTester {\n    public static void main(String[] args) {\n        Lamp desk = new Lamp();\n        desk.turnOn();\n        desk.turnOff();\n    }\n}\n"
+      ]
+     ],
+     "run": "LampTester",
+     "blanks": {
+      "impl": {
+       "accept": [
+        "implements"
+       ],
+       "solution": "implements",
+       "hint": "A class keeps an interface's promise with which keyword?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "extends",
+         "shown": "extends",
+         "why": "A class <code>extends</code> another class, but <code>implements</code> an interface. Java says \"no interface expected here\".",
+         "result": {
+          "kind": "compile",
+          "command": "javac Lamp.java LampTester.java Switchable.java",
+          "text": "Lamp.java:1: error: no interface expected here\npublic class Lamp extends Switchable {\n                          ^\nLamp.java:4: error: method does not override or implement a method from a supertype\n    @Override\n    ^\nLamp.java:10: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n3 errors"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "acc": {
+       "accept": [
+        "public"
+       ],
+       "solution": "public",
+       "hint": "Interface methods are always public.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "",
+         "shown": "",
+         "why": "Without <code>public</code>, the method has weaker access than the interface's version, which is always public.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Lamp.java LampTester.java Switchable.java",
+          "text": "Lamp.java:5: error: turnOn() in Lamp cannot implement turnOn() in Switchable\n     void turnOn() {\n          ^\n  attempting to assign weaker access privileges; was public\n1 error"
+         }
+        },
+        {
+         "answer": "private",
+         "shown": "private",
+         "why": "A private method can't keep a public promise. Interface methods must be implemented as <code>public</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Lamp.java LampTester.java Switchable.java",
+          "text": "Lamp.java:5: error: turnOn() in Lamp cannot implement turnOn() in Switchable\n    private void turnOn() {\n                 ^\n  attempting to assign weaker access privileges; was public\nLampTester.java:4: error: turnOn() has private access in Lamp\n        desk.turnOn();\n            ^\n2 errors"
+         }
+        }
+       ],
+       "width": 7
+      },
+      "second": {
+       "accept": [
+        "turnOff"
+       ],
+       "solution": "turnOff",
+       "hint": "Which other method does <code>Switchable</code> list?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "turnoff",
+         "shown": "turnoff",
+         "why": "Names are case-sensitive. <code>turnoff</code> doesn't match <code>turnOff</code>, so the promise isn't kept and <code>@Override</code> complains as well.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Lamp.java LampTester.java Switchable.java",
+          "text": "Lamp.java:1: error: Lamp is not abstract and does not override abstract method turnOff() in Switchable\npublic class Lamp implements Switchable {\n       ^\nLamp.java:10: error: method does not override or implement a method from a supertype\n    @Override\n    ^\nLampTester.java:5: error: cannot find symbol\n        desk.turnOff();\n            ^\n  symbol:   method turnOff()\n  location: variable desk of type Lamp\n3 errors"
+         }
+        }
+       ],
+       "width": 7
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java LampTester",
+      "stdout": "Lamp on\nLamp off"
+     },
+     "explain": "Both methods from <code>Switchable</code> are implemented, and both are <code>public</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "iface-contains",
+     "question": "Using COS 225's definition, which of these belongs in an interface?",
+     "choices": [
+      "<code>private int brightness;</code>",
+      "<code>void dim(int amount);</code>",
+      "<code>public Lamp() { }</code>",
+      "<code>void dim(int amount) { brightness = amount; }</code>"
+     ],
+     "answer": 1,
+     "explain": "An interface lists method headers ending in a semicolon. It has no instance fields, no constructors, and (in COS 225's fully abstract style) no method bodies."
+    },
+    {
+     "type": "quiz",
+     "id": "iface-new",
+     "question": "<code>Playable p = new Song(&quot;Low Tide&quot;);</code> Is this allowed?",
+     "choices": [
+      "No, a variable can't have an interface type",
+      "Yes: <code>p</code> can hold any object whose class implements <code>Playable</code>",
+      "Only if <code>Song</code> extends <code>Playable</code>",
+      "Only inside the <code>Playable</code> interface"
+     ],
+     "answer": 1,
+     "explain": "You can't write <code>new Playable()</code>, but you can use <code>Playable</code> as a variable type for any object that implements it. The \"Using an interface as a type\" lesson builds on this."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-describable",
+     "mode": "independent",
+     "title": "One interface, two classes",
+     "goal": "Write an interface <code>Describable</code> with one method, <code>String describe()</code>. Write <code>City</code> (private <code>name</code> and <code>population</code>) and <code>River</code> (private <code>name</code> and <code>lengthKm</code>), both implementing it: a city describes itself as <code>Bangor, population 31000</code> and a river as <code>Penobscot River, 350 km</code>.",
+     "requirements": [],
+     "files": [
+      "Describable.java",
+      "City.java",
+      "River.java",
+      "MapTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckMap.java",
+       "public class CheckMap {\n    public static void main(String[] args) {\n        Describable d = new River(\"Kennebec\", 270);\n        System.out.println(d.describe());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckMap",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "interface\\s+Describable",
+       "message": "Declare <code>Describable</code> as an <code>interface</code>."
+      },
+      {
+       "pattern": "class\\s+City\\b[^{]*implements[^{]*\\bDescribable\\b",
+       "message": "<code>City</code> should implement <code>Describable</code>."
+      },
+      {
+       "pattern": "class\\s+River\\b[^{]*implements[^{]*\\bDescribable\\b",
+       "message": "<code>River</code> should implement <code>Describable</code>."
+      }
+     ],
+     "run": "MapTester",
+     "output": "Bangor, population 31000\nPenobscot River, 350 km",
+     "testsOutput": "Kennebec River, 270 km",
+     "solution": [
+      [
+       "Describable.java",
+       "public interface Describable {\n    String describe();\n}\n"
+      ],
+      [
+       "City.java",
+       "public class City implements Describable {\n    private String name;\n    private int population;\n\n    public City(String name, int population) {\n        this.name = name;\n        this.population = population;\n    }\n\n    @Override\n    public String describe() {\n        return name + \", population \" + population;\n    }\n}\n"
+      ],
+      [
+       "River.java",
+       "public class River implements Describable {\n    private String name;\n    private int lengthKm;\n\n    public River(String name, int lengthKm) {\n        this.name = name;\n        this.lengthKm = lengthKm;\n    }\n\n    @Override\n    public String describe() {\n        return name + \" River, \" + lengthKm + \" km\";\n    }\n}\n"
+      ],
+      [
+       "MapTester.java",
+       "public class MapTester {\n    public static void main(String[] args) {\n        System.out.println(new City(\"Bangor\", 31000).describe());\n        System.out.println(new River(\"Penobscot\", 350).describe());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-balloon",
+     "mode": "independent",
+     "title": "An interface with two methods",
+     "goal": "Write an interface <code>Resizable</code> with <code>void grow(int amount)</code> and <code>void shrink(int amount)</code>. <code>Balloon</code> implements it with a private <code>size</code> that starts at 10; shrinking can't take the size below 1. Add <code>getSize()</code>.",
+     "requirements": [],
+     "files": [
+      "Resizable.java",
+      "Balloon.java",
+      "BalloonTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBalloon.java",
+       "public class CheckBalloon {\n    public static void main(String[] args) {\n        Balloon b = new Balloon();\n        b.shrink(9);\n        System.out.println(b.getSize());\n        Resizable r = b;\n        r.grow(4);\n        System.out.println(b.getSize());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBalloon",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "interface\\s+Resizable",
+       "message": "Declare <code>Resizable</code> as an <code>interface</code>."
+      },
+      {
+       "pattern": "class\\s+Balloon\\b[^{]*implements[^{]*\\bResizable\\b",
+       "message": "<code>Balloon</code> should implement <code>Resizable</code>."
+      }
+     ],
+     "run": "BalloonTester",
+     "output": "15\n1",
+     "testsOutput": "1\n5",
+     "solution": [
+      [
+       "Resizable.java",
+       "public interface Resizable {\n    void grow(int amount);\n\n    void shrink(int amount);\n}\n"
+      ],
+      [
+       "Balloon.java",
+       "public class Balloon implements Resizable {\n    private int size;\n\n    public Balloon() {\n        size = 10;\n    }\n\n    public int getSize() {\n        return size;\n    }\n\n    @Override\n    public void grow(int amount) {\n        size = size + amount;\n    }\n\n    @Override\n    public void shrink(int amount) {\n        size = size - amount;\n        if (size < 1) {\n            size = 1;\n        }\n    }\n}\n"
+      ],
+      [
+       "BalloonTester.java",
+       "public class BalloonTester {\n    public static void main(String[] args) {\n        Balloon b = new Balloon();\n        b.grow(5);\n        System.out.println(b.getSize());\n        b.shrink(100);\n        System.out.println(b.getSize());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-speedlimit",
+     "mode": "independent",
+     "title": "An interface constant",
+     "goal": "Write an interface <code>Speedy</code> with a constant <code>int MAX_SPEED = 100;</code> and a method <code>void accelerate(int amount)</code>. <code>Scooter</code> implements it with a private <code>speed</code> that starts at 0 and never goes above <code>MAX_SPEED</code>. Add <code>getSpeed()</code>.",
+     "requirements": [],
+     "files": [
+      "Speedy.java",
+      "Scooter.java",
+      "ScooterTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckScooter.java",
+       "public class CheckScooter {\n    public static void main(String[] args) {\n        Scooter s = new Scooter();\n        s.accelerate(100);\n        System.out.println(s.getSpeed());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckScooter",
+     "hints": [
+      "A constant in an interface is automatically <code>public static final</code>. Inside <code>Scooter</code> you can use the name <code>MAX_SPEED</code> directly; elsewhere, write <code>Speedy.MAX_SPEED</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "MAX_SPEED\\s*=\\s*100",
+       "message": "Declare the constant <code>int MAX_SPEED = 100;</code> in <code>Speedy</code>."
+      },
+      {
+       "pattern": ">\\s*MAX_SPEED",
+       "message": "Use the constant <code>MAX_SPEED</code> in <code>Scooter</code> instead of typing 100."
+      }
+     ],
+     "run": "ScooterTester",
+     "output": "30\n100\nLimit: 100",
+     "testsOutput": "100",
+     "solution": [
+      [
+       "Speedy.java",
+       "public interface Speedy {\n    int MAX_SPEED = 100;\n\n    void accelerate(int amount);\n}\n"
+      ],
+      [
+       "Scooter.java",
+       "public class Scooter implements Speedy {\n    private int speed;\n\n    public int getSpeed() {\n        return speed;\n    }\n\n    @Override\n    public void accelerate(int amount) {\n        speed = speed + amount;\n        if (speed > MAX_SPEED) {\n            speed = MAX_SPEED;\n        }\n    }\n}\n"
+      ],
+      [
+       "ScooterTester.java",
+       "public class ScooterTester {\n    public static void main(String[] args) {\n        Scooter s = new Scooter();\n        s.accelerate(30);\n        System.out.println(s.getSpeed());\n        s.accelerate(500);\n        System.out.println(s.getSpeed());\n        System.out.println(\"Limit: \" + Speedy.MAX_SPEED);\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Defining an Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/interfaceDef.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Implementing an Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/usinginterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Default Methods",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Chapter 9: Interfaces",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Part 9.2: Interfaces",
+     "url": "https://java-programming.mooc.fi/part-9/2-interface",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "iface-multiple": {
+   "id": "iface-multiple",
+   "section": "interfaces",
+   "title": "extends versus implements",
+   "summary": "A class can extend only one class, but it can implement as many interfaces as it needs, and do both at once.",
+   "goals": [
+    "Explain the difference between <code>extends</code> and <code>implements</code>",
+    "Write a class that implements more than one interface",
+    "Write a class that extends a class and implements interfaces at the same time"
+   ],
+   "cos225": "From the exam guide: \"A Class can only extend one other Class. A Class may implement multiple Interfaces, as long as it implements all of the abstract methods of each.\" Interfaces are \"useful for unifying many behaviors (or multiple methods) under one Class\". Know extends versus implements.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "One parent, many promises"
+    },
+    {
+     "type": "p",
+     "html": "A smart speaker <strong>is a</strong> device, so it extends <code>Device</code> and inherits its name. It can also play music and act as an alarm. Those are two separate abilities, described by two interfaces. List them after <code>implements</code>, separated by commas. <code>extends</code> comes first, then <code>implements</code>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Device.java",
+       "public class Device {\n    private String name;\n\n    public Device(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "MusicPlayer.java",
+       "public interface MusicPlayer {\n    void playMusic(String song);\n}\n"
+      ],
+      [
+       "Alarm.java",
+       "public interface Alarm {\n    void setAlarm(int hour);\n}\n"
+      ],
+      [
+       "SmartSpeaker.java",
+       "public class SmartSpeaker extends Device implements MusicPlayer, Alarm {\n    public SmartSpeaker(String name) {\n        super(name);\n    }\n\n    @Override\n    public void playMusic(String song) {\n        System.out.println(getName() + \" plays \" + song + \".\");\n    }\n\n    @Override\n    public void setAlarm(int hour) {\n        System.out.println(getName() + \" will ring at \" + hour + \":00.\");\n    }\n}\n"
+      ],
+      [
+       "SpeakerTester.java",
+       "public class SpeakerTester {\n    public static void main(String[] args) {\n        SmartSpeaker echo = new SmartSpeaker(\"Kitchen speaker\");\n        echo.playMusic(\"Low Tide\");\n        echo.setAlarm(7);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java SpeakerTester",
+      "stdout": "Kitchen speaker plays Low Tide.\nKitchen speaker will ring at 7:00."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "**<code>extends</code> a class**: inherit its fields, methods and constructor chain. One class only.",
+      "**<code>implements</code> an interface**: promise to provide its methods. You inherit no code, so you write every body yourself. Any number of interfaces.",
+      "A class that implements several interfaces must implement <strong>every</strong> method of <strong>every</strong> one."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Why not extend two classes?"
+    },
+    {
+     "type": "p",
+     "html": "If two parent classes both had a <code>charge()</code> method with different bodies, which one would the child inherit? Java avoids that question by allowing a single superclass. Interfaces have no bodies to clash, so a class can take on as many as it likes. Trying to extend two classes doesn't even parse:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Device.java",
+       "public class Device {\n    private String name;\n\n    public Device(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "Gadget.java",
+       "public class Gadget {\n}\n"
+      ],
+      [
+       "Combo.java",
+       "public class Combo extends Device, Gadget {\n    public Combo() {\n        super(\"Combo\");\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Combo.java Device.java Gadget.java",
+      "text": "Combo.java:1: error: '{' expected\npublic class Combo extends Device, Gadget {\n                                 ^\n1 error"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "After <code>extends Device</code>, Java expects the class body (<code>{</code>) or <code>implements</code>, not a second class."
+    },
+    {
+     "type": "h",
+     "html": "Every method of every interface"
+    },
+    {
+     "type": "error",
+     "id": "imult-missing",
+     "prompt": "This speaker forgot one of its promises.",
+     "files": [
+      [
+       "Device.java",
+       "public class Device {\n    private String name;\n\n    public Device(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "MusicPlayer.java",
+       "public interface MusicPlayer {\n    void playMusic(String song);\n}\n"
+      ],
+      [
+       "Alarm.java",
+       "public interface Alarm {\n    void setAlarm(int hour);\n}\n"
+      ],
+      [
+       "SmartSpeaker.java",
+       "public class SmartSpeaker extends Device implements MusicPlayer, Alarm {\n    public SmartSpeaker(String name) {\n        super(name);\n    }\n\n    @Override\n    public void playMusic(String song) {\n        System.out.println(getName() + \" plays \" + song + \".\");\n    }\n}\n"
+      ],
+      [
+       "SpeakerTester.java",
+       "public class SpeakerTester {\n    public static void main(String[] args) {\n        SmartSpeaker echo = new SmartSpeaker(\"Kitchen speaker\");\n        echo.playMusic(\"Low Tide\");\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Alarm.java Device.java MusicPlayer.java SmartSpeaker.java SpeakerTester.java",
+      "text": "SmartSpeaker.java:1: error: SmartSpeaker is not abstract and does not override abstract method setAlarm(int) in Alarm\npublic class SmartSpeaker extends Device implements MusicPlayer, Alarm {\n       ^\n1 error"
+     },
+     "question": "What's missing?",
+     "choices": [
+      "A second <code>extends</code>",
+      "The <code>setAlarm(int)</code> method from <code>Alarm</code>",
+      "A constructor in <code>Alarm</code>",
+      "<code>playMusic</code> must be <code>static</code>"
+     ],
+     "answer": 1,
+     "explain": "The message names both the method and the interface it comes from: <code>setAlarm(int)</code> in <code>Alarm</code>.",
+     "fixedFiles": [
+      [
+       "Device.java",
+       "public class Device {\n    private String name;\n\n    public Device(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "MusicPlayer.java",
+       "public interface MusicPlayer {\n    void playMusic(String song);\n}\n"
+      ],
+      [
+       "Alarm.java",
+       "public interface Alarm {\n    void setAlarm(int hour);\n}\n"
+      ],
+      [
+       "SmartSpeaker.java",
+       "public class SmartSpeaker extends Device implements MusicPlayer, Alarm {\n    public SmartSpeaker(String name) {\n        super(name);\n    }\n\n    @Override\n    public void playMusic(String song) {\n        System.out.println(getName() + \" plays \" + song + \".\");\n    }\n\n    @Override\n    public void setAlarm(int hour) {\n        System.out.println(getName() + \" will ring at \" + hour + \":00.\");\n    }\n}\n"
+      ],
+      [
+       "SpeakerTester.java",
+       "public class SpeakerTester {\n    public static void main(String[] args) {\n        SmartSpeaker echo = new SmartSpeaker(\"Kitchen speaker\");\n        echo.playMusic(\"Low Tide\");\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java SpeakerTester",
+      "stdout": "Kitchen speaker plays Low Tide."
+     }
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "imult-phone",
+     "title": "Extend one, implement two",
+     "prompt": "<code>Phone</code> is a <code>Device</code> that can also play music and set alarms.",
+     "files": [
+      [
+       "Device.java",
+       "public class Device {\n    private String name;\n\n    public Device(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "MusicPlayer.java",
+       "public interface MusicPlayer {\n    void playMusic(String song);\n}\n"
+      ],
+      [
+       "Alarm.java",
+       "public interface Alarm {\n    void setAlarm(int hour);\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone [[ext]] Device [[impl]] MusicPlayer[[sep]]Alarm {\n    public Phone(String name) {\n        super(name);\n    }\n\n    @Override\n    public void playMusic(String song) {\n        System.out.println(getName() + \" streams \" + song + \".\");\n    }\n\n    @Override\n    public void setAlarm(int hour) {\n        System.out.println(getName() + \" alarm set for \" + hour + \":00.\");\n    }\n}\n"
+      ],
+      [
+       "PhoneTester.java",
+       "public class PhoneTester {\n    public static void main(String[] args) {\n        Phone pixel = new Phone(\"Pixel\");\n        pixel.playMusic(\"Northbound\");\n        pixel.setAlarm(6);\n    }\n}\n"
+      ]
+     ],
+     "run": "PhoneTester",
+     "blanks": {
+      "ext": {
+       "accept": [
+        "extends"
+       ],
+       "solution": "extends",
+       "hint": "<code>Device</code> is a class.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "implements",
+         "shown": "implements",
+         "why": "<code>Device</code> is a class, so it's extended. You <code>implement</code> interfaces.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Alarm.java Device.java MusicPlayer.java Phone.java PhoneTester.java",
+          "text": "Phone.java:1: error: '{' expected\npublic class Phone implements Device implements MusicPlayer,Alarm {\n                                    ^\n1 error"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "impl": {
+       "accept": [
+        "implements"
+       ],
+       "solution": "implements",
+       "hint": "<code>MusicPlayer</code> and <code>Alarm</code> are interfaces.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "extends",
+         "shown": "extends",
+         "why": "A class can only <code>extends</code> once, and only a class. Interfaces come after <code>implements</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Alarm.java Device.java MusicPlayer.java Phone.java PhoneTester.java",
+          "text": "Phone.java:1: error: '{' expected\npublic class Phone extends Device extends MusicPlayer,Alarm {\n                                 ^\n1 error"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "sep": {
+       "accept": [
+        ","
+       ],
+       "solution": ",",
+       "hint": "How are several interfaces separated?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "and",
+         "shown": "and",
+         "why": "Java separates the interfaces with a comma: <code>implements MusicPlayer, Alarm</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Alarm.java Device.java MusicPlayer.java Phone.java PhoneTester.java",
+          "text": "Phone.java:1: error: cannot find symbol\npublic class Phone extends Device implements MusicPlayerandAlarm {\n                                             ^\n  symbol: class MusicPlayerandAlarm\nPhone.java:6: error: method does not override or implement a method from a supertype\n    @Override\n    ^\nPhone.java:11: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n3 errors"
+         }
+        },
+        {
+         "answer": "&",
+         "shown": "&",
+         "why": "Java separates the interfaces with a comma: <code>implements MusicPlayer, Alarm</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Alarm.java Device.java MusicPlayer.java Phone.java PhoneTester.java",
+          "text": "Phone.java:1: error: '{' expected\npublic class Phone extends Device implements MusicPlayer&Alarm {\n                                                        ^\n1 error"
+         }
+        }
+       ],
+       "width": 3
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java PhoneTester",
+      "stdout": "Pixel streams Northbound.\nPixel alarm set for 6:00."
+     },
+     "explain": "<code>extends</code> comes first (one class), then <code>implements</code> with a comma-separated list of interfaces."
+    },
+    {
+     "type": "quiz",
+     "id": "imult-which",
+     "question": "Which class header is valid?",
+     "choices": [
+      "<code>class A extends B, C</code>",
+      "<code>class A implements X, Y, Z</code>",
+      "<code>class A implements X extends B</code>",
+      "<code>class A extends X implements B, C</code> where <code>X</code> is an interface"
+     ],
+     "answer": 1,
+     "explain": "Any number of interfaces can follow <code>implements</code>. A class extends at most one class, <code>extends</code> must come before <code>implements</code>, and you can't <code>extends</code> an interface from a class."
+    },
+    {
+     "type": "quiz",
+     "id": "imult-inherit",
+     "question": "What does a class get from an interface it implements (in COS 225's fully abstract style)?",
+     "choices": [
+      "The method bodies, ready to use",
+      "Fields to store data in",
+      "A list of methods it must write itself",
+      "A constructor"
+     ],
+     "answer": 2,
+     "explain": "With <code>extends</code> you inherit working code. With <code>implements</code> you take on a list of method headers and provide every body yourself."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-duck",
+     "mode": "independent",
+     "title": "Extend one, implement two",
+     "goal": "Write a class <code>Bird</code> (private <code>name</code>, <code>getName()</code>), and interfaces <code>Swimmer</code> (<code>void swim()</code>) and <code>Flyer</code> (<code>void fly()</code>). Write <code>Duck extends Bird implements Swimmer, Flyer</code>: it prints <code>&lt;name&gt; paddles.</code> and <code>&lt;name&gt; flies south.</code>",
+     "requirements": [],
+     "files": [
+      "Bird.java",
+      "Swimmer.java",
+      "Flyer.java",
+      "Duck.java",
+      "PondTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDuck.java",
+       "public class CheckDuck {\n    public static void main(String[] args) {\n        Swimmer s = new Duck(\"Quack\");\n        s.swim();\n        Flyer f = new Duck(\"Mallard\");\n        f.fly();\n        Bird b = new Duck(\"Teal\");\n        System.out.println(b.getName());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDuck",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "class\\s+Duck\\s+extends\\s+Bird\\s+implements",
+       "message": "Write <code>class Duck extends Bird implements Swimmer, Flyer</code>."
+      }
+     ],
+     "run": "PondTester",
+     "output": "Daisy paddles.\nDaisy flies south.",
+     "testsOutput": "Quack paddles.\nMallard flies south.\nTeal",
+     "solution": [
+      [
+       "Bird.java",
+       "public class Bird {\n    private String name;\n\n    public Bird(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "Swimmer.java",
+       "public interface Swimmer {\n    void swim();\n}\n"
+      ],
+      [
+       "Flyer.java",
+       "public interface Flyer {\n    void fly();\n}\n"
+      ],
+      [
+       "Duck.java",
+       "public class Duck extends Bird implements Swimmer, Flyer {\n    public Duck(String name) {\n        super(name);\n    }\n\n    @Override\n    public void swim() {\n        System.out.println(getName() + \" paddles.\");\n    }\n\n    @Override\n    public void fly() {\n        System.out.println(getName() + \" flies south.\");\n    }\n}\n"
+      ],
+      [
+       "PondTester.java",
+       "public class PondTester {\n    public static void main(String[] args) {\n        Duck daisy = new Duck(\"Daisy\");\n        daisy.swim();\n        daisy.fly();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-robot",
+     "mode": "independent",
+     "title": "Two interfaces, no superclass",
+     "goal": "Write interfaces <code>Walker</code> (<code>void walk(int steps)</code>) and <code>Talker</code> (<code>void say(String words)</code>), and a <code>Robot</code> with a private <code>model</code> that implements both: it prints <code>&lt;model&gt; walks &lt;steps&gt; steps.</code> and <code>&lt;model&gt; says: &lt;words&gt;</code>.",
+     "requirements": [],
+     "files": [
+      "Walker.java",
+      "Talker.java",
+      "Robot.java",
+      "RobotTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckRobot.java",
+       "public class CheckRobot {\n    public static void main(String[] args) {\n        Talker t = new Robot(\"Tin\");\n        t.say(\"Beep\");\n        Walker w = new Robot(\"Bolt\");\n        w.walk(1);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRobot",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "class\\s+Robot\\b[^{]*implements[^{]*\\bWalker\\b",
+       "message": "<code>Robot</code> should implement <code>Walker</code>."
+      },
+      {
+       "pattern": "class\\s+Robot\\b[^{]*implements[^{]*\\bTalker\\b",
+       "message": "<code>Robot</code> should implement <code>Talker</code>."
+      }
+     ],
+     "run": "RobotTester",
+     "output": "RX-7 walks 3 steps.\nRX-7 says: Hello",
+     "testsOutput": "Tin says: Beep\nBolt walks 1 steps.",
+     "solution": [
+      [
+       "Walker.java",
+       "public interface Walker {\n    void walk(int steps);\n}\n"
+      ],
+      [
+       "Talker.java",
+       "public interface Talker {\n    void say(String words);\n}\n"
+      ],
+      [
+       "Robot.java",
+       "public class Robot implements Walker, Talker {\n    private String model;\n\n    public Robot(String model) {\n        this.model = model;\n    }\n\n    @Override\n    public void walk(int steps) {\n        System.out.println(model + \" walks \" + steps + \" steps.\");\n    }\n\n    @Override\n    public void say(String words) {\n        System.out.println(model + \" says: \" + words);\n    }\n}\n"
+      ],
+      [
+       "RobotTester.java",
+       "public class RobotTester {\n    public static void main(String[] args) {\n        Robot r = new Robot(\"RX-7\");\n        r.walk(3);\n        r.say(\"Hello\");\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-fix-printer",
+     "mode": "independent",
+     "title": "Fix the broken promise",
+     "goal": "<code>OfficeMachine</code> promises to be both a <code>Printer</code> and a <code>Scanner2</code>, but it doesn't compile. Read the messages, fix the class (don't change the interfaces), and make the tester's output match.",
+     "requirements": [
+      "Change only <code>OfficeMachine.java</code>"
+     ],
+     "files": [
+      "Printer.java",
+      "Scanner2.java",
+      "OfficeMachine.java",
+      "OfficeTester.java"
+     ],
+     "starter": [
+      [
+       "Printer.java",
+       "public interface Printer {\n    void print(String doc);\n}\n"
+      ],
+      [
+       "Scanner2.java",
+       "public interface Scanner2 {\n    String scan();\n}\n"
+      ],
+      [
+       "OfficeMachine.java",
+       "public class OfficeMachine implements Printer, Scanner2 {\n    @Override\n    void print(String doc) {\n        System.out.println(\"Printing \" + doc);\n    }\n\n    @Override\n    public void scan() {\n        System.out.println(\"scanned page\");\n    }\n}\n"
+      ],
+      [
+       "OfficeTester.java",
+       "public class OfficeTester {\n    public static void main(String[] args) {\n        OfficeMachine m = new OfficeMachine();\n        m.print(\"report.pdf\");\n        System.out.println(m.scan());\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "There are two problems: one method isn't <code>public</code>, and the other returns the wrong type for what <code>Scanner2</code> promises."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac OfficeMachine.java OfficeTester.java Printer.java Scanner2.java",
+      "text": "OfficeMachine.java:1: error: OfficeMachine is not abstract and does not override abstract method scan() in Scanner2\npublic class OfficeMachine implements Printer, Scanner2 {\n       ^\nOfficeMachine.java:3: error: print(String) in OfficeMachine cannot implement print(String) in Printer\n    void print(String doc) {\n         ^\n  attempting to assign weaker access privileges; was public\nOfficeMachine.java:8: error: scan() in OfficeMachine cannot implement scan() in Scanner2\n    public void scan() {\n                ^\n  return type void is not compatible with String\nOfficeMachine.java:7: error: method does not override or implement a method from a supertype\n    @Override\n    ^\nOfficeTester.java:5: error: 'void' type not allowed here\n        System.out.println(m.scan());\n                                 ^\n5 errors"
+     },
+     "run": "OfficeTester",
+     "output": "Printing report.pdf\nscanned page",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Printer.java",
+       "public interface Printer {\n    void print(String doc);\n}\n"
+      ],
+      [
+       "Scanner2.java",
+       "public interface Scanner2 {\n    String scan();\n}\n"
+      ],
+      [
+       "OfficeMachine.java",
+       "public class OfficeMachine implements Printer, Scanner2 {\n    @Override\n    public void print(String doc) {\n        System.out.println(\"Printing \" + doc);\n    }\n\n    @Override\n    public String scan() {\n        return \"scanned page\";\n    }\n}\n"
+      ],
+      [
+       "OfficeTester.java",
+       "public class OfficeTester {\n    public static void main(String[] args) {\n        OfficeMachine m = new OfficeMachine();\n        m.print(\"report.pdf\");\n        System.out.println(m.scan());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Implementing an Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/usinginterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Inheritance",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Chapter 9: Interfaces",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Part 9.2: Interfaces",
+     "url": "https://java-programming.mooc.fi/part-9/2-interface",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "iface-type": {
+   "id": "iface-type",
+   "section": "interfaces",
+   "title": "Interfaces as types, and Object",
+   "summary": "An interface can be used as a variable, array or parameter type, holding objects of unrelated classes that share one ability.",
+   "goals": [
+    "Store objects of different classes in a variable or array of an interface type",
+    "Write a method whose parameter is an interface type",
+    "Compare interface types with class types and with <code>Object</code>"
+   ],
+   "cos225": "This unit is called \"Interfaces vs Objects\". The comparison at the end of this lesson sets an interface type, a class type and <code>Object</code> side by side: what each can hold, and what you can call through it.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Unrelated classes, one ability"
+    },
+    {
+     "type": "p",
+     "html": "A phone and an electric car have nothing in common as classes. Neither is a kind of the other, and they share no parent. But both can be charged. Because both implement <code>Chargeable</code>, one array of type <code>Chargeable[]</code> can hold both, and one method can charge them all."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Chargeable.java",
+       "public interface Chargeable {\n    void charge(int minutes);\n\n    int batteryPercent();\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone implements Chargeable {\n    private int battery;\n\n    public Phone(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n\n    public void call(String who) {\n        System.out.println(\"Calling \" + who);\n    }\n}\n"
+      ],
+      [
+       "ElectricCar.java",
+       "public class ElectricCar implements Chargeable {\n    private int battery;\n\n    public ElectricCar(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes / 3);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n}\n"
+      ],
+      [
+       "ChargingStation.java",
+       "public class ChargingStation {\n    public static void chargeAll(Chargeable[] items, int minutes) {\n        for (Chargeable c : items) {\n            c.charge(minutes);\n        }\n    }\n\n    public static void main(String[] args) {\n        Chargeable[] plugged = {new Phone(40), new ElectricCar(10), new Phone(95)};\n        chargeAll(plugged, 30);\n        for (Chargeable c : plugged) {\n            System.out.println(c.batteryPercent() + \"%\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ChargingStation",
+      "stdout": "70%\n20%\n100%"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>Chargeable[] plugged</code> holds two phones and a car. Each <code>charge</code> call runs the object's own version: the phone gains 1% per minute, the car 1% every 3 minutes.",
+      "<code>chargeAll(Chargeable[] items, int minutes)</code> works for any class that implements <code>Chargeable</code>, including ones written later.",
+      "<code>Math.min(100, ...)</code> keeps the battery from going over 100. It returns the smaller of its two numbers."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "This is polymorphism again, but without inheritance: the interface is the shared type."
+    },
+    {
+     "type": "h",
+     "html": "The type decides what you can call"
+    },
+    {
+     "type": "p",
+     "html": "Just like with superclass variables, a <code>Chargeable</code> variable only offers the interface's methods. A phone in a <code>Chargeable</code> variable can't make calls until you check and cast:"
+    },
+    {
+     "type": "error",
+     "id": "itype-call",
+     "prompt": "The variable's type is the interface.",
+     "files": [
+      [
+       "Chargeable.java",
+       "public interface Chargeable {\n    void charge(int minutes);\n\n    int batteryPercent();\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone implements Chargeable {\n    private int battery;\n\n    public Phone(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n\n    public void call(String who) {\n        System.out.println(\"Calling \" + who);\n    }\n}\n"
+      ],
+      [
+       "CallTester.java",
+       "public class CallTester {\n    public static void main(String[] args) {\n        Chargeable c = new Phone(50);\n        c.call(\"Ana\");\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac CallTester.java Chargeable.java Phone.java",
+      "text": "CallTester.java:4: error: cannot find symbol\n        c.call(\"Ana\");\n         ^\n  symbol:   method call(String)\n  location: variable c of type Chargeable\n1 error"
+     },
+     "question": "Which change makes the call work while keeping the <code>Chargeable</code> variable?",
+     "choices": [
+      "Add <code>call</code> to every class",
+      "Check <code>c instanceof Phone</code>, then cast: <code>((Phone) c).call(&quot;Ana&quot;)</code>",
+      "Change <code>Chargeable</code> to <code>Object</code>",
+      "Make <code>call</code> static"
+     ],
+     "answer": 1,
+     "explain": "<code>Chargeable</code> only promises <code>charge</code> and <code>batteryPercent</code>. To use a phone-only method, confirm it's a <code>Phone</code> and cast. <code>Object</code> would be worse: it promises even less.",
+     "fixedFiles": [
+      [
+       "Chargeable.java",
+       "public interface Chargeable {\n    void charge(int minutes);\n\n    int batteryPercent();\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone implements Chargeable {\n    private int battery;\n\n    public Phone(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n\n    public void call(String who) {\n        System.out.println(\"Calling \" + who);\n    }\n}\n"
+      ],
+      [
+       "CallTester.java",
+       "public class CallTester {\n    public static void main(String[] args) {\n        Chargeable c = new Phone(50);\n        if (c instanceof Phone) {\n            ((Phone) c).call(\"Ana\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java CallTester",
+      "stdout": "Calling Ana"
+     }
+    },
+    {
+     "type": "h",
+     "html": "Interface type, class type, Object"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>A class type</strong> (<code>Phone p</code>) holds a <code>Phone</code> or any subclass of it. You can call every public method of <code>Phone</code>.",
+      "<strong>An interface type</strong> (<code>Chargeable c</code>) holds an object of <strong>any</strong> class that implements <code>Chargeable</code>, related or not. You can call only <code>Chargeable</code>'s methods.",
+      "**<code>Object o</code>** holds absolutely anything, because every class extends <code>Object</code>. You can call only <code>Object</code>'s methods, such as <code>toString()</code> and <code>equals()</code>.",
+      "You can create objects of classes (<code>new Phone(50)</code>), but never of an interface. An interface describes objects; it isn't one."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "<code>instanceof</code> works with interfaces too: <code>x instanceof Chargeable</code> asks whether the object's class implements it."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "predict",
+     "id": "itype-predict",
+     "prompt": "What does this print?",
+     "files": [
+      [
+       "Chargeable.java",
+       "public interface Chargeable {\n    void charge(int minutes);\n\n    int batteryPercent();\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone implements Chargeable {\n    private int battery;\n\n    public Phone(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n\n    public void call(String who) {\n        System.out.println(\"Calling \" + who);\n    }\n}\n"
+      ],
+      [
+       "ElectricCar.java",
+       "public class ElectricCar implements Chargeable {\n    private int battery;\n\n    public ElectricCar(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes / 3);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n}\n"
+      ],
+      [
+       "Sort.java",
+       "public class Sort {\n    public static void main(String[] args) {\n        Object[] things = {new Phone(20), \"a cable\", new ElectricCar(50), 42};\n        int chargeable = 0;\n        for (Object o : things) {\n            if (o instanceof Chargeable) {\n                chargeable++;\n            }\n        }\n        System.out.println(chargeable + \" of \" + things.length);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "4 of 4",
+      "2 of 4",
+      "1 of 4",
+      "0 of 4"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java Sort",
+      "stdout": "2 of 4"
+     },
+     "explain": "An <code>Object[]</code> can hold anything: a phone, a <code>String</code>, a car, even the number 42 (Java wraps it in an <code>Integer</code> object). Only the phone and the car implement <code>Chargeable</code>."
+    },
+    {
+     "type": "blanks",
+     "id": "itype-param",
+     "title": "A method for any Chargeable",
+     "prompt": "Write the parameter type so <code>lowest</code> works for phones, cars, or a mix.",
+     "files": [
+      [
+       "Chargeable.java",
+       "public interface Chargeable {\n    void charge(int minutes);\n\n    int batteryPercent();\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone implements Chargeable {\n    private int battery;\n\n    public Phone(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n\n    public void call(String who) {\n        System.out.println(\"Calling \" + who);\n    }\n}\n"
+      ],
+      [
+       "ElectricCar.java",
+       "public class ElectricCar implements Chargeable {\n    private int battery;\n\n    public ElectricCar(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes / 3);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n}\n"
+      ],
+      [
+       "Lowest.java",
+       "public class Lowest {\n    public static int lowest([[ptype]] items) {\n        int min = 100;\n        for (Chargeable c : items) {\n            if (c.[[call]] < min) {\n                min = c.batteryPercent();\n            }\n        }\n        return min;\n    }\n\n    public static void main(String[] args) {\n        Chargeable[] mix = {new Phone(64), new ElectricCar(31), new Phone(88)};\n        System.out.println(\"Lowest battery: \" + lowest(mix) + \"%\");\n    }\n}\n"
+      ]
+     ],
+     "run": "Lowest",
+     "blanks": {
+      "ptype": {
+       "accept": [
+        "Chargeable[]"
+       ],
+       "solution": "Chargeable[]",
+       "hint": "An array of the interface type.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "Phone[]",
+         "shown": "Phone[]",
+         "why": "A <code>Phone[]</code> can't hold an <code>ElectricCar</code>, and <code>mix</code> is a <code>Chargeable[]</code>, so the call doesn't compile.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Chargeable.java ElectricCar.java Lowest.java Phone.java",
+          "text": "Lowest.java:14: error: incompatible types: Chargeable[] cannot be converted to Phone[]\n        System.out.println(\"Lowest battery: \" + lowest(mix) + \"%\");\n                                                       ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n1 error"
+         }
+        },
+        {
+         "answer": "Chargeable",
+         "shown": "Chargeable",
+         "why": "That's a single object, but the loop needs an array to go through.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Chargeable.java ElectricCar.java Lowest.java Phone.java",
+          "text": "Lowest.java:4: error: for-each not applicable to expression type\n        for (Chargeable c : items) {\n                            ^\n  required: array or java.lang.Iterable\n  found:    Chargeable\nLowest.java:14: error: incompatible types: Chargeable[] cannot be converted to Chargeable\n        System.out.println(\"Lowest battery: \" + lowest(mix) + \"%\");\n                                                       ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n2 errors"
+         }
+        }
+       ],
+       "width": 12
+      },
+      "call": {
+       "accept": [
+        "batteryPercent()"
+       ],
+       "solution": "batteryPercent()",
+       "hint": "Which <code>Chargeable</code> method reports the charge?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "battery",
+         "shown": "battery",
+         "why": "<code>battery</code> is a private field inside each class, and <code>Chargeable</code> has no fields. Use the interface's method, <code>batteryPercent()</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Chargeable.java ElectricCar.java Lowest.java Phone.java",
+          "text": "Lowest.java:5: error: cannot find symbol\n            if (c.battery < min) {\n                 ^\n  symbol:   variable battery\n  location: variable c of type Chargeable\n1 error"
+         }
+        }
+       ],
+       "width": 16
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java Lowest",
+      "stdout": "Lowest battery: 31%"
+     },
+     "explain": "Because the parameter is the interface type, <code>lowest</code> works for any class that implements <code>Chargeable</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "itype-object",
+     "question": "<code>Object o = new Phone(50);</code> Which call compiles?",
+     "choices": [
+      "<code>o.charge(10);</code>",
+      "<code>o.call(&quot;Ana&quot;);</code>",
+      "<code>o.toString();</code>",
+      "<code>o.batteryPercent();</code>"
+     ],
+     "answer": 2,
+     "explain": "Through an <code>Object</code> variable you can only call <code>Object</code>'s methods, and <code>toString()</code> is one of them. (At run time, <code>Phone</code>'s own <code>toString</code> would run if it had one.)"
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-priced",
+     "mode": "independent",
+     "title": "A method for anything with a price",
+     "goal": "Write an interface <code>Priced</code> (<code>double price()</code>), and two unrelated classes that implement it: <code>Ticket</code> (always 12.5) and <code>Snack</code> (private <code>price</code> set by the constructor). Write <code>Till</code> with <code>public static double total(Priced[] items)</code>.",
+     "requirements": [],
+     "files": [
+      "Priced.java",
+      "Ticket.java",
+      "Snack.java",
+      "Till.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckTill.java",
+       "public class CheckTill {\n    public static void main(String[] args) {\n        Priced[] none = {};\n        System.out.println(Till.total(none));\n        Priced[] one = {new Snack(2.25)};\n        System.out.println(Till.total(one));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckTill",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "total\\s*\\(\\s*Priced\\s*\\[\\s*\\]\\s*\\w+\\s*\\)",
+       "message": "Give <code>total</code> a parameter of type <code>Priced[]</code>."
+      }
+     ],
+     "run": "Till",
+     "output": "Total: $32.5",
+     "testsOutput": "0.0\n2.25",
+     "solution": [
+      [
+       "Priced.java",
+       "public interface Priced {\n    double price();\n}\n"
+      ],
+      [
+       "Ticket.java",
+       "public class Ticket implements Priced {\n    @Override\n    public double price() {\n        return 12.5;\n    }\n}\n"
+      ],
+      [
+       "Snack.java",
+       "public class Snack implements Priced {\n    private double price;\n\n    public Snack(double price) {\n        this.price = price;\n    }\n\n    @Override\n    public double price() {\n        return price;\n    }\n}\n"
+      ],
+      [
+       "Till.java",
+       "public class Till {\n    public static double total(Priced[] items) {\n        double sum = 0;\n        for (Priced p : items) {\n            sum = sum + p.price();\n        }\n        return sum;\n    }\n\n    public static void main(String[] args) {\n        Priced[] order = {new Ticket(), new Snack(4.0), new Ticket(), new Snack(3.5)};\n        System.out.println(\"Total: $\" + total(order));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-count-chargeable",
+     "mode": "independent",
+     "title": "Which objects have the ability?",
+     "goal": "Using the <code>Chargeable</code> interface (given), write <code>Phone</code> and <code>Watch</code> that implement it (battery starts at the value given, <code>charge</code> adds the minutes but never past 100), and <code>Kettle</code>, which doesn't. In <code>Gadgets</code>, loop over an <code>Object[]</code> holding a phone, a kettle and a watch, and count how many are <code>Chargeable</code>.",
+     "requirements": [],
+     "files": [
+      "Chargeable.java",
+      "Phone.java",
+      "Watch.java",
+      "Kettle.java",
+      "Gadgets.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckGadgets.java",
+       "public class CheckGadgets {\n    public static void main(String[] args) {\n        Chargeable w = new Watch(95);\n        w.charge(20);\n        System.out.println(w.batteryPercent());\n        Object k = new Kettle();\n        System.out.println(k instanceof Chargeable);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckGadgets",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "instanceof\\s+Chargeable",
+       "message": "Count with <code>instanceof Chargeable</code>."
+      }
+     ],
+     "run": "Gadgets",
+     "output": "2 chargeable",
+     "testsOutput": "100\nfalse",
+     "solution": [
+      [
+       "Chargeable.java",
+       "public interface Chargeable {\n    void charge(int minutes);\n\n    int batteryPercent();\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone implements Chargeable {\n    private int battery;\n\n    public Phone(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n}\n"
+      ],
+      [
+       "Watch.java",
+       "public class Watch implements Chargeable {\n    private int battery;\n\n    public Watch(int battery) {\n        this.battery = battery;\n    }\n\n    @Override\n    public void charge(int minutes) {\n        battery = Math.min(100, battery + minutes);\n    }\n\n    @Override\n    public int batteryPercent() {\n        return battery;\n    }\n}\n"
+      ],
+      [
+       "Kettle.java",
+       "public class Kettle {\n    public void boil() {\n        System.out.println(\"Boiling\");\n    }\n}\n"
+      ],
+      [
+       "Gadgets.java",
+       "public class Gadgets {\n    public static void main(String[] args) {\n        Object[] things = {new Phone(40), new Kettle(), new Watch(90)};\n        int count = 0;\n        for (Object o : things) {\n            if (o instanceof Chargeable) {\n                count++;\n            }\n        }\n        System.out.println(count + \" chargeable\");\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-object-vs-iface",
+     "mode": "independent",
+     "title": "Interface type versus Object",
+     "goal": "Write an interface <code>Named</code> (<code>String name()</code>) and a class <code>Team</code> that implements it. In <code>Labels</code>, write two static methods: <code>label(Named n)</code> returns <code>Name: </code> plus the name, and <code>show(Object o)</code> returns <code>Object: </code> plus <code>o.toString()</code>. <code>Team</code>'s <code>toString</code> returns <code>Team &lt;name&gt;</code>.",
+     "requirements": [],
+     "files": [
+      "Named.java",
+      "Team.java",
+      "Labels.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckLabels.java",
+       "public class CheckLabels {\n    public static void main(String[] args) {\n        Named n = new Team(\"Owls\");\n        System.out.println(Labels.label(n));\n        System.out.println(Labels.show(n));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckLabels",
+     "hints": [
+      "<code>show</code> accepts anything, even a <code>String</code>, but can only call <code>Object</code> methods like <code>toString()</code>. <code>label</code> accepts only <code>Named</code> things, but can call <code>name()</code>."
+     ],
+     "checks": [],
+     "run": "Labels",
+     "output": "Name: Black Bears\nObject: Team Black Bears\nObject: just text",
+     "testsOutput": "Name: Owls\nObject: Team Owls",
+     "solution": [
+      [
+       "Named.java",
+       "public interface Named {\n    String name();\n}\n"
+      ],
+      [
+       "Team.java",
+       "public class Team implements Named {\n    private String name;\n\n    public Team(String name) {\n        this.name = name;\n    }\n\n    @Override\n    public String name() {\n        return name;\n    }\n\n    @Override\n    public String toString() {\n        return \"Team \" + name;\n    }\n}\n"
+      ],
+      [
+       "Labels.java",
+       "public class Labels {\n    public static String label(Named n) {\n        return \"Name: \" + n.name();\n    }\n\n    public static String show(Object o) {\n        return \"Object: \" + o.toString();\n    }\n\n    public static void main(String[] args) {\n        Team bears = new Team(\"Black Bears\");\n        System.out.println(label(bears));\n        System.out.println(show(bears));\n        System.out.println(show(\"just text\"));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Using an Interface as a Type",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/interfaceAsType.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Polymorphism",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Object as a Superclass",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/objectclass.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "15.20.2 The instanceof Operator",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.20.2",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Part 9.2: Interfaces",
+     "url": "https://java-programming.mooc.fi/part-9/2-interface",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "iface-comparable": {
+   "id": "iface-comparable",
+   "section": "interfaces",
+   "title": "The Comparable interface",
+   "summary": "Java's own <code>Comparable</code> interface lets your objects say which comes first, so the library can sort them for you.",
+   "goals": [
+    "Implement <code>Comparable&lt;T&gt;</code> and its <code>compareTo</code> method",
+    "Read what a negative, zero or positive result means",
+    "Sort an array of your own objects with <code>Arrays.sort</code>"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "An interface Java already uses"
+    },
+    {
+     "type": "p",
+     "html": "Java's library is full of interfaces. One of the most useful is <code>Comparable</code>, which has a single method, <code>compareTo</code>. If your class implements it, Java's sorting methods know how to put your objects in order."
+    },
+    {
+     "type": "p",
+     "html": "<code>a.compareTo(b)</code> returns a <strong>negative</strong> number if <code>a</code> comes before <code>b</code>, <strong>zero</strong> if they're equal in order, and a <strong>positive</strong> number if <code>a</code> comes after <code>b</code>. Only the sign matters, not the size of the number."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Song.java",
+       "public class Song implements Comparable<Song> {\n    private String title;\n    private int seconds;\n\n    public Song(String title, int seconds) {\n        this.title = title;\n        this.seconds = seconds;\n    }\n\n    @Override\n    public int compareTo(Song other) {\n        return Integer.compare(seconds, other.seconds);\n    }\n\n    @Override\n    public String toString() {\n        return title + \" (\" + seconds + \"s)\";\n    }\n}\n"
+      ],
+      [
+       "SortSongs.java",
+       "import java.util.Arrays;\n\npublic class SortSongs {\n    public static void main(String[] args) {\n        Song[] songs = {\n            new Song(\"Northbound\", 240),\n            new Song(\"Low Tide\", 187),\n            new Song(\"Blue Hour\", 214)\n        };\n        Arrays.sort(songs);\n        for (Song s : songs) {\n            System.out.println(s);\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java SortSongs",
+      "stdout": "Low Tide (187s)\nBlue Hour (214s)\nNorthbound (240s)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>Comparable&lt;Song&gt;</code> means \"comparable with other <code>Song</code>s\". The type in angle brackets is a <strong>type parameter</strong>; you'll write your own in the generics lesson of unit 12. It makes <code>compareTo</code> take a <code>Song</code> instead of an <code>Object</code>.",
+      "<code>Integer.compare(x, y)</code> returns the right sign for two <code>int</code>s. It's the safe way to compare numbers inside <code>compareTo</code>.",
+      "<code>Arrays.sort</code> comes from <code>java.util.Arrays</code>, so the file starts with <code>import java.util.Arrays;</code>. It calls your <code>compareTo</code> to decide the order.",
+      "<code>compareTo</code> can read <code>other.seconds</code> directly, even though it's private: private means \"inside this class\", and <code>other</code> is the same class."
+     ]
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Song.java",
+       "public class Song implements Comparable<Song> {\n    private String title;\n    private int seconds;\n\n    public Song(String title, int seconds) {\n        this.title = title;\n        this.seconds = seconds;\n    }\n\n    @Override\n    public int compareTo(Song other) {\n        return Integer.compare(seconds, other.seconds);\n    }\n\n    @Override\n    public String toString() {\n        return title + \" (\" + seconds + \"s)\";\n    }\n}\n"
+      ],
+      [
+       "CompareDemo.java",
+       "public class CompareDemo {\n    public static void main(String[] args) {\n        Song a = new Song(\"Low Tide\", 187);\n        Song b = new Song(\"Blue Hour\", 214);\n        System.out.println(a.compareTo(b) < 0);\n        System.out.println(b.compareTo(a) > 0);\n        System.out.println(a.compareTo(a) == 0);\n        System.out.println(\"apple\".compareTo(\"banana\") < 0);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java CompareDemo",
+      "stdout": "true\ntrue\ntrue\ntrue"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": "<code>String</code> already implements <code>Comparable</code>, comparing alphabetically (by character codes, so capital letters sort before lowercase).",
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Sorting something that can't be compared"
+    },
+    {
+     "type": "p",
+     "html": "If the class doesn't implement <code>Comparable</code>, the code still compiles, because <code>Arrays.sort</code> accepts any array of objects. But at run time Java has no way to order them, and it crashes:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Song.java",
+       "public class Song {\n    private String title;\n    private int seconds;\n\n    public Song(String title, int seconds) {\n        this.title = title;\n        this.seconds = seconds;\n    }\n\n    @Override\n    public String toString() {\n        return title + \" (\" + seconds + \"s)\";\n    }\n}\n"
+      ],
+      [
+       "SortSongs.java",
+       "import java.util.Arrays;\n\npublic class SortSongs {\n    public static void main(String[] args) {\n        Song[] songs = {\n            new Song(\"Northbound\", 240),\n            new Song(\"Low Tide\", 187),\n            new Song(\"Blue Hour\", 214)\n        };\n        Arrays.sort(songs);\n        for (Song s : songs) {\n            System.out.println(s);\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java SortSongs",
+      "stdout": "",
+      "text": "Exception in thread \"main\" java.lang.ClassCastException: class Song cannot be cast to class java.lang.Comparable (Song is in unnamed module of loader 'app'; java.lang.Comparable is in module java.base of loader 'bootstrap')\n\tat java.base/java.util.ComparableTimSort.countRunAndMakeAscending(ComparableTimSort.java:320)\n\tat java.base/java.util.ComparableTimSort.sort(ComparableTimSort.java:188)\n\tat java.base/java.util.Arrays.sort(Arrays.java:1042)\n\tat SortSongs.main(SortSongs.java:10)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "The <code>ClassCastException</code> says <code>Song</code> can't be treated as a <code>java.lang.Comparable</code>. The <code>at</code> lines run through Java's own sorting code before reaching line 10 of <code>SortSongs</code>, which is the line to look at."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "comp-player",
+     "title": "Highest score first",
+     "prompt": "Players should sort from the <strong>highest</strong> score down. Swap the order of the two numbers to reverse the sort.",
+     "files": [
+      [
+       "Player.java",
+       "public class Player [[impl]] {\n    private String name;\n    private int score;\n\n    public Player(String name, int score) {\n        this.name = name;\n        this.score = score;\n    }\n\n    @Override\n    public int compareTo(Player other) {\n        return Integer.compare([[first]], [[second]]);\n    }\n\n    @Override\n    public String toString() {\n        return name + \": \" + score;\n    }\n}\n"
+      ],
+      [
+       "Leaderboard.java",
+       "import java.util.Arrays;\n\npublic class Leaderboard {\n    public static void main(String[] args) {\n        Player[] players = {new Player(\"Ana\", 120), new Player(\"Sam\", 340), new Player(\"Lee\", 95)};\n        Arrays.sort(players);\n        for (Player p : players) {\n            System.out.println(p);\n        }\n    }\n}\n"
+      ]
+     ],
+     "run": "Leaderboard",
+     "blanks": {
+      "impl": {
+       "accept": [
+        "implements Comparable<Player>"
+       ],
+       "solution": "implements Comparable<Player>",
+       "hint": "Promise to be comparable with other players.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "implements Comparable",
+         "shown": "implements Comparable",
+         "why": "Without <code>&lt;Player&gt;</code>, <code>Comparable</code> expects <code>compareTo(Object)</code>, so your <code>compareTo(Player)</code> doesn't match it. The compiler says the class doesn't override <code>compareTo(Object)</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Leaderboard.java Player.java",
+          "text": "Player.java:1: error: Player is not abstract and does not override abstract method compareTo(Object) in Comparable\npublic class Player implements Comparable {\n       ^\nPlayer.java:10: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n2 errors"
+         }
+        },
+        {
+         "answer": "extends Comparable<Player>",
+         "shown": "extends Comparable<Player>",
+         "why": "<code>Comparable</code> is an interface, so a class <code>implements</code> it.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Leaderboard.java Player.java",
+          "text": "Player.java:1: error: no interface expected here\npublic class Player extends Comparable<Player> {\n                            ^\nPlayer.java:10: error: method does not override or implement a method from a supertype\n    @Override\n    ^\nPlayer.java:15: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n3 errors"
+         }
+        }
+       ],
+       "width": 29
+      },
+      "first": {
+       "accept": [
+        "other.score"
+       ],
+       "solution": "other.score",
+       "hint": "For highest-first, put the other player's score first.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "score",
+         "shown": "score",
+         "why": "With the second blank already <code>score</code>, this compares each player's score with itself. That's always 0, so every player counts as equal and nothing moves. For highest-first, the other player's score goes first.",
+         "result": {
+          "kind": "ok",
+          "command": "java Leaderboard",
+          "stdout": "Ana: 120\nSam: 340\nLee: 95"
+         }
+        }
+       ],
+       "width": 11
+      },
+      "second": {
+       "accept": [
+        "score",
+        "this.score"
+       ],
+       "solution": "score",
+       "hint": "Then this player's score.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "other.score",
+         "shown": "other.score",
+         "why": "Comparing <code>other.score</code> with itself is always 0, so every player counts as equal and the order never changes.",
+         "result": {
+          "kind": "ok",
+          "command": "java Leaderboard",
+          "stdout": "Ana: 120\nSam: 340\nLee: 95"
+         }
+        }
+       ],
+       "width": 11
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java Leaderboard",
+      "stdout": "Sam: 340\nAna: 120\nLee: 95"
+     },
+     "explain": "<code>Integer.compare(other.score, score)</code> is negative when this player has the higher score, so higher scores sort first."
+    },
+    {
+     "type": "quiz",
+     "id": "comp-sign",
+     "question": "<code>x.compareTo(y)</code> returns <code>-3</code>. What does that mean?",
+     "choices": [
+      "<code>x</code> comes 3 places before <code>y</code>",
+      "<code>x</code> comes before <code>y</code>",
+      "<code>x</code> and <code>y</code> are equal",
+      "<code>x</code> comes after <code>y</code>"
+     ],
+     "answer": 1,
+     "explain": "Only the sign matters: negative means <code>x</code> comes first. The number 3 itself carries no meaning."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-sort-books",
+     "mode": "independent",
+     "title": "Sort by a number",
+     "goal": "Write <code>Book implements Comparable&lt;Book&gt;</code> with private <code>title</code> and <code>pages</code>, ordered by page count (fewest first), and a <code>toString</code> like <code>Short Stories (120 pages)</code>. In <code>Shelf</code>, sort three books with <code>Arrays.sort</code> and print them.",
+     "requirements": [],
+     "files": [
+      "Book.java",
+      "Shelf.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBooks.java",
+       "public class CheckBooks {\n    public static void main(String[] args) {\n        Book a = new Book(\"A\", 50);\n        Book b = new Book(\"B\", 60);\n        System.out.println(a.compareTo(b) < 0);\n        System.out.println(b.compareTo(a) > 0);\n        System.out.println(a.compareTo(new Book(\"C\", 50)) == 0);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBooks",
+     "hints": [
+      "Start the tester file with <code>import java.util.Arrays;</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "class\\s+Book\\b[^{]*implements[^{]*\\bComparable\\b",
+       "message": "<code>Book</code> should implement <code>Comparable</code>."
+      }
+     ],
+     "run": "Shelf",
+     "output": "Short Stories (120 pages)\nNight Trains (310 pages)\nThe Long Road (540 pages)",
+     "testsOutput": "true\ntrue\ntrue",
+     "solution": [
+      [
+       "Book.java",
+       "public class Book implements Comparable<Book> {\n    private String title;\n    private int pages;\n\n    public Book(String title, int pages) {\n        this.title = title;\n        this.pages = pages;\n    }\n\n    @Override\n    public int compareTo(Book other) {\n        return Integer.compare(pages, other.pages);\n    }\n\n    @Override\n    public String toString() {\n        return title + \" (\" + pages + \" pages)\";\n    }\n}\n"
+      ],
+      [
+       "Shelf.java",
+       "import java.util.Arrays;\n\npublic class Shelf {\n    public static void main(String[] args) {\n        Book[] books = {new Book(\"Night Trains\", 310), new Book(\"Short Stories\", 120), new Book(\"The Long Road\", 540)};\n        Arrays.sort(books);\n        for (Book b : books) {\n            System.out.println(b);\n        }\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-fastest",
+     "mode": "independent",
+     "title": "Find the smallest with compareTo",
+     "goal": "Write <code>Runner implements Comparable&lt;Runner&gt;</code> with private <code>name</code> and <code>double minutes</code>, ordered by time (fastest first; use <code>Double.compare</code>). In <code>Race</code>, find the fastest runner with a loop that uses <code>compareTo</code>, without sorting.",
+     "requirements": [],
+     "files": [
+      "Runner.java",
+      "Race.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckRace.java",
+       "public class CheckRace {\n    public static void main(String[] args) {\n        Runner[] one = {new Runner(\"Solo\", 30.0)};\n        System.out.println(Race.fastest(one));\n        Runner[] tie = {new Runner(\"First\", 20.0), new Runner(\"Second\", 20.0)};\n        System.out.println(Race.fastest(tie));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRace",
+     "hints": [
+      "<code>Double.compare(a, b)</code> is the <code>double</code> version of <code>Integer.compare</code>.",
+      "Replace <code>best</code> only when the runner is strictly faster (<code>&lt; 0</code>), so the first of two tied runners wins."
+     ],
+     "checks": [],
+     "run": "Race",
+     "output": "Fastest: Sam 19.75",
+     "testsOutput": "Solo 30.0\nFirst 20.0",
+     "solution": [
+      [
+       "Runner.java",
+       "public class Runner implements Comparable<Runner> {\n    private String name;\n    private double minutes;\n\n    public Runner(String name, double minutes) {\n        this.name = name;\n        this.minutes = minutes;\n    }\n\n    @Override\n    public int compareTo(Runner other) {\n        return Double.compare(minutes, other.minutes);\n    }\n\n    @Override\n    public String toString() {\n        return name + \" \" + minutes;\n    }\n}\n"
+      ],
+      [
+       "Race.java",
+       "public class Race {\n    public static Runner fastest(Runner[] runners) {\n        Runner best = runners[0];\n        for (Runner r : runners) {\n            if (r.compareTo(best) < 0) {\n                best = r;\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        Runner[] field = {new Runner(\"Ana\", 22.5), new Runner(\"Sam\", 19.75), new Runner(\"Lee\", 24.0)};\n        System.out.println(\"Fastest: \" + fastest(field));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-words",
+     "mode": "independent",
+     "title": "Compare by two things",
+     "goal": "Write <code>Word implements Comparable&lt;Word&gt;</code> with a private <code>text</code>. Shorter words come first; words of the same length are ordered alphabetically (use <code>String</code>'s own <code>compareTo</code>). <code>toString</code> returns the text. Sort and print five words.",
+     "requirements": [],
+     "files": [
+      "Word.java",
+      "WordSort.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckWords.java",
+       "public class CheckWords {\n    public static void main(String[] args) {\n        System.out.println(new Word(\"bb\").compareTo(new Word(\"aaa\")) < 0);\n        System.out.println(new Word(\"bb\").compareTo(new Word(\"ab\")) > 0);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckWords",
+     "hints": [
+      "Compare lengths first. Only when they're equal, fall back to <code>text.compareTo(other.text)</code>."
+     ],
+     "checks": [],
+     "run": "WordSort",
+     "output": "fig\ndate\nkiwi\npear\napple",
+     "testsOutput": "true\ntrue",
+     "solution": [
+      [
+       "Word.java",
+       "public class Word implements Comparable<Word> {\n    private String text;\n\n    public Word(String text) {\n        this.text = text;\n    }\n\n    @Override\n    public int compareTo(Word other) {\n        if (text.length() != other.text.length()) {\n            return Integer.compare(text.length(), other.text.length());\n        }\n        return text.compareTo(other.text);\n    }\n\n    @Override\n    public String toString() {\n        return text;\n    }\n}\n"
+      ],
+      [
+       "WordSort.java",
+       "import java.util.Arrays;\n\npublic class WordSort {\n    public static void main(String[] args) {\n        Word[] words = {new Word(\"pear\"), new Word(\"fig\"), new Word(\"apple\"), new Word(\"kiwi\"), new Word(\"date\")};\n        Arrays.sort(words);\n        for (Word w : words) {\n            System.out.println(w);\n        }\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Comparable<T>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Comparable.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "java.util.Arrays",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Implementing an Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/usinginterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Generic Types",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "ws-interfaces": {
+   "id": "ws-interfaces",
+   "section": "interfaces",
+   "title": "Workshop: interfaces",
+   "summary": "Practice declaring interfaces, implementing several at once, using interface types for mixed arrays, and sorting with <code>Comparable</code>.",
+   "goals": [
+    "Write interfaces and classes that implement them from an empty editor",
+    "Use an interface type for an array of unrelated objects",
+    "Make your own class sortable with <code>Comparable</code>"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: Smart home devices"
+    },
+    {
+     "type": "write",
+     "id": "ws-u9-home",
+     "mode": "guided",
+     "title": "Smart home devices",
+     "goal": "Build devices that share one interface, and a lamp that also has a second ability.",
+     "requirements": [],
+     "files": [
+      "Switchable.java",
+      "Lamp.java",
+      "HomeTester.java",
+      "Dimmable.java",
+      "Fan.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Switchable and Lamp",
+       "text": "Create the interface <code>Switchable</code> with <code>void turnOn()</code> and <code>boolean isOn()</code>. Create <code>Lamp</code> (private <code>room</code> and <code>on</code>) that implements it; turning on prints <code>&lt;room&gt; lamp on</code>.",
+       "hint": null,
+       "files": [
+        "Switchable.java",
+        "Lamp.java",
+        "HomeTester.java"
+       ],
+       "run": "HomeTester",
+       "output": "false\nOffice lamp on\ntrue",
+       "checks": [
+        {
+         "pattern": "interface\\s+Switchable",
+         "message": "Declare <code>Switchable</code> as an <code>interface</code>."
+        }
+       ],
+       "solution": [
+        [
+         "Switchable.java",
+         "public interface Switchable {\n    void turnOn();\n\n    boolean isOn();\n}\n"
+        ],
+        [
+         "Lamp.java",
+         "public class Lamp implements Switchable {\n    private String room;\n    private boolean on;\n\n    public Lamp(String room) {\n        this.room = room;\n    }\n\n    @Override\n    public void turnOn() {\n        on = true;\n        System.out.println(room + \" lamp on\");\n    }\n\n    @Override\n    public boolean isOn() {\n        return on;\n    }\n}\n"
+        ],
+        [
+         "HomeTester.java",
+         "public class HomeTester {\n    public static void main(String[] args) {\n        Lamp desk = new Lamp(\"Office\");\n        System.out.println(desk.isOn());\n        desk.turnOn();\n        System.out.println(desk.isOn());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "A second interface",
+       "text": "Create the interface <code>Dimmable</code> with <code>void setLevel(int percent)</code>. Make <code>Lamp</code> implement both interfaces; <code>setLevel</code> prints <code>&lt;room&gt; lamp at &lt;percent&gt;%</code>.",
+       "hint": null,
+       "files": [
+        "Switchable.java",
+        "Dimmable.java",
+        "Lamp.java",
+        "HomeTester.java"
+       ],
+       "run": "HomeTester",
+       "output": "Office lamp on\nOffice lamp at 40%",
+       "checks": [
+        {
+         "pattern": "implements\\s+Switchable\\s*,\\s*Dimmable|implements\\s+Dimmable\\s*,\\s*Switchable",
+         "message": "Make <code>Lamp</code> implement both: <code>implements Switchable, Dimmable</code>."
+        }
+       ],
+       "solution": [
+        [
+         "Switchable.java",
+         "public interface Switchable {\n    void turnOn();\n\n    boolean isOn();\n}\n"
+        ],
+        [
+         "Dimmable.java",
+         "public interface Dimmable {\n    void setLevel(int percent);\n}\n"
+        ],
+        [
+         "Lamp.java",
+         "public class Lamp implements Switchable, Dimmable {\n    private String room;\n    private boolean on;\n\n    public Lamp(String room) {\n        this.room = room;\n    }\n\n    @Override\n    public void turnOn() {\n        on = true;\n        System.out.println(room + \" lamp on\");\n    }\n\n    @Override\n    public boolean isOn() {\n        return on;\n    }\n\n    @Override\n    public void setLevel(int percent) {\n        System.out.println(room + \" lamp at \" + percent + \"%\");\n    }\n}\n"
+        ],
+        [
+         "HomeTester.java",
+         "public class HomeTester {\n    public static void main(String[] args) {\n        Lamp desk = new Lamp(\"Office\");\n        desk.turnOn();\n        desk.setLevel(40);\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "A fan",
+       "text": "Create <code>Fan</code>, which is <code>Switchable</code> but not <code>Dimmable</code>; turning it on prints <code>Fan spinning</code>. Put two lamps and a fan in one <code>Switchable[]</code> and turn them all on.",
+       "hint": null,
+       "files": [
+        "Switchable.java",
+        "Dimmable.java",
+        "Lamp.java",
+        "Fan.java",
+        "HomeTester.java"
+       ],
+       "run": "HomeTester",
+       "output": "Office lamp on\nFan spinning\nHall lamp on",
+       "checks": [],
+       "solution": [
+        [
+         "Switchable.java",
+         "public interface Switchable {\n    void turnOn();\n\n    boolean isOn();\n}\n"
+        ],
+        [
+         "Dimmable.java",
+         "public interface Dimmable {\n    void setLevel(int percent);\n}\n"
+        ],
+        [
+         "Lamp.java",
+         "public class Lamp implements Switchable, Dimmable {\n    private String room;\n    private boolean on;\n\n    public Lamp(String room) {\n        this.room = room;\n    }\n\n    @Override\n    public void turnOn() {\n        on = true;\n        System.out.println(room + \" lamp on\");\n    }\n\n    @Override\n    public boolean isOn() {\n        return on;\n    }\n\n    @Override\n    public void setLevel(int percent) {\n        System.out.println(room + \" lamp at \" + percent + \"%\");\n    }\n}\n"
+        ],
+        [
+         "Fan.java",
+         "public class Fan implements Switchable {\n    private boolean on;\n\n    @Override\n    public void turnOn() {\n        on = true;\n        System.out.println(\"Fan spinning\");\n    }\n\n    @Override\n    public boolean isOn() {\n        return on;\n    }\n}\n"
+        ],
+        [
+         "HomeTester.java",
+         "public class HomeTester {\n    public static void main(String[] args) {\n        Switchable[] devices = {new Lamp(\"Office\"), new Fan(), new Lamp(\"Hall\")};\n        for (Switchable s : devices) {\n            s.turnOn();\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Dim what can be dimmed",
+       "text": "In the same loop, dim every device that is <code>Dimmable</code> to 30%. Check with <code>instanceof</code>, then cast.",
+       "hint": "<code>((Dimmable) s).setLevel(30);</code> The extra parentheses cast first, then call.",
+       "files": [
+        "Switchable.java",
+        "Dimmable.java",
+        "Lamp.java",
+        "Fan.java",
+        "HomeTester.java"
+       ],
+       "run": "HomeTester",
+       "output": "Office lamp on\nOffice lamp at 30%\nFan spinning\nHall lamp on\nHall lamp at 30%",
+       "checks": [
+        {
+         "pattern": "instanceof\\s+Dimmable",
+         "message": "Check with <code>instanceof Dimmable</code>."
+        }
+       ],
+       "solution": [
+        [
+         "Switchable.java",
+         "public interface Switchable {\n    void turnOn();\n\n    boolean isOn();\n}\n"
+        ],
+        [
+         "Dimmable.java",
+         "public interface Dimmable {\n    void setLevel(int percent);\n}\n"
+        ],
+        [
+         "Lamp.java",
+         "public class Lamp implements Switchable, Dimmable {\n    private String room;\n    private boolean on;\n\n    public Lamp(String room) {\n        this.room = room;\n    }\n\n    @Override\n    public void turnOn() {\n        on = true;\n        System.out.println(room + \" lamp on\");\n    }\n\n    @Override\n    public boolean isOn() {\n        return on;\n    }\n\n    @Override\n    public void setLevel(int percent) {\n        System.out.println(room + \" lamp at \" + percent + \"%\");\n    }\n}\n"
+        ],
+        [
+         "Fan.java",
+         "public class Fan implements Switchable {\n    private boolean on;\n\n    @Override\n    public void turnOn() {\n        on = true;\n        System.out.println(\"Fan spinning\");\n    }\n\n    @Override\n    public boolean isOn() {\n        return on;\n    }\n}\n"
+        ],
+        [
+         "HomeTester.java",
+         "public class HomeTester {\n    public static void main(String[] args) {\n        Switchable[] devices = {new Lamp(\"Office\"), new Fan(), new Lamp(\"Hall\")};\n        for (Switchable s : devices) {\n            s.turnOn();\n            if (s instanceof Dimmable) {\n                ((Dimmable) s).setLevel(30);\n            }\n        }\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: A leaderboard"
+    },
+    {
+     "type": "write",
+     "id": "ws-u9-board",
+     "mode": "guided",
+     "title": "A leaderboard",
+     "goal": "Make players sortable from the highest score down, then print a ranked table.",
+     "requirements": [],
+     "files": [
+      "Player.java",
+      "Leaderboard.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Comparable players",
+       "text": "Create <code>Player</code> (private <code>name</code> and <code>score</code>, <code>getName()</code>, <code>toString</code> like <code>Ana (120)</code>) that implements <code>Comparable&lt;Player&gt;</code> so <strong>higher</strong> scores come first.",
+       "hint": "<code>return Integer.compare(other.score, score);</code> puts the other score first to reverse the order.",
+       "files": [
+        "Player.java",
+        "Leaderboard.java"
+       ],
+       "run": "Leaderboard",
+       "output": "true\nAna (120)",
+       "checks": [],
+       "solution": [
+        [
+         "Player.java",
+         "public class Player implements Comparable<Player> {\n    private String name;\n    private int score;\n\n    public Player(String name, int score) {\n        this.name = name;\n        this.score = score;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    @Override\n    public int compareTo(Player other) {\n        return Integer.compare(other.score, score);\n    }\n\n    @Override\n    public String toString() {\n        return name + \" (\" + score + \")\";\n    }\n}\n"
+        ],
+        [
+         "Leaderboard.java",
+         "public class Leaderboard {\n    public static void main(String[] args) {\n        Player ana = new Player(\"Ana\", 120);\n        Player sam = new Player(\"Sam\", 340);\n        System.out.println(sam.compareTo(ana) < 0);\n        System.out.println(ana);\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Ranked list",
+       "text": "Sort four players with <code>Arrays.sort</code> and print them numbered from 1.",
+       "hint": null,
+       "files": [
+        "Player.java",
+        "Leaderboard.java"
+       ],
+       "run": "Leaderboard",
+       "output": "1. Sam (340)\n2. Kim (210)\n3. Ana (120)\n4. Lee (95)",
+       "checks": [],
+       "solution": [
+        [
+         "Player.java",
+         "public class Player implements Comparable<Player> {\n    private String name;\n    private int score;\n\n    public Player(String name, int score) {\n        this.name = name;\n        this.score = score;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    @Override\n    public int compareTo(Player other) {\n        return Integer.compare(other.score, score);\n    }\n\n    @Override\n    public String toString() {\n        return name + \" (\" + score + \")\";\n    }\n}\n"
+        ],
+        [
+         "Leaderboard.java",
+         "import java.util.Arrays;\n\npublic class Leaderboard {\n    public static void main(String[] args) {\n        Player[] players = {new Player(\"Ana\", 120), new Player(\"Sam\", 340), new Player(\"Lee\", 95), new Player(\"Kim\", 210)};\n        Arrays.sort(players);\n        for (int i = 0; i < players.length; i++) {\n            System.out.println((i + 1) + \". \" + players[i]);\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Top three and last place",
+       "text": "Print only the top three, then the name of whoever came last.",
+       "hint": "The last item of an array is at index <code>length - 1</code>.",
+       "files": [
+        "Player.java",
+        "Leaderboard.java"
+       ],
+       "run": "Leaderboard",
+       "output": "1. Sam (340)\n2. Kim (210)\n3. Ana (120)\nLast place: Lee",
+       "checks": [],
+       "solution": [
+        [
+         "Player.java",
+         "public class Player implements Comparable<Player> {\n    private String name;\n    private int score;\n\n    public Player(String name, int score) {\n        this.name = name;\n        this.score = score;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    @Override\n    public int compareTo(Player other) {\n        return Integer.compare(other.score, score);\n    }\n\n    @Override\n    public String toString() {\n        return name + \" (\" + score + \")\";\n    }\n}\n"
+        ],
+        [
+         "Leaderboard.java",
+         "import java.util.Arrays;\n\npublic class Leaderboard {\n    public static void main(String[] args) {\n        Player[] players = {new Player(\"Ana\", 120), new Player(\"Sam\", 340), new Player(\"Lee\", 95), new Player(\"Kim\", 210)};\n        Arrays.sort(players);\n        for (int i = 0; i < 3; i++) {\n            System.out.println((i + 1) + \". \" + players[i]);\n        }\n        System.out.println(\"Last place: \" + players[players.length - 1].getName());\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: Shapes through an interface"
+    },
+    {
+     "type": "write",
+     "id": "ws-u9-areas",
+     "mode": "independent",
+     "title": "Shapes through an interface",
+     "goal": "Write an interface <code>HasArea</code> (<code>double area()</code>) and two classes that implement it: <code>Rectangle</code> (width \u00d7 height) and <code>RightTriangle</code> (base \u00d7 height \u00f7 2). In <code>AreaTester</code>, write <code>public static double totalArea(HasArea[] shapes)</code> and print the total for one of each.",
+     "requirements": [],
+     "files": [
+      "HasArea.java",
+      "Rectangle.java",
+      "RightTriangle.java",
+      "AreaTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckAreas.java",
+       "public class CheckAreas {\n    public static void main(String[] args) {\n        HasArea t = new RightTriangle(3, 3);\n        System.out.println(t.area());\n        HasArea[] two = {new Rectangle(1, 1), new Rectangle(2, 2)};\n        System.out.println(AreaTester.totalArea(two));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckAreas",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "interface\\s+HasArea",
+       "message": "Declare <code>HasArea</code> as an <code>interface</code>."
+      }
+     ],
+     "run": "AreaTester",
+     "output": "Total area: 27.0",
+     "testsOutput": "4.5\n5.0",
+     "solution": [
+      [
+       "HasArea.java",
+       "public interface HasArea {\n    double area();\n}\n"
+      ],
+      [
+       "Rectangle.java",
+       "public class Rectangle implements HasArea {\n    private double width;\n    private double height;\n\n    public Rectangle(double width, double height) {\n        this.width = width;\n        this.height = height;\n    }\n\n    @Override\n    public double area() {\n        return width * height;\n    }\n}\n"
+      ],
+      [
+       "RightTriangle.java",
+       "public class RightTriangle implements HasArea {\n    private double base;\n    private double height;\n\n    public RightTriangle(double base, double height) {\n        this.base = base;\n        this.height = height;\n    }\n\n    @Override\n    public double area() {\n        return base * height / 2;\n    }\n}\n"
+      ],
+      [
+       "AreaTester.java",
+       "public class AreaTester {\n    public static double totalArea(HasArea[] shapes) {\n        double total = 0;\n        for (HasArea s : shapes) {\n            total = total + s.area();\n        }\n        return total;\n    }\n\n    public static void main(String[] args) {\n        HasArea[] shapes = {new Rectangle(3, 4), new RightTriangle(6, 5)};\n        System.out.println(\"Total area: \" + totalArea(shapes));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: One machine, two promises (exam-sized)"
+    },
+    {
+     "type": "write",
+     "id": "ws-u9-office",
+     "mode": "independent",
+     "title": "One machine, two promises (exam-sized)",
+     "goal": "Write interfaces <code>Printer</code> (<code>void print(String doc)</code>) and <code>Faxer</code> (<code>void fax(String doc, String number)</code>), and an <code>OfficeMachine</code> with a private <code>pagesPrinted</code> count that implements both. <code>print</code> prints <code>Printing &lt;doc&gt;</code> and counts a page; <code>fax</code> prints <code>Faxing &lt;doc&gt; to &lt;number&gt;</code>. Add <code>getPagesPrinted()</code>.",
+     "requirements": [],
+     "files": [
+      "Printer.java",
+      "Faxer.java",
+      "OfficeMachine.java",
+      "OfficeTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckOffice.java",
+       "public class CheckOffice {\n    public static void main(String[] args) {\n        Printer p = new OfficeMachine();\n        p.print(\"a\");\n        Faxer f = new OfficeMachine();\n        f.fax(\"b\", \"c\");\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckOffice",
+     "hints": [
+      "The class header lists both interfaces after <code>implements</code>, separated by a comma."
+     ],
+     "checks": [
+      {
+       "pattern": "implements\\s+Printer\\s*,\\s*Faxer|implements\\s+Faxer\\s*,\\s*Printer",
+       "message": "Implement both: <code>implements Printer, Faxer</code>."
+      }
+     ],
+     "run": "OfficeTester",
+     "output": "Printing memo.txt\nPrinting report.pdf\nFaxing contract.pdf to 555-0142\n2 pages printed",
+     "testsOutput": "Printing a\nFaxing b to c",
+     "solution": [
+      [
+       "Printer.java",
+       "public interface Printer {\n    void print(String doc);\n}\n"
+      ],
+      [
+       "Faxer.java",
+       "public interface Faxer {\n    void fax(String doc, String number);\n}\n"
+      ],
+      [
+       "OfficeMachine.java",
+       "public class OfficeMachine implements Printer, Faxer {\n    private int pagesPrinted;\n\n    public int getPagesPrinted() {\n        return pagesPrinted;\n    }\n\n    @Override\n    public void print(String doc) {\n        System.out.println(\"Printing \" + doc);\n        pagesPrinted++;\n    }\n\n    @Override\n    public void fax(String doc, String number) {\n        System.out.println(\"Faxing \" + doc + \" to \" + number);\n    }\n}\n"
+      ],
+      [
+       "OfficeTester.java",
+       "public class OfficeTester {\n    public static void main(String[] args) {\n        OfficeMachine m = new OfficeMachine();\n        m.print(\"memo.txt\");\n        m.print(\"report.pdf\");\n        m.fax(\"contract.pdf\", \"555-0142\");\n        System.out.println(m.getPagesPrinted() + \" pages printed\");\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Using an Interface as a Type",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/interfaceAsType.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Comparable<T>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Comparable.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "java.util.Arrays",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Part 9.2: Interfaces",
+     "url": "https://java-programming.mooc.fi/part-9/2-interface",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
   "inh-abstract": {
    "id": "inh-abstract",
    "section": "abstraction",
@@ -12225,6 +14528,2368 @@ window.COURSE = {
      "title": "Part 9.3: Object polymorphism",
      "url": "https://java-programming.mooc.fi/part-9/3-object-polymorphism",
      "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "ds-adt": {
+   "id": "ds-adt",
+   "section": "ds-arrays",
+   "title": "Data structures and abstract data types",
+   "summary": "A data structure is a way to organize data; an abstract data type says what you can do with it, without saying how it's stored.",
+   "goals": [
+    "Explain the difference between an abstract data type and a data structure",
+    "Describe an ADT with an interface and implement it with an array",
+    "Recognize Java's <code>ArrayList</code> as a ready-made list"
+   ],
+   "cos225": "This unit opens the data-structures half of COS 225. The exam guide's basics include arrays and lists (\"don't need to use them, just know what they are\"). This lesson shows what a list is and how it relates to the arrays you already know.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "What versus how"
+    },
+    {
+     "type": "p",
+     "html": "An <strong>abstract data type (ADT)</strong> is defined by its operations: what you can do with it. A \"bag of numbers\" lets you add a number, ask how many there are, and ask whether one is there. Nothing about how they're stored. A <strong>data structure</strong> is a concrete way to store the data so those operations work, such as an array, or (later in the course) linked nodes or a tree."
+    },
+    {
+     "type": "p",
+     "html": "You already have the Java tool for describing \"what\" without \"how\": an interface. Here the <code>IntBag</code> interface is the ADT, and <code>ArrayIntBag</code> is one data structure that implements it."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "IntBag.java",
+       "public interface IntBag {\n    void add(int value);\n\n    int size();\n\n    boolean contains(int value);\n}\n"
+      ],
+      [
+       "ArrayIntBag.java",
+       "public class ArrayIntBag implements IntBag {\n    private int[] items;\n    private int count;\n\n    public ArrayIntBag(int capacity) {\n        items = new int[capacity];\n        count = 0;\n    }\n\n    @Override\n    public void add(int value) {\n        items[count] = value;\n        count++;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public boolean contains(int value) {\n        for (int i = 0; i < count; i++) {\n            if (items[i] == value) {\n                return true;\n            }\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "BagTester.java",
+       "public class BagTester {\n    public static void main(String[] args) {\n        IntBag bag = new ArrayIntBag(5);\n        bag.add(7);\n        bag.add(3);\n        bag.add(7);\n        System.out.println(\"Size: \" + bag.size());\n        System.out.println(\"Has 3? \" + bag.contains(3));\n        System.out.println(\"Has 9? \" + bag.contains(9));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java BagTester",
+      "stdout": "Size: 3\nHas 3? true\nHas 9? false"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>items</code> is the array. <code>count</code> tracks how many slots are actually used, which is different from <code>items.length</code>, the capacity.",
+      "<code>add</code> puts the new value in the first unused slot, <code>items[count]</code>, then increases <code>count</code>.",
+      "<code>contains</code> only looks at the first <code>count</code> slots. The rest of the array holds leftover zeros that aren't really in the bag.",
+      "The tester only uses the <code>IntBag</code> type. Any other class implementing <code>IntBag</code> (a faster one, say) could be swapped in without changing a line of the tester."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "The weakness of a fixed array"
+    },
+    {
+     "type": "p",
+     "html": "An array's size is fixed when it's created. This bag has room for 2, so a third <code>add</code> runs off the end:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "IntBag.java",
+       "public interface IntBag {\n    void add(int value);\n\n    int size();\n\n    boolean contains(int value);\n}\n"
+      ],
+      [
+       "ArrayIntBag.java",
+       "public class ArrayIntBag implements IntBag {\n    private int[] items;\n    private int count;\n\n    public ArrayIntBag(int capacity) {\n        items = new int[capacity];\n        count = 0;\n    }\n\n    @Override\n    public void add(int value) {\n        items[count] = value;\n        count++;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public boolean contains(int value) {\n        for (int i = 0; i < count; i++) {\n            if (items[i] == value) {\n                return true;\n            }\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "Overflow.java",
+       "public class Overflow {\n    public static void main(String[] args) {\n        IntBag bag = new ArrayIntBag(2);\n        bag.add(1);\n        bag.add(2);\n        bag.add(3);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java Overflow",
+      "stdout": "",
+      "text": "Exception in thread \"main\" java.lang.ArrayIndexOutOfBoundsException: Index 2 out of bounds for length 2\n\tat ArrayIntBag.add(ArrayIntBag.java:12)\n\tat Overflow.main(Overflow.java:6)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "The crash happens inside <code>ArrayIntBag.add</code> (line 12), called from <code>Overflow.main</code> (line 6). The \"Resizing an array\" lesson fixes this by growing the array when it fills up."
+    },
+    {
+     "type": "h",
+     "html": "Lists: Java's ready-made answer"
+    },
+    {
+     "type": "p",
+     "html": "A <strong>list</strong> is an ADT: an ordered sequence you can add to, read by position, and remove from, and it grows as needed. Java provides one, <code>ArrayList</code>, in <code>java.util</code>. Inside, it's an array that grows itself, which is exactly what you'll build in this unit."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ListDemo.java",
+       "import java.util.ArrayList;\n\npublic class ListDemo {\n    public static void main(String[] args) {\n        ArrayList<String> names = new ArrayList<>();\n        names.add(\"Ana\");\n        names.add(\"Sam\");\n        names.add(\"Lee\");\n        System.out.println(names.size() + \" names, first is \" + names.get(0));\n\n        names.remove(\"Sam\");\n        for (String n : names) {\n            System.out.println(n);\n        }\n        System.out.println(names);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ListDemo",
+      "stdout": "3 names, first is Ana\nAna\nLee\n[Ana, Lee]"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>ArrayList&lt;String&gt;</code> is a list of <code>String</code>s. The type in angle brackets says what it holds; the generics lesson explains how that works.",
+      "<code>add</code>, <code>get(index)</code>, <code>size()</code> and <code>remove(...)</code> are its operations. Unlike an array, there's no size to choose up front.",
+      "Printing a list directly gives <code>[Ana, Lee]</code>, because <code>ArrayList</code> has its own <code>toString</code>."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "adt-contains",
+     "title": "Search only the used part",
+     "prompt": "Finish <code>contains</code>. The array may be bigger than the number of values stored.",
+     "files": [
+      [
+       "IntBag.java",
+       "public interface IntBag {\n    void add(int value);\n\n    int size();\n\n    boolean contains(int value);\n}\n"
+      ],
+      [
+       "ArrayIntBag.java",
+       "public class ArrayIntBag implements IntBag {\n    private int[] items;\n    private int count;\n\n    public ArrayIntBag(int capacity) {\n        items = new int[capacity];\n        count = 0;\n    }\n\n    @Override\n    public void add(int value) {\n        items[count] = value;\n        count++;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public boolean contains(int value) {\n        for (int i = 0; i < [[limit]]; i++) {\n            if ([[check]] == value) {\n                return true;\n            }\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "ZeroTester.java",
+       "public class ZeroTester {\n    public static void main(String[] args) {\n        IntBag bag = new ArrayIntBag(4);\n        bag.add(5);\n        System.out.println(bag.contains(5));\n        System.out.println(bag.contains(0));\n    }\n}\n"
+      ]
+     ],
+     "run": "ZeroTester",
+     "blanks": {
+      "limit": {
+       "accept": [
+        "count"
+       ],
+       "solution": "count",
+       "hint": "How many slots hold real values?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "items.length",
+         "shown": "items.length",
+         "why": "That checks the whole array, including unused slots, which hold 0. So the bag wrongly says it contains 0.",
+         "result": {
+          "kind": "ok",
+          "command": "java ZeroTester",
+          "stdout": "true\ntrue"
+         }
+        }
+       ],
+       "width": 12
+      },
+      "check": {
+       "accept": [
+        "items[i]"
+       ],
+       "solution": "items[i]",
+       "hint": "The value in slot <code>i</code>.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "i",
+         "shown": "i",
+         "why": "<code>i</code> is the slot number, not the value stored there. Compare <code>items[i]</code>.",
+         "result": {
+          "kind": "ok",
+          "command": "java ZeroTester",
+          "stdout": "false\ntrue"
+         }
+        }
+       ],
+       "width": 8
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java ZeroTester",
+      "stdout": "true\nfalse"
+     },
+     "explain": "Only slots 0 to <code>count - 1</code> are part of the bag. The 0s after that are just the array's default values."
+    },
+    {
+     "type": "quiz",
+     "id": "adt-which",
+     "question": "Which is an abstract data type rather than a data structure?",
+     "choices": [
+      "An array of 10 <code>int</code>s",
+      "\"A list: add items, get by position, remove\"",
+      "The <code>int[] items</code> field in <code>ArrayIntBag</code>",
+      "A block of memory"
+     ],
+     "answer": 1,
+     "explain": "An ADT is described only by its operations. The array is one concrete way to store the data, a data structure that can implement the ADT."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-arraybag",
+     "mode": "independent",
+     "title": "Implement an ADT",
+     "goal": "The <code>IntBag</code> interface (given) is the ADT. Write <code>ArrayIntBag</code>, which implements it with a private <code>int[]</code> of the capacity passed to its constructor and a private count of values stored.",
+     "requirements": [],
+     "files": [
+      "IntBag.java",
+      "ArrayIntBag.java",
+      "BagTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBag.java",
+       "public class CheckBag {\n    public static void main(String[] args) {\n        IntBag empty = new ArrayIntBag(3);\n        System.out.println(empty.size() + \" \" + empty.contains(0));\n        IntBag b = new ArrayIntBag(3);\n        b.add(0);\n        System.out.println(b.contains(0));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBag",
+     "hints": [
+      "<code>contains</code> must look only at the first <code>count</code> slots, or an empty bag will \"contain\" 0."
+     ],
+     "checks": [],
+     "run": "BagTester",
+     "output": "2\ntrue\nfalse",
+     "testsOutput": "0 false\ntrue",
+     "solution": [
+      [
+       "IntBag.java",
+       "public interface IntBag {\n    void add(int value);\n\n    int size();\n\n    boolean contains(int value);\n}\n"
+      ],
+      [
+       "ArrayIntBag.java",
+       "public class ArrayIntBag implements IntBag {\n    private int[] items;\n    private int count;\n\n    public ArrayIntBag(int capacity) {\n        items = new int[capacity];\n    }\n\n    @Override\n    public void add(int value) {\n        items[count] = value;\n        count++;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public boolean contains(int value) {\n        for (int i = 0; i < count; i++) {\n            if (items[i] == value) {\n                return true;\n            }\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "BagTester.java",
+       "public class BagTester {\n    public static void main(String[] args) {\n        IntBag bag = new ArrayIntBag(4);\n        bag.add(12);\n        bag.add(-3);\n        System.out.println(bag.size());\n        System.out.println(bag.contains(-3));\n        System.out.println(bag.contains(0));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-arraylist-names",
+     "mode": "independent",
+     "title": "Use Java's ArrayList",
+     "goal": "In <code>Roster</code>, use an <code>ArrayList&lt;String&gt;</code>: add <code>Ana</code>, <code>Sam</code>, <code>Lee</code> and <code>Kim</code>, remove <code>Sam</code>, then print the size, the item at index 1, and the whole list.",
+     "requirements": [],
+     "files": [
+      "Roster.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "Start the file with <code>import java.util.ArrayList;</code>.",
+      "After removing <code>Sam</code>, the items after it move down one position, so index 1 is now <code>Lee</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "ArrayList\\s*<\\s*String\\s*>",
+       "message": "Use an <code>ArrayList&lt;String&gt;</code>."
+      }
+     ],
+     "run": "Roster",
+     "output": "3\nLee\n[Ana, Lee, Kim]",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Roster.java",
+       "import java.util.ArrayList;\n\npublic class Roster {\n    public static void main(String[] args) {\n        ArrayList<String> names = new ArrayList<>();\n        names.add(\"Ana\");\n        names.add(\"Sam\");\n        names.add(\"Lee\");\n        names.add(\"Kim\");\n        names.remove(\"Sam\");\n        System.out.println(names.size());\n        System.out.println(names.get(1));\n        System.out.println(names);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-minmax",
+     "mode": "independent",
+     "title": "One ADT, two data structures",
+     "goal": "The interface <code>MinMax</code> (<code>add(int)</code>, <code>min()</code>, <code>max()</code>) describes an ADT. Write <strong>two</strong> implementations: <code>ArrayMinMax</code> stores every value in a growing array and searches it; <code>RunningMinMax</code> stores only the smallest and largest seen so far. Both must pass the same test.",
+     "requirements": [],
+     "files": [
+      "MinMax.java",
+      "ArrayMinMax.java",
+      "RunningMinMax.java",
+      "MinMaxTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckMinMax.java",
+       "public class CheckMinMax {\n    public static void main(String[] args) {\n        MinMax[] both = {new ArrayMinMax(), new RunningMinMax()};\n        for (MinMax m : both) {\n            m.add(-7);\n            System.out.println(m.min() + \" \" + m.max());\n            m.add(-7);\n            m.add(-10);\n            m.add(-1);\n            System.out.println(m.min() + \" \" + m.max());\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckMinMax",
+     "hints": [
+      "The test only adds negative numbers. If <code>RunningMinMax</code> starts <code>largest</code> at 0, it will report 0 as the max. The first value added must set both.",
+      "One way: a <code>boolean empty = true;</code> field that <code>add</code> checks and then sets to <code>false</code>."
+     ],
+     "checks": [],
+     "run": "MinMaxTester",
+     "output": "-2 9\n-2 9",
+     "testsOutput": "-7 -7\n-10 -1\n-7 -7\n-10 -1",
+     "solution": [
+      [
+       "MinMax.java",
+       "public interface MinMax {\n    void add(int value);\n\n    int min();\n\n    int max();\n}\n"
+      ],
+      [
+       "ArrayMinMax.java",
+       "public class ArrayMinMax implements MinMax {\n    private int[] values = new int[2];\n    private int size;\n\n    @Override\n    public void add(int value) {\n        if (size == values.length) {\n            int[] bigger = new int[values.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = values[i];\n            }\n            values = bigger;\n        }\n        values[size] = value;\n        size++;\n    }\n\n    @Override\n    public int min() {\n        int m = values[0];\n        for (int i = 1; i < size; i++) {\n            if (values[i] < m) {\n                m = values[i];\n            }\n        }\n        return m;\n    }\n\n    @Override\n    public int max() {\n        int m = values[0];\n        for (int i = 1; i < size; i++) {\n            if (values[i] > m) {\n                m = values[i];\n            }\n        }\n        return m;\n    }\n}\n"
+      ],
+      [
+       "RunningMinMax.java",
+       "public class RunningMinMax implements MinMax {\n    private int smallest;\n    private int largest;\n    private boolean empty = true;\n\n    @Override\n    public void add(int value) {\n        if (empty || value < smallest) {\n            smallest = value;\n        }\n        if (empty || value > largest) {\n            largest = value;\n        }\n        empty = false;\n    }\n\n    @Override\n    public int min() {\n        return smallest;\n    }\n\n    @Override\n    public int max() {\n        return largest;\n    }\n}\n"
+      ],
+      [
+       "MinMaxTester.java",
+       "public class MinMaxTester {\n    public static void main(String[] args) {\n        MinMax[] both = {new ArrayMinMax(), new RunningMinMax()};\n        for (MinMax m : both) {\n            m.add(5);\n            m.add(-2);\n            m.add(9);\n            System.out.println(m.min() + \" \" + m.max());\n        }\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Reading 8: Abstract Data Types",
+     "url": "https://web.mit.edu/6.005/www/fa14/classes/08-abstract-data-types/",
+     "org": "MIT, 6.005 Software Construction",
+     "note": null
+    },
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Part 12.2: ArrayList and hash table",
+     "url": "https://java-programming.mooc.fi/part-12/2-arraylist-and-hashtable",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "ds-memory": {
+   "id": "ds-memory",
+   "section": "ds-arrays",
+   "title": "Arrays in memory",
+   "summary": "What an array variable really holds, why copying one is trickier than it looks, and what inserting in the middle costs.",
+   "goals": [
+    "Explain that an array variable holds a reference to the array",
+    "Copy an array properly, and compare arrays by content",
+    "Insert into the middle of an array by shifting elements"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "One block, fixed size, fast to index"
+    },
+    {
+     "type": "p",
+     "html": "An array is one block of memory split into equal-sized slots, one after another. Because every slot is the same size, Java can jump straight to slot <code>i</code> without looking at the others, so reading <code>data[500]</code> is as fast as reading <code>data[0]</code>. The price is that the size is fixed when the array is created."
+    },
+    {
+     "type": "h",
+     "html": "An array variable is a reference"
+    },
+    {
+     "type": "p",
+     "html": "Like an object variable, an array variable doesn't contain the array. It <strong>refers</strong> to it. So <code>int[] b = a;</code> doesn't copy anything: <code>a</code> and <code>b</code> are two names for the same array. To get an independent copy, create a new array and copy the values over."
+    },
+    {
+     "type": "predict",
+     "id": "mem-alias",
+     "prompt": "What does this print?",
+     "files": [
+      [
+       "Alias.java",
+       "public class Alias {\n    public static void main(String[] args) {\n        int[] a = {1, 2, 3};\n        int[] b = a;\n        b[0] = 99;\n        System.out.println(a[0]);\n\n        int[] c = new int[a.length];\n        for (int i = 0; i < a.length; i++) {\n            c[i] = a[i];\n        }\n        c[1] = 50;\n        System.out.println(a[1] + \" \" + c[1]);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "1\n2 50",
+      "99\n2 50",
+      "99\n50 50",
+      "1\n50 50"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java Alias",
+      "stdout": "99\n2 50"
+     },
+     "explain": "<code>b = a</code> makes <code>b</code> refer to the same array, so changing <code>b[0]</code> changes what <code>a[0]</code> shows. <code>c</code> is a new array filled by the loop, so changing <code>c[1]</code> leaves <code>a</code> alone."
+    },
+    {
+     "type": "p",
+     "html": "The <code>java.util.Arrays</code> class has helpers for the things that don't work the way you might expect:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ArrayTools.java",
+       "import java.util.Arrays;\n\npublic class ArrayTools {\n    public static void main(String[] args) {\n        int[] a = {4, 8, 15};\n        int[] b = {4, 8, 15};\n        System.out.println(a);\n        System.out.println(Arrays.toString(a));\n        System.out.println(a == b);\n        System.out.println(Arrays.equals(a, b));\n\n        int[] bigger = Arrays.copyOf(a, 5);\n        System.out.println(Arrays.toString(bigger));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ArrayTools",
+      "stdout": "[I@2a139a55\n[4, 8, 15]\nfalse\ntrue\n[4, 8, 15, 0, 0]"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "Printing an array directly shows its type code (<code>[I</code> means \"array of int\") and a hash number, which will be different on your machine. <code>Arrays.toString</code> shows the contents. <code>==</code> asks whether two variables refer to the same array; <code>Arrays.equals</code> compares the contents. <code>Arrays.copyOf</code> makes a new array (here, a longer one, padded with 0s)."
+    },
+    {
+     "type": "h",
+     "html": "Inserting means shifting"
+    },
+    {
+     "type": "p",
+     "html": "A partly filled array, with a <code>size</code> that counts the used slots, has no gap in the middle. To insert at position 1, every value from position 1 onward must move one slot to the right first. Work from the end backwards, so that nothing gets overwritten before it has moved."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Shift.java",
+       "import java.util.Arrays;\n\npublic class Shift {\n    public static void main(String[] args) {\n        int[] data = {10, 20, 30, 40, 0};\n        int size = 4;\n\n        int index = 1;\n        for (int i = size; i > index; i--) {\n            data[i] = data[i - 1];\n        }\n        data[index] = 15;\n        size++;\n\n        System.out.println(Arrays.toString(data) + \" size \" + size);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Shift",
+      "stdout": "[10, 15, 20, 30, 40] size 5"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Inserting near the front of a big array moves almost every element. That's a real cost, and it's one reason later units introduce linked structures, which can insert without shifting."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "mem-remove",
+     "title": "Remove by shifting left",
+     "prompt": "Remove the value at <code>index</code> by shifting everything after it one slot to the left.",
+     "files": [
+      [
+       "RemoveAt.java",
+       "import java.util.Arrays;\n\npublic class RemoveAt {\n    public static void main(String[] args) {\n        int[] data = {10, 15, 20, 30, 40};\n        int size = 5;\n\n        int index = 1;\n        for (int i = index; i < [[end]]; i++) {\n            data[i] = data[[[from]]];\n        }\n        size--;\n        data[size] = 0;\n\n        System.out.println(Arrays.toString(data) + \" size \" + size);\n    }\n}\n"
+      ]
+     ],
+     "run": "RemoveAt",
+     "blanks": {
+      "end": {
+       "accept": [
+        "size-1"
+       ],
+       "solution": "size - 1",
+       "hint": "The last slot that receives a value is the second-to-last used one.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "size",
+         "shown": "size",
+         "why": "On the last pass, <code>i</code> is 4, so the loop reads <code>data[5]</code>, which doesn't exist. Stop at <code>size - 1</code>.",
+         "result": {
+          "kind": "runtime",
+          "command": "java RemoveAt",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.ArrayIndexOutOfBoundsException: Index 5 out of bounds for length 5\n\tat RemoveAt.main(RemoveAt.java:10)"
+         }
+        }
+       ],
+       "width": 8
+      },
+      "from": {
+       "accept": [
+        "i+1"
+       ],
+       "solution": "i + 1",
+       "hint": "Each slot takes the value from its right-hand neighbor.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "i-1",
+         "shown": "i - 1",
+         "why": "That copies from the left, so the value at <code>index - 1</code> spreads across the array instead of the gap closing.",
+         "result": {
+          "kind": "ok",
+          "command": "java RemoveAt",
+          "stdout": "[10, 10, 10, 10, 0] size 4"
+         }
+        }
+       ],
+       "width": 5
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java RemoveAt",
+      "stdout": "[10, 20, 30, 40, 0] size 4"
+     },
+     "explain": "Removing is the mirror image of inserting: go left to right, and each slot takes its right-hand neighbor's value."
+    },
+    {
+     "type": "quiz",
+     "id": "mem-fast",
+     "question": "Which operation on an array of 1,000,000 values is fastest?",
+     "choices": [
+      "Inserting a value at index 0",
+      "Reading the value at index 999,999",
+      "Removing the value at index 0",
+      "Making the array one slot bigger"
+     ],
+     "answer": 1,
+     "explain": "Indexing jumps straight to the slot. Inserting or removing at the front shifts nearly every value, and an array can't grow: you'd have to create a new one and copy everything."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-copy-array",
+     "mode": "independent",
+     "title": "A real copy",
+     "goal": "In <code>Copier</code>, write <code>public static int[] copy(int[] source)</code>, which returns a <strong>new</strong> array with the same values (use a loop, not <code>Arrays.copyOf</code>). Show that changing the copy leaves the original alone.",
+     "requirements": [],
+     "files": [
+      "Copier.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCopier.java",
+       "import java.util.Arrays;\n\npublic class CheckCopier {\n    public static void main(String[] args) {\n        int[] a = {7, 8};\n        int[] b = Copier.copy(a);\n        System.out.println(Arrays.toString(b) + \" \" + (a != b));\n        System.out.println(Copier.copy(new int[0]).length);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCopier",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "new\\s+int\\s*\\[",
+       "message": "Create a new array with <code>new int[...]</code>."
+      }
+     ],
+     "run": "Copier",
+     "output": "3 100\nfalse",
+     "testsOutput": "[7, 8] true\n0",
+     "solution": [
+      [
+       "Copier.java",
+       "public class Copier {\n    public static int[] copy(int[] source) {\n        int[] result = new int[source.length];\n        for (int i = 0; i < source.length; i++) {\n            result[i] = source[i];\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] original = {3, 1, 4};\n        int[] duplicate = copy(original);\n        duplicate[0] = 100;\n        System.out.println(original[0] + \" \" + duplicate[0]);\n        System.out.println(original == duplicate);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-insert-at",
+     "mode": "independent",
+     "title": "Insert by shifting",
+     "goal": "In <code>Inserter</code>, write <code>public static void insertAt(int[] data, int size, int index, int value)</code>. The array has room for at least one more value; shift everything from <code>index</code> onward one slot right, then put the value in.",
+     "requirements": [],
+     "files": [
+      "Inserter.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckInserter.java",
+       "import java.util.Arrays;\n\npublic class CheckInserter {\n    public static void main(String[] args) {\n        int[] front = {1, 2, 0};\n        Inserter.insertAt(front, 2, 0, 9);\n        System.out.println(Arrays.toString(front));\n        int[] end = {1, 2, 0};\n        Inserter.insertAt(end, 2, 2, 9);\n        System.out.println(Arrays.toString(end));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckInserter",
+     "hints": [
+      "Shift from the end backwards, so nothing is overwritten before it moves.",
+      "The method changes the array it was given; it doesn't need to return anything."
+     ],
+     "checks": [],
+     "run": "Inserter",
+     "output": "[5, 10, 15, 20]",
+     "testsOutput": "[9, 1, 2]\n[1, 2, 9]",
+     "solution": [
+      [
+       "Inserter.java",
+       "import java.util.Arrays;\n\npublic class Inserter {\n    public static void insertAt(int[] data, int size, int index, int value) {\n        for (int i = size; i > index; i--) {\n            data[i] = data[i - 1];\n        }\n        data[index] = value;\n    }\n\n    public static void main(String[] args) {\n        int[] data = {5, 10, 20, 0};\n        insertAt(data, 3, 2, 15);\n        System.out.println(Arrays.toString(data));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-without",
+     "mode": "independent",
+     "title": "A smaller array without one value",
+     "goal": "In <code>Filter</code>, write <code>public static int[] without(int[] data, int value)</code>, which returns a new array holding every element except those equal to <code>value</code>, in the same order. Count first, so the new array is exactly the right size.",
+     "requirements": [],
+     "files": [
+      "Filter.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckFilter.java",
+       "import java.util.Arrays;\n\npublic class CheckFilter {\n    public static void main(String[] args) {\n        System.out.println(Arrays.toString(Filter.without(new int[]{4, 4}, 4)));\n        System.out.println(Arrays.toString(Filter.without(new int[]{1, 2}, 9)));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckFilter",
+     "hints": [
+      "Two loops: one to count how many to keep, one to copy them into the new array using a separate <code>next</code> index."
+     ],
+     "checks": [],
+     "run": "Filter",
+     "output": "[7, 1]\n[3, 7, 3, 1, 3]",
+     "testsOutput": "[]\n[1, 2]",
+     "solution": [
+      [
+       "Filter.java",
+       "import java.util.Arrays;\n\npublic class Filter {\n    public static int[] without(int[] data, int value) {\n        int keep = 0;\n        for (int x : data) {\n            if (x != value) {\n                keep++;\n            }\n        }\n        int[] result = new int[keep];\n        int next = 0;\n        for (int x : data) {\n            if (x != value) {\n                result[next] = x;\n                next++;\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] data = {3, 7, 3, 1, 3};\n        System.out.println(Arrays.toString(without(data, 3)));\n        System.out.println(Arrays.toString(data));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Arrays",
+     "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "java.util.Arrays",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "15.10.2 Run-Time Evaluation of Array Creation Expressions",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.10.2",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    }
+   ]
+  },
+  "ds-resize": {
+   "id": "ds-resize",
+   "section": "ds-arrays",
+   "title": "Resizing an array",
+   "summary": "Make a list that never runs out of room: when the array is full, make a bigger one and copy everything across.",
+   "goals": [
+    "Tell size (values stored) from capacity (slots available)",
+    "Grow a full array by doubling it and copying the values",
+    "Reject bad indexes with an exception, the way Java's own lists do"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Size and capacity"
+    },
+    {
+     "type": "p",
+     "html": "A growable list keeps two numbers: its <strong>size</strong>, how many values it holds, and its <strong>capacity</strong>, how many slots its array has. While size is below capacity, <code>add</code> just fills the next slot. When they're equal, the array is full."
+    },
+    {
+     "type": "h",
+     "html": "Grow by doubling"
+    },
+    {
+     "type": "p",
+     "html": "An array can't get bigger, so the list makes a new, larger array, copies the values over, and switches its field to the new array. The old one is no longer referenced, and Java reclaims its memory automatically. Doubling the size each time (as Princeton's *Algorithms* textbook does) means copies happen rarely: a list that grows to a million values copies only about twenty times."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "IntList.java",
+       "public class IntList {\n    private int[] data;\n    private int size;\n\n    public IntList() {\n        data = new int[2];\n        size = 0;\n    }\n\n    public void add(int value) {\n        if (size == data.length) {\n            grow();\n        }\n        data[size] = value;\n        size++;\n    }\n\n    private void grow() {\n        int[] bigger = new int[data.length * 2];\n        for (int i = 0; i < size; i++) {\n            bigger[i] = data[i];\n        }\n        data = bigger;\n    }\n\n    public int get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public int capacity() {\n        return data.length;\n    }\n}\n"
+      ],
+      [
+       "ListTester.java",
+       "public class ListTester {\n    public static void main(String[] args) {\n        IntList list = new IntList();\n        for (int i = 1; i <= 5; i++) {\n            list.add(i * 10);\n            System.out.println(\"size \" + list.size() + \", capacity \" + list.capacity());\n        }\n        System.out.println(list.get(4));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ListTester",
+      "stdout": "size 1, capacity 2\nsize 2, capacity 2\nsize 3, capacity 4\nsize 4, capacity 4\nsize 5, capacity 8\n50"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>grow()</code> is <code>private</code>: it's a helper only the list uses. Outside code just calls <code>add</code> and never needs to know the array was replaced.",
+      "Capacity goes 2, 2, 4, 4, 8. It doubles only on the adds that find the array full.",
+      "<code>data = bigger;</code> is the switch. From then on, the field refers to the new array."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Refusing a bad index"
+    },
+    {
+     "type": "p",
+     "html": "Slots beyond <code>size</code> exist in the array but hold no real values, so <code>get</code> must refuse them, even though the array itself wouldn't complain. <code>throw new IndexOutOfBoundsException(...)</code> stops the method and reports the problem, just as Java's <code>ArrayList</code> does. The message you pass becomes part of the crash report:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "IntList.java",
+       "public class IntList {\n    private int[] data;\n    private int size;\n\n    public IntList() {\n        data = new int[2];\n        size = 0;\n    }\n\n    public void add(int value) {\n        if (size == data.length) {\n            grow();\n        }\n        data[size] = value;\n        size++;\n    }\n\n    private void grow() {\n        int[] bigger = new int[data.length * 2];\n        for (int i = 0; i < size; i++) {\n            bigger[i] = data[i];\n        }\n        data = bigger;\n    }\n\n    public int get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public int capacity() {\n        return data.length;\n    }\n}\n"
+      ],
+      [
+       "BadIndex.java",
+       "public class BadIndex {\n    public static void main(String[] args) {\n        IntList list = new IntList();\n        list.add(7);\n        System.out.println(list.get(0));\n        System.out.println(list.get(1));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java BadIndex",
+      "stdout": "7",
+      "text": "Exception in thread \"main\" java.lang.IndexOutOfBoundsException: Index 1, size 1\n\tat IntList.get(IntList.java:28)\n\tat BadIndex.main(BadIndex.java:6)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "The array has 2 slots, so <code>data[1]</code> would have quietly returned 0, a value that was never added. The exception points at the real problem instead: the tester asked for index 1 in a list of size 1."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "resize-grow",
+     "title": "Write grow",
+     "prompt": "Finish <code>grow</code>: make a new array twice as big, copy the values, and switch to it.",
+     "files": [
+      [
+       "IntList.java",
+       "public class IntList {\n    private int[] data;\n    private int size;\n\n    public IntList() {\n        data = new int[2];\n        size = 0;\n    }\n\n    public void add(int value) {\n        if (size == data.length) {\n            grow();\n        }\n        data[size] = value;\n        size++;\n    }\n\n    private void grow() {\n        int[] bigger = new int[[[cap]]];\n        for (int i = 0; i < size; i++) {\n            [[copy]];\n        }\n        [[swap]];\n    }\n\n    public int get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public int capacity() {\n        return data.length;\n    }\n}\n"
+      ],
+      [
+       "ListTester.java",
+       "public class ListTester {\n    public static void main(String[] args) {\n        IntList list = new IntList();\n        for (int i = 1; i <= 5; i++) {\n            list.add(i * 10);\n        }\n        System.out.println(\"capacity \" + list.capacity());\n        for (int i = 0; i < list.size(); i++) {\n            System.out.print(list.get(i) + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      ]
+     ],
+     "run": "ListTester",
+     "blanks": {
+      "cap": {
+       "accept": [
+        "data.length*2",
+        "2*data.length"
+       ],
+       "solution": "data.length * 2",
+       "hint": "Twice the current capacity.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "data.length+1",
+         "shown": "data.length + 1",
+         "why": "This works, but the capacity only creeps up by one (2, 3, 4, 5), so every add after the first two triggers a full copy of the array. Doubling keeps copies rare.",
+         "result": {
+          "kind": "ok",
+          "command": "java ListTester",
+          "stdout": "capacity 5\n10 20 30 40 50 "
+         }
+        }
+       ],
+       "width": 15
+      },
+      "copy": {
+       "accept": [
+        "bigger[i]=data[i]"
+       ],
+       "solution": "bigger[i] = data[i]",
+       "hint": "Copy slot <code>i</code> from the old array into the new one.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "data[i]=bigger[i]",
+         "shown": "data[i] = bigger[i]",
+         "why": "That copies the wrong way: from the new, empty array into the old one, wiping out your values with 0s.",
+         "result": {
+          "kind": "ok",
+          "command": "java ListTester",
+          "stdout": "capacity 8\n0 0 0 0 50 "
+         }
+        }
+       ],
+       "width": 19
+      },
+      "swap": {
+       "accept": [
+        "data=bigger"
+       ],
+       "solution": "data = bigger",
+       "hint": "Make the field refer to the new array.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "bigger=data",
+         "shown": "bigger = data",
+         "why": "That points the local variable back at the old array, so the field still refers to the full one and the next write runs off its end.",
+         "result": {
+          "kind": "runtime",
+          "command": "java ListTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.ArrayIndexOutOfBoundsException: Index 2 out of bounds for length 2\n\tat IntList.add(IntList.java:14)\n\tat ListTester.main(ListTester.java:5)"
+         }
+        }
+       ],
+       "width": 13
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java ListTester",
+      "stdout": "capacity 8\n10 20 30 40 50 "
+     },
+     "explain": "Make a new array, copy each value into it, then point the field at it."
+    },
+    {
+     "type": "quiz",
+     "id": "resize-cap",
+     "question": "An <code>IntList</code> starts with capacity 2 and doubles when full. After 9 <code>add</code> calls, what is its capacity?",
+     "choices": [
+      "9",
+      "10",
+      "16",
+      "18"
+     ],
+     "answer": 2,
+     "explain": "It grows 2 \u2192 4 (3rd add) \u2192 8 (5th add) \u2192 16 (9th add). Size is 9; capacity is 16."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-doublelist",
+     "mode": "independent",
+     "title": "A growable list of doubles",
+     "goal": "Write <code>DoubleList</code>, a growable list of <code>double</code>s: starts with capacity 2, doubles when full. Methods: <code>add(double)</code>, <code>get(int)</code> (throws <code>IndexOutOfBoundsException</code> for bad indexes), <code>size()</code> and <code>average()</code> (0.0 when empty).",
+     "requirements": [],
+     "files": [
+      "DoubleList.java",
+      "TempsTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDoubleList.java",
+       "public class CheckDoubleList {\n    public static void main(String[] args) {\n        DoubleList d = new DoubleList();\n        System.out.println(d.average());\n        for (int i = 0; i < 10; i++) {\n            d.add(i);\n        }\n        System.out.println(d.size() + \" \" + d.get(9));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDoubleList",
+     "hints": [
+      "The test adds 10 values to a list that starts with room for 2, so <code>add</code> must grow more than once."
+     ],
+     "checks": [],
+     "run": "TempsTester",
+     "output": "4 readings\nLast: 23.0\nAverage: 21.0",
+     "testsOutput": "0.0\n10 9.0",
+     "solution": [
+      [
+       "DoubleList.java",
+       "public class DoubleList {\n    private double[] data;\n    private int size;\n\n    public DoubleList() {\n        data = new double[2];\n    }\n\n    public void add(double value) {\n        if (size == data.length) {\n            double[] bigger = new double[data.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = data[i];\n            }\n            data = bigger;\n        }\n        data[size] = value;\n        size++;\n    }\n\n    public double get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public double average() {\n        if (size == 0) {\n            return 0.0;\n        }\n        double total = 0;\n        for (int i = 0; i < size; i++) {\n            total = total + data[i];\n        }\n        return total / size;\n    }\n}\n"
+      ],
+      [
+       "TempsTester.java",
+       "public class TempsTester {\n    public static void main(String[] args) {\n        DoubleList temps = new DoubleList();\n        temps.add(20.5);\n        temps.add(22.0);\n        temps.add(18.5);\n        temps.add(23.0);\n        System.out.println(temps.size() + \" readings\");\n        System.out.println(\"Last: \" + temps.get(3));\n        System.out.println(\"Average: \" + temps.average());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-capacity",
+     "mode": "independent",
+     "title": "Watch the capacity grow",
+     "goal": "Write <code>NameList</code>, a growable list of <code>String</code>s starting at capacity 1 and doubling when full, with <code>add</code>, <code>size()</code>, <code>capacity()</code> and <code>contains(String)</code>. In the tester, add five names and print the capacity after each add.",
+     "requirements": [],
+     "files": [
+      "NameList.java",
+      "NameTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckNameList.java",
+       "public class CheckNameList {\n    public static void main(String[] args) {\n        NameList n = new NameList();\n        System.out.println(n.size() + \" \" + n.capacity() + \" \" + n.contains(\"x\"));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckNameList",
+     "hints": [
+      "<code>contains</code> must stop at <code>size</code>: the unused slots are <code>null</code>, and calling <code>equals</code> on <code>null</code> crashes."
+     ],
+     "checks": [],
+     "run": "NameTester",
+     "output": "1 2 4 4 8\ntrue false",
+     "testsOutput": "0 1 false",
+     "solution": [
+      [
+       "NameList.java",
+       "public class NameList {\n    private String[] names;\n    private int size;\n\n    public NameList() {\n        names = new String[1];\n    }\n\n    public void add(String name) {\n        if (size == names.length) {\n            String[] bigger = new String[names.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = names[i];\n            }\n            names = bigger;\n        }\n        names[size] = name;\n        size++;\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public int capacity() {\n        return names.length;\n    }\n\n    public boolean contains(String name) {\n        for (int i = 0; i < size; i++) {\n            if (names[i].equals(name)) {\n                return true;\n            }\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "NameTester.java",
+       "public class NameTester {\n    public static void main(String[] args) {\n        NameList list = new NameList();\n        String[] incoming = {\"Ana\", \"Sam\", \"Lee\", \"Kim\", \"Bo\"};\n        for (String n : incoming) {\n            list.add(n);\n            System.out.print(list.capacity() + \" \");\n        }\n        System.out.println();\n        System.out.println(list.contains(\"Kim\") + \" \" + list.contains(\"Zed\"));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-list-insert",
+     "mode": "independent",
+     "title": "Insert into a growable list",
+     "goal": "Write <code>IntList</code> with <code>add(int)</code>, <code>get(int)</code>, <code>size()</code>, and <code>insert(int index, int value)</code>, which grows the array if needed, shifts later values right, and puts the value at <code>index</code>. An index from 0 to <code>size</code> is allowed (inserting at <code>size</code> appends); anything else throws <code>IndexOutOfBoundsException</code>.",
+     "requirements": [],
+     "files": [
+      "IntList.java",
+      "InsertTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckInsert.java",
+       "public class CheckInsert {\n    public static void main(String[] args) {\n        IntList list = new IntList();\n        list.insert(0, 1);\n        System.out.println(list.size() + \" \" + list.get(0));\n        try {\n            list.insert(5, 2);\n            System.out.println(\"no error\");\n        } catch (IndexOutOfBoundsException e) {\n            System.out.println(\"rejected index 5\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckInsert",
+     "hints": [
+      "Grow first, then shift, then place the value, then increase <code>size</code>.",
+      "Putting the growing code in a private helper lets <code>add</code> and <code>insert</code> share it."
+     ],
+     "checks": [],
+     "run": "InsertTester",
+     "output": "5 10 20 30 40",
+     "testsOutput": "1 1\nrejected index 5",
+     "solution": [
+      [
+       "IntList.java",
+       "public class IntList {\n    private int[] data = new int[2];\n    private int size;\n\n    private void growIfFull() {\n        if (size == data.length) {\n            int[] bigger = new int[data.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = data[i];\n            }\n            data = bigger;\n        }\n    }\n\n    public void add(int value) {\n        growIfFull();\n        data[size] = value;\n        size++;\n    }\n\n    public void insert(int index, int value) {\n        if (index < 0 || index > size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        growIfFull();\n        for (int i = size; i > index; i--) {\n            data[i] = data[i - 1];\n        }\n        data[index] = value;\n        size++;\n    }\n\n    public int get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n}\n"
+      ],
+      [
+       "InsertTester.java",
+       "public class InsertTester {\n    public static void main(String[] args) {\n        IntList list = new IntList();\n        list.add(10);\n        list.add(30);\n        list.insert(1, 20);\n        list.insert(0, 5);\n        list.insert(4, 40);\n        for (int i = 0; i < list.size(); i++) {\n            System.out.print(list.get(i) + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "java.util.Arrays",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "What Is an Exception?",
+     "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/definition.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "ds-generics": {
+   "id": "ds-generics",
+   "section": "ds-arrays",
+   "title": "Generic classes with <T>",
+   "summary": "Write a data structure once and use it for any type of item, with the compiler checking that the types match.",
+   "goals": [
+    "Write a generic class with a type parameter <code>&lt;T&gt;</code>",
+    "Create objects of a generic class for different types, using wrapper types like <code>Integer</code> for numbers",
+    "Build a growable list that works for any type"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "One class, any type"
+    },
+    {
+     "type": "p",
+     "html": "<code>IntList</code> from the previous lesson only holds <code>int</code>s. A list of names or songs would need another copy of the same code. A <strong>generic class</strong> takes a <strong>type parameter</strong>, a placeholder written in angle brackets like <code>&lt;T&gt;</code>, and the code uses <code>T</code> wherever the item type goes. Each time you create an object, you say what <code>T</code> is."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Box.java",
+       "public class Box<T> {\n    private T item;\n\n    public void put(T item) {\n        this.item = item;\n    }\n\n    public T get() {\n        return item;\n    }\n\n    public boolean isEmpty() {\n        return item == null;\n    }\n}\n"
+      ],
+      [
+       "BoxTester.java",
+       "public class BoxTester {\n    public static void main(String[] args) {\n        Box<String> note = new Box<>();\n        System.out.println(note.isEmpty());\n        note.put(\"Buy milk\");\n        String text = note.get();\n        System.out.println(text.length() + \" characters: \" + text);\n\n        Box<Integer> count = new Box<>();\n        count.put(42);\n        int n = count.get();\n        System.out.println(n + 1);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java BoxTester",
+      "stdout": "true\n8 characters: Buy milk\n43"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>public class Box&lt;T&gt;</code> declares the type parameter. <code>T</code> is just a name; single capital letters are the convention.",
+      "<code>Box&lt;String&gt; note</code> is a box of <code>String</code>s, so <code>note.get()</code> returns a <code>String</code> and you can call <code>length()</code> on it without a cast.",
+      "<code>new Box&lt;&gt;()</code> lets Java fill in the type from the variable. The empty <code>&lt;&gt;</code> is called the diamond.",
+      "Type parameters must be classes, not primitives, so a box of numbers is <code>Box&lt;Integer&gt;</code>. Java converts between <code>int</code> and <code>Integer</code> automatically (this is called <strong>autoboxing</strong>), which is why <code>count.put(42)</code> and <code>int n = count.get()</code> work."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "The compiler holds every box to its type. Putting a number in a box of strings is caught before the program ever runs:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Box.java",
+       "public class Box<T> {\n    private T item;\n\n    public void put(T item) {\n        this.item = item;\n    }\n\n    public T get() {\n        return item;\n    }\n\n    public boolean isEmpty() {\n        return item == null;\n    }\n}\n"
+      ],
+      [
+       "WrongType.java",
+       "public class WrongType {\n    public static void main(String[] args) {\n        Box<String> note = new Box<>();\n        note.put(42);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Box.java WrongType.java",
+      "text": "WrongType.java:4: error: incompatible types: int cannot be converted to String\n        note.put(42);\n                 ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n1 error"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "A generic growable list"
+    },
+    {
+     "type": "p",
+     "html": "Here is <code>IntList</code> turned into <code>GrowList&lt;T&gt;</code>. One wrinkle: Java doesn't allow <code>new T[...]</code>, because at run time it no longer knows what <code>T</code> is. The standard workaround, used in many textbooks and similar to what <code>ArrayList</code> does inside, is to store the items in an <code>Object[]</code> and cast each one back to <code>T</code> in <code>get</code>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "GrowList.java",
+       "public class GrowList<T> {\n    private Object[] data;\n    private int size;\n\n    public GrowList() {\n        data = new Object[2];\n        size = 0;\n    }\n\n    public void add(T value) {\n        if (size == data.length) {\n            Object[] bigger = new Object[data.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = data[i];\n            }\n            data = bigger;\n        }\n        data[size] = value;\n        size++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    public T get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return (T) data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n}\n"
+      ],
+      [
+       "GrowListTester.java",
+       "public class GrowListTester {\n    public static void main(String[] args) {\n        GrowList<String> words = new GrowList<>();\n        words.add(\"stack\");\n        words.add(\"queue\");\n        words.add(\"tree\");\n        for (int i = 0; i < words.size(); i++) {\n            System.out.println(words.get(i).toUpperCase());\n        }\n\n        GrowList<Double> prices = new GrowList<>();\n        prices.add(2.5);\n        prices.add(4.0);\n        System.out.println(prices.get(0) + prices.get(1));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java GrowListTester",
+      "stdout": "STACK\nQUEUE\nTREE\n6.5"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>(T) data[index]</code> is safe here because <code>add</code> only accepts <code>T</code>s. But the compiler can't prove it, so it would print a warning note. <code>@SuppressWarnings(&quot;unchecked&quot;)</code> tells it this cast was checked by hand.",
+      "<code>GrowList&lt;String&gt;</code> and <code>GrowList&lt;Double&gt;</code> are the same code, used for two types. This is how <code>ArrayList&lt;E&gt;</code> works."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "gen-pair",
+     "title": "A generic pair",
+     "prompt": "<code>Pair</code> holds two values of the same type. Fill in the type parameter's uses.",
+     "files": [
+      [
+       "Pair.java",
+       "public class Pair[[decl]] {\n    private T first;\n    private T second;\n\n    public Pair(T first, T second) {\n        this.first = first;\n        this.second = second;\n    }\n\n    public [[rtype]] getFirst() {\n        return first;\n    }\n\n    public T getSecond() {\n        return second;\n    }\n}\n"
+      ],
+      [
+       "PairTester.java",
+       "public class PairTester {\n    public static void main(String[] args) {\n        Pair<String> names = new Pair<>(\"Ana\", \"Sam\");\n        System.out.println(names.getFirst() + \" & \" + names.getSecond());\n        [[use]] scores = new Pair<>(90, 85);\n        System.out.println(scores.getFirst() + scores.getSecond());\n    }\n}\n"
+      ]
+     ],
+     "run": "PairTester",
+     "blanks": {
+      "decl": {
+       "accept": [
+        "<T>"
+       ],
+       "solution": "<T>",
+       "hint": "Declare the type parameter after the class name.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "",
+         "shown": "",
+         "why": "Without <code>&lt;T&gt;</code> on the class, Java doesn't know what <code>T</code> is: \"cannot find symbol: class T\".",
+         "result": {
+          "kind": "compile",
+          "command": "javac Pair.java PairTester.java",
+          "text": "Pair.java:2: error: cannot find symbol\n    private T first;\n            ^\n  symbol:   class T\n  location: class Pair\nPair.java:3: error: cannot find symbol\n    private T second;\n            ^\n  symbol:   class T\n  location: class Pair\nPair.java:5: error: cannot find symbol\n    public Pair(T first, T second) {\n                ^\n  symbol:   class T\n  location: class Pair\nPair.java:5: error: cannot find symbol\n    public Pair(T first, T second) {\n                         ^\n  symbol:   class T\n  location: class Pair\nPair.java:10: error: cannot find symbol\n    public T getFirst() {\n           ^\n  symbol:   class T\n  location: class Pair\nPair.java:14: error: cannot find symbol\n    public T getSecond() {\n           ^\n  symbol:   class T\n  location: class Pair\nPairTester.java:3: error: type Pair does not take parameters\n        Pair<String> names = new Pair<>(\"Ana\", \"Sam\");\n            ^\nPairTester.java:3: error: cannot infer type arguments for Pair\n        Pair<String> names = new Pair<>(\"Ana\", \"Sam\");\n                                     ^\n  reason: cannot use '<>' with non-generic class Pair\nPairTester.java:5: error: type Pair does not take parameters\n        Pair<Integer> scores = new Pair<>(90, 85);\n            ^\nPairTester.java:5: error: cannot infer type arguments for Pair\n        Pair<Integer> scores = new Pair<>(90, 85);\n                                       ^\n  reason: cannot use '<>' with non-generic class Pair\n10 errors"
+         }
+        }
+       ],
+       "width": 3
+      },
+      "rtype": {
+       "accept": [
+        "T"
+       ],
+       "solution": "T",
+       "hint": "<code>first</code> has type <code>T</code>.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "Object",
+         "shown": "Object",
+         "why": "This compiles, but then <code>getFirst()</code> returns <code>Object</code>, so <code>scores.getFirst() + scores.getSecond()</code> can't add an <code>Object</code> to an <code>Integer</code>. Returning <code>T</code> keeps the real type.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Pair.java PairTester.java",
+          "text": "PairTester.java:6: error: bad operand types for binary operator '+'\n        System.out.println(scores.getFirst() + scores.getSecond());\n                                             ^\n  first type:  Object\n  second type: Integer\n1 error"
+         }
+        }
+       ],
+       "width": 6
+      },
+      "use": {
+       "accept": [
+        "Pair<Integer>"
+       ],
+       "solution": "Pair<Integer>",
+       "hint": "A pair of whole numbers. Remember: type parameters need a class, not a primitive.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "Pair<int>",
+         "shown": "Pair<int>",
+         "why": "Type arguments must be reference types. Use the wrapper class <code>Integer</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Pair.java PairTester.java",
+          "text": "PairTester.java:5: error: unexpected type\n        Pair<int> scores = new Pair<>(90, 85);\n             ^\n  required: reference\n  found:    int\n1 error"
+         }
+        }
+       ],
+       "width": 13
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java PairTester",
+      "stdout": "Ana & Sam\n175"
+     },
+     "explain": "<code>Pair&lt;Integer&gt;</code> makes both getters return <code>Integer</code>, so adding them gives 175."
+    },
+    {
+     "type": "quiz",
+     "id": "gen-why",
+     "question": "What's the main benefit of <code>GrowList&lt;String&gt;</code> over a list that stores plain <code>Object</code>s?",
+     "choices": [
+      "It runs faster",
+      "The compiler rejects non-<code>String</code> items, and <code>get</code> returns a <code>String</code> with no cast",
+      "It can hold primitives directly",
+      "It never needs to grow"
+     ],
+     "answer": 1,
+     "explain": "Generics move type mistakes from run time (a crash when you cast) to compile time (an error before the program runs), and remove casts from the code that uses the list."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-box",
+     "mode": "independent",
+     "title": "A generic box",
+     "goal": "Write <code>Box&lt;T&gt;</code> with a private <code>T item</code>, <code>put(T)</code>, <code>get()</code>, <code>isEmpty()</code>, and <code>take()</code>, which returns the item and leaves the box empty.",
+     "requirements": [],
+     "files": [
+      "Box.java",
+      "BoxTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBox.java",
+       "public class CheckBox {\n    public static void main(String[] args) {\n        Box<Double> b = new Box<>();\n        System.out.println(b.isEmpty() + \" \" + b.take());\n        b.put(1.5);\n        System.out.println(b.get() + \" \" + b.isEmpty());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBox",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "class\\s+Box\\s*<\\s*T\\s*>",
+       "message": "Declare the class as <code>Box&lt;T&gt;</code>."
+      }
+     ],
+     "run": "BoxTester",
+     "output": "scarf true\n42",
+     "testsOutput": "true null\n1.5 false",
+     "solution": [
+      [
+       "Box.java",
+       "public class Box<T> {\n    private T item;\n\n    public void put(T item) {\n        this.item = item;\n    }\n\n    public T get() {\n        return item;\n    }\n\n    public boolean isEmpty() {\n        return item == null;\n    }\n\n    public T take() {\n        T result = item;\n        item = null;\n        return result;\n    }\n}\n"
+      ],
+      [
+       "BoxTester.java",
+       "public class BoxTester {\n    public static void main(String[] args) {\n        Box<String> gift = new Box<>();\n        gift.put(\"scarf\");\n        System.out.println(gift.take() + \" \" + gift.isEmpty());\n        Box<Integer> number = new Box<>();\n        number.put(7);\n        System.out.println(number.get() * 6);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-growlist",
+     "mode": "independent",
+     "title": "A generic growable list",
+     "goal": "Write <code>GrowList&lt;T&gt;</code>: a growable list of any type, stored in an <code>Object[]</code> with capacity 2 that doubles when full. Methods: <code>add(T)</code>, <code>get(int)</code> (cast back to <code>T</code>, with <code>@SuppressWarnings(&quot;unchecked&quot;)</code>), <code>size()</code> and <code>contains(T)</code>, which compares with <code>equals</code>.",
+     "requirements": [],
+     "files": [
+      "GrowList.java",
+      "GrowTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckGrow.java",
+       "public class CheckGrow {\n    public static void main(String[] args) {\n        GrowList<Integer> nums = new GrowList<>();\n        for (int i = 0; i < 9; i++) {\n            nums.add(i * i);\n        }\n        System.out.println(nums.get(8) + \" \" + nums.contains(49) + \" \" + nums.contains(50));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckGrow",
+     "hints": [
+      "Compare with <code>data[i].equals(value)</code>, not <code>==</code>: two <code>Integer</code> or <code>String</code> objects with the same value aren't always the same object."
+     ],
+     "checks": [],
+     "run": "GrowTester",
+     "output": "3 kiwi true",
+     "testsOutput": "64 true false",
+     "solution": [
+      [
+       "GrowList.java",
+       "public class GrowList<T> {\n    private Object[] data = new Object[2];\n    private int size;\n\n    public void add(T value) {\n        if (size == data.length) {\n            Object[] bigger = new Object[data.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = data[i];\n            }\n            data = bigger;\n        }\n        data[size] = value;\n        size++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    public T get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return (T) data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public boolean contains(T value) {\n        for (int i = 0; i < size; i++) {\n            if (data[i].equals(value)) {\n                return true;\n            }\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "GrowTester.java",
+       "public class GrowTester {\n    public static void main(String[] args) {\n        GrowList<String> fruit = new GrowList<>();\n        fruit.add(\"pear\");\n        fruit.add(\"fig\");\n        fruit.add(\"kiwi\");\n        System.out.println(fruit.size() + \" \" + fruit.get(2) + \" \" + fruit.contains(\"fig\"));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-pair",
+     "mode": "independent",
+     "title": "A generic pair with a swap",
+     "goal": "Write <code>Pair&lt;T&gt;</code> holding <code>first</code> and <code>second</code> of the same type, with getters, a <code>toString</code> like <code>(left, right)</code>, and <code>swapped()</code>, which returns a <strong>new</strong> pair with the two values switched.",
+     "requirements": [],
+     "files": [
+      "Pair.java",
+      "PairTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckPair.java",
+       "public class CheckPair {\n    public static void main(String[] args) {\n        Pair<Integer> n = new Pair<>(1, 2).swapped();\n        System.out.println(n.getFirst() + n.getSecond() * 10);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckPair",
+     "hints": [
+      "<code>swapped()</code> returns <code>Pair&lt;T&gt;</code>, built with <code>new Pair&lt;&gt;(second, first)</code>."
+     ],
+     "checks": [],
+     "run": "PairTester",
+     "output": "(left, right)\n(right, left)\n(left, right)",
+     "testsOutput": "12",
+     "solution": [
+      [
+       "Pair.java",
+       "public class Pair<T> {\n    private T first;\n    private T second;\n\n    public Pair(T first, T second) {\n        this.first = first;\n        this.second = second;\n    }\n\n    public T getFirst() {\n        return first;\n    }\n\n    public T getSecond() {\n        return second;\n    }\n\n    public Pair<T> swapped() {\n        return new Pair<>(second, first);\n    }\n\n    @Override\n    public String toString() {\n        return \"(\" + first + \", \" + second + \")\";\n    }\n}\n"
+      ],
+      [
+       "PairTester.java",
+       "public class PairTester {\n    public static void main(String[] args) {\n        Pair<String> p = new Pair<>(\"left\", \"right\");\n        System.out.println(p);\n        System.out.println(p.swapped());\n        System.out.println(p);\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Generic Types",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Why Use Generics?",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/why.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Part 12.1: Type parameters",
+     "url": "https://java-programming.mooc.fi/part-12/1-type-parameters",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "ws-ds-arrays": {
+   "id": "ws-ds-arrays",
+   "section": "ds-arrays",
+   "title": "Workshop: arrays as data structures",
+   "summary": "Practice building a growable list from scratch and writing the array algorithms data structures depend on: reversing, rotating, shifting and copying.",
+   "goals": [
+    "Build a growable list with bounds checks and removal",
+    "Write in-place array algorithms with two indexes",
+    "Return a new array instead of changing the original"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: A growable to-do list"
+    },
+    {
+     "type": "write",
+     "id": "ws-u12-todo",
+     "mode": "guided",
+     "title": "A growable to-do list",
+     "goal": "Build <code>StringList</code> one feature at a time, until it grows, checks indexes and removes.",
+     "requirements": [],
+     "files": [
+      "StringList.java",
+      "TodoTester.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "A fixed list",
+       "text": "Create <code>StringList</code> with a private <code>String[]</code> of capacity 2 and a <code>size</code>. Add <code>add</code>, <code>get(int)</code> and <code>size()</code>. For now, <code>add</code> doesn't grow.",
+       "hint": null,
+       "files": [
+        "StringList.java",
+        "TodoTester.java"
+       ],
+       "run": "TodoTester",
+       "output": "2: wash dishes, call Gran",
+       "checks": [],
+       "solution": [
+        [
+         "StringList.java",
+         "public class StringList {\n    private String[] items;\n    private int size;\n\n    public StringList() {\n        items = new String[2];\n        size = 0;\n    }\n\n    public void add(String item) {\n        items[size] = item;\n        size++;\n    }\n\n    public String get(int index) {\n        return items[index];\n    }\n\n    public int size() {\n        return size;\n    }\n}\n"
+        ],
+        [
+         "TodoTester.java",
+         "public class TodoTester {\n    public static void main(String[] args) {\n        StringList todo = new StringList();\n        todo.add(\"wash dishes\");\n        todo.add(\"call Gran\");\n        System.out.println(todo.size() + \": \" + todo.get(0) + \", \" + todo.get(1));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Growing",
+       "text": "Make <code>add</code> double the array when it's full, so four items fit. Print them numbered.",
+       "hint": "If <code>size == items.length</code>, make a bigger array, copy, and switch the field before storing the new item.",
+       "files": [
+        "StringList.java",
+        "TodoTester.java"
+       ],
+       "run": "TodoTester",
+       "output": "1. wash dishes\n2. call Gran\n3. study Java\n4. water plants",
+       "checks": [],
+       "solution": [
+        [
+         "StringList.java",
+         "public class StringList {\n    private String[] items;\n    private int size;\n\n    public StringList() {\n        items = new String[2];\n        size = 0;\n    }\n\n    public void add(String item) {\n        if (size == items.length) {\n            String[] bigger = new String[items.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = items[i];\n            }\n            items = bigger;\n        }\n        items[size] = item;\n        size++;\n    }\n\n    public String get(int index) {\n        return items[index];\n    }\n\n    public int size() {\n        return size;\n    }\n}\n"
+        ],
+        [
+         "TodoTester.java",
+         "public class TodoTester {\n    public static void main(String[] args) {\n        StringList todo = new StringList();\n        todo.add(\"wash dishes\");\n        todo.add(\"call Gran\");\n        todo.add(\"study Java\");\n        todo.add(\"water plants\");\n        for (int i = 0; i < todo.size(); i++) {\n            System.out.println((i + 1) + \". \" + todo.get(i));\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Checking indexes",
+       "text": "Make <code>get</code> throw an <code>IndexOutOfBoundsException</code> with the message <code>Index &lt;i&gt;, size &lt;size&gt;</code> for any index below 0 or at least <code>size</code>. Then try it: change the tester to ask for <code>get(1)</code> and run it to see your exception, then change it back so the step passes.",
+       "hint": "Without the check, <code>get(1)</code> would quietly return <code>null</code> from the unused slot.",
+       "files": [
+        "StringList.java",
+        "TodoTester.java"
+       ],
+       "run": "TodoTester",
+       "output": "wash dishes\n1",
+       "checks": [
+        {
+         "pattern": "throw\\s+new\\s+IndexOutOfBoundsException",
+         "message": "Throw an <code>IndexOutOfBoundsException</code> for a bad index."
+        },
+        {
+         "pattern": ">=\\s*size",
+         "message": "Reject indexes that are <code>&gt;= size</code>, not just ones past the array's length."
+        }
+       ],
+       "solution": [
+        [
+         "StringList.java",
+         "public class StringList {\n    private String[] items;\n    private int size;\n\n    public StringList() {\n        items = new String[2];\n        size = 0;\n    }\n\n    public void add(String item) {\n        if (size == items.length) {\n            String[] bigger = new String[items.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = items[i];\n            }\n            items = bigger;\n        }\n        items[size] = item;\n        size++;\n    }\n\n    public String get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return items[index];\n    }\n\n    public int size() {\n        return size;\n    }\n}\n"
+        ],
+        [
+         "TodoTester.java",
+         "public class TodoTester {\n    public static void main(String[] args) {\n        StringList todo = new StringList();\n        todo.add(\"wash dishes\");\n        System.out.println(todo.get(0));\n        System.out.println(todo.size());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Removing",
+       "text": "Add <code>remove(int index)</code>, which shifts the later items left, clears the old last slot, shrinks <code>size</code>, and returns the removed item. Remove the first to-do item.",
+       "hint": null,
+       "files": [
+        "StringList.java",
+        "TodoTester.java"
+       ],
+       "run": "TodoTester",
+       "output": "Done: wash dishes\n1. call Gran\n2. study Java",
+       "checks": [
+        {
+         "pattern": "items\\s*\\[\\s*i\\s*\\]\\s*=\\s*items\\s*\\[\\s*i\\s*\\+\\s*1\\s*\\]",
+         "message": "Shift left with <code>items[i] = items[i + 1];</code>."
+        }
+       ],
+       "solution": [
+        [
+         "StringList.java",
+         "public class StringList {\n    private String[] items;\n    private int size;\n\n    public StringList() {\n        items = new String[2];\n        size = 0;\n    }\n\n    public void add(String item) {\n        if (size == items.length) {\n            String[] bigger = new String[items.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = items[i];\n            }\n            items = bigger;\n        }\n        items[size] = item;\n        size++;\n    }\n\n    public String get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return items[index];\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public String remove(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        String removed = items[index];\n        for (int i = index; i < size - 1; i++) {\n            items[i] = items[i + 1];\n        }\n        size--;\n        items[size] = null;\n        return removed;\n    }\n}\n"
+        ],
+        [
+         "TodoTester.java",
+         "public class TodoTester {\n    public static void main(String[] args) {\n        StringList todo = new StringList();\n        todo.add(\"wash dishes\");\n        todo.add(\"call Gran\");\n        todo.add(\"study Java\");\n        System.out.println(\"Done: \" + todo.remove(0));\n        for (int i = 0; i < todo.size(); i++) {\n            System.out.println((i + 1) + \". \" + todo.get(i));\n        }\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: Array algorithms"
+    },
+    {
+     "type": "write",
+     "id": "ws-u12-ops",
+     "mode": "guided",
+     "title": "Array algorithms",
+     "goal": "Write three classic array operations as static methods.",
+     "requirements": [],
+     "files": [
+      "ArrayOps.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Reverse in place",
+       "text": "In <code>ArrayOps</code>, write <code>reverse(int[] data)</code>, which reverses the array in place by swapping the outermost pair, then moving both indexes inward.",
+       "hint": "Swapping needs a temporary variable: <code>int temp = data[left]; data[left] = data[right]; data[right] = temp;</code>",
+       "files": [
+        "ArrayOps.java"
+       ],
+       "run": "ArrayOps",
+       "output": "[5, 4, 3, 2, 1]",
+       "checks": [],
+       "solution": [
+        [
+         "ArrayOps.java",
+         "import java.util.Arrays;\n\npublic class ArrayOps {\n    public static void reverse(int[] data) {\n        int left = 0;\n        int right = data.length - 1;\n        while (left < right) {\n            int temp = data[left];\n            data[left] = data[right];\n            data[right] = temp;\n            left++;\n            right--;\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 3, 4, 5};\n        reverse(nums);\n        System.out.println(Arrays.toString(nums));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Rotate left",
+       "text": "Add <code>rotateLeft(int[] data)</code>: every value moves one slot left, and the first value wraps around to the end. Apply it after the reverse.",
+       "hint": "Save <code>data[0]</code> first, shift everything left, then put the saved value in the last slot.",
+       "files": [
+        "ArrayOps.java"
+       ],
+       "run": "ArrayOps",
+       "output": "[5, 4, 3, 2, 1]\n[4, 3, 2, 1, 5]",
+       "checks": [],
+       "solution": [
+        [
+         "ArrayOps.java",
+         "import java.util.Arrays;\n\npublic class ArrayOps {\n    public static void reverse(int[] data) {\n        int left = 0;\n        int right = data.length - 1;\n        while (left < right) {\n            int temp = data[left];\n            data[left] = data[right];\n            data[right] = temp;\n            left++;\n            right--;\n        }\n    }\n\n    public static void rotateLeft(int[] data) {\n        if (data.length == 0) {\n            return;\n        }\n        int first = data[0];\n        for (int i = 0; i < data.length - 1; i++) {\n            data[i] = data[i + 1];\n        }\n        data[data.length - 1] = first;\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 3, 4, 5};\n        reverse(nums);\n        System.out.println(Arrays.toString(nums));\n        rotateLeft(nums);\n        System.out.println(Arrays.toString(nums));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "A longer copy",
+       "text": "Add <code>appended(int[] data, int value)</code>, which returns a <strong>new</strong> array one slot longer with the value at the end, leaving the original unchanged. Use <code>Arrays.copyOf</code>.",
+       "hint": null,
+       "files": [
+        "ArrayOps.java"
+       ],
+       "run": "ArrayOps",
+       "output": "[5, 4, 3, 2, 1]\n[4, 3, 2, 1, 5]\n[4, 3, 2, 1, 5, 99] 5",
+       "checks": [],
+       "solution": [
+        [
+         "ArrayOps.java",
+         "import java.util.Arrays;\n\npublic class ArrayOps {\n    public static void reverse(int[] data) {\n        int left = 0;\n        int right = data.length - 1;\n        while (left < right) {\n            int temp = data[left];\n            data[left] = data[right];\n            data[right] = temp;\n            left++;\n            right--;\n        }\n    }\n\n    public static void rotateLeft(int[] data) {\n        if (data.length == 0) {\n            return;\n        }\n        int first = data[0];\n        for (int i = 0; i < data.length - 1; i++) {\n            data[i] = data[i + 1];\n        }\n        data[data.length - 1] = first;\n    }\n\n    public static int[] appended(int[] data, int value) {\n        int[] result = Arrays.copyOf(data, data.length + 1);\n        result[data.length] = value;\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 3, 4, 5};\n        reverse(nums);\n        System.out.println(Arrays.toString(nums));\n        rotateLeft(nums);\n        System.out.println(Arrays.toString(nums));\n        int[] longer = appended(nums, 99);\n        System.out.println(Arrays.toString(longer) + \" \" + nums.length);\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: A set with no duplicates"
+    },
+    {
+     "type": "write",
+     "id": "ws-u12-set",
+     "mode": "independent",
+     "title": "A set with no duplicates",
+     "goal": "Write <code>IntSet</code>, a growable collection of <code>int</code>s (capacity 2, doubling) that never holds the same value twice. <code>add(int)</code> returns <code>true</code> if the value was new and <code>false</code> if it was already there. Add <code>contains(int)</code> and <code>size()</code>.",
+     "requirements": [],
+     "files": [
+      "IntSet.java",
+      "SetTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckSet.java",
+       "public class CheckSet {\n    public static void main(String[] args) {\n        IntSet s = new IntSet();\n        System.out.println(s.contains(0));\n        for (int i = 0; i < 20; i++) {\n            s.add(i % 7);\n        }\n        System.out.println(s.size() + \" \" + s.contains(6) + \" \" + s.contains(7));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSet",
+     "hints": [
+      "<code>add</code> can call <code>contains</code> first and stop early if the value is already there."
+     ],
+     "checks": [],
+     "run": "SetTester",
+     "output": "true true false true false true\n4 different values",
+     "testsOutput": "false\n7 true false",
+     "solution": [
+      [
+       "IntSet.java",
+       "public class IntSet {\n    private int[] values = new int[2];\n    private int size;\n\n    public boolean contains(int value) {\n        for (int i = 0; i < size; i++) {\n            if (values[i] == value) {\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public boolean add(int value) {\n        if (contains(value)) {\n            return false;\n        }\n        if (size == values.length) {\n            int[] bigger = new int[values.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = values[i];\n            }\n            values = bigger;\n        }\n        values[size] = value;\n        size++;\n        return true;\n    }\n\n    public int size() {\n        return size;\n    }\n}\n"
+      ],
+      [
+       "SetTester.java",
+       "public class SetTester {\n    public static void main(String[] args) {\n        IntSet seen = new IntSet();\n        int[] rolls = {4, 2, 4, 6, 2, 1};\n        for (int r : rolls) {\n            System.out.print(seen.add(r) + \" \");\n        }\n        System.out.println();\n        System.out.println(seen.size() + \" different values\");\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: Exam-sized array methods"
+    },
+    {
+     "type": "write",
+     "id": "ws-u12-counts",
+     "mode": "independent",
+     "title": "Exam-sized array methods",
+     "goal": "In <code>Stats</code>, write two static methods: <code>countAbove(int[] data, int limit)</code> returns how many values are greater than <code>limit</code>, and <code>maxIndex(int[] data)</code> returns the index of the largest value (the first one, if there's a tie). Assume the array isn't empty.",
+     "requirements": [],
+     "files": [
+      "Stats.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckStats.java",
+       "public class CheckStats {\n    public static void main(String[] args) {\n        int[] neg = {-5, -2, -9};\n        System.out.println(Stats.countAbove(neg, -3) + \" \" + Stats.maxIndex(neg));\n        int[] one = {4};\n        System.out.println(Stats.countAbove(one, 4) + \" \" + Stats.maxIndex(one));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckStats",
+     "hints": [
+      "<code>maxIndex</code> remembers the best <strong>index</strong> so far, not the best value. Compare with <code>data[best]</code>.",
+      "Strictly greater (<code>&gt;</code>) keeps the first of two tied maximums."
+     ],
+     "checks": [],
+     "run": "Stats",
+     "output": "3\n1",
+     "testsOutput": "1 1\n0 0",
+     "solution": [
+      [
+       "Stats.java",
+       "public class Stats {\n    public static int countAbove(int[] data, int limit) {\n        int count = 0;\n        for (int x : data) {\n            if (x > limit) {\n                count++;\n            }\n        }\n        return count;\n    }\n\n    public static int maxIndex(int[] data) {\n        int best = 0;\n        for (int i = 1; i < data.length; i++) {\n            if (data[i] > data[best]) {\n                best = i;\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        int[] scores = {72, 95, 88, 95, 60};\n        System.out.println(countAbove(scores, 80));\n        System.out.println(maxIndex(scores));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "java.util.Arrays",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Reading 8: Abstract Data Types",
+     "url": "https://web.mit.edu/6.005/www/fa14/classes/08-abstract-data-types/",
+     "org": "MIT, 6.005 Software Construction",
+     "note": null
+    },
+    {
+     "title": "Generic Types",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "exam-practice-1": {
+   "id": "exam-practice-1",
+   "section": "exam-1",
+   "title": "Exam practice 1",
+   "summary": "A practice set in the COS 225 exam format covering units 1 to 12: short answers, fixing code, filling in method bodies, and writing classes from scratch.",
+   "goals": [
+    "Answer short definition questions about OOP, inheritance, interfaces and arrays",
+    "Find and fix mistakes in small programs",
+    "Fill in method bodies and write short classes from scratch"
+   ],
+   "cos225": "This page follows the exam guide's format: short-answer questions (a few words, or a small snippet), fixing code, filling in blanks that are usually method bodies, and code-writing that \"should not require more than eight lines of code optimally\". The real exam is on paper and lenient about syntax, so try each part on paper before you check it here.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How to use this page"
+    },
+    {
+     "type": "list",
+     "items": [
+      "Work through it in order, without looking back at the lessons. Afterwards, revisit only the topics you missed.",
+      "For the coding parts, write your answer on paper first. Then type it in and run it, and let the compiler and the tests tell you what you missed.",
+      "The exam guide's advice: stay calm, and spend a few minutes reading each coding problem before you write anything."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Part A: short answers"
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-new",
+     "question": "What does the keyword <code>new</code> do in <code>Dog rex = new Dog(&quot;Rex&quot;);</code>?",
+     "choices": [
+      "Declares the variable <code>rex</code>",
+      "Creates a new <code>Dog</code> object and runs its constructor",
+      "Makes <code>Dog</code> a subclass",
+      "Copies an existing dog"
+     ],
+     "answer": 1,
+     "explain": "<code>new</code> instantiates: it creates the object and runs the matching constructor. The variable then refers to it."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-super",
+     "question": "In <code>class Truck extends Vehicle</code>, which is the superclass?",
+     "choices": [
+      "<code>Truck</code>",
+      "<code>Vehicle</code>",
+      "<code>Object</code>, always",
+      "Neither; <code>extends</code> is for interfaces"
+     ],
+     "answer": 1,
+     "explain": "The class after <code>extends</code> is the superclass. <code>Truck</code> is the subclass that inherits from it."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-object",
+     "question": "A class is written with no <code>extends</code>. What does it inherit from?",
+     "choices": [
+      "Nothing",
+      "<code>Object</code>",
+      "The class that uses it",
+      "Its interface"
+     ],
+     "answer": 1,
+     "explain": "Every class without an explicit superclass extends <code>java.lang.Object</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-implements",
+     "question": "How many classes can a class extend, and how many interfaces can it implement?",
+     "choices": [
+      "One class; one interface",
+      "Any number of each",
+      "One class; any number of interfaces",
+      "No classes; any number of interfaces"
+     ],
+     "answer": 2,
+     "explain": "Single inheritance for classes, but a class may implement multiple interfaces, as long as it implements all of their methods."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-abstract",
+     "question": "What is an abstract method?",
+     "choices": [
+      "A method that's <code>private</code>",
+      "A method with no body that every concrete subclass must implement",
+      "A method that can only be called once",
+      "A method inherited from <code>Object</code>"
+     ],
+     "answer": 1,
+     "explain": "It defines a behavior without saying how it works: \"a car should start, but each car starts its own way\". A class with one must be abstract."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-encap",
+     "question": "Which line best shows encapsulation?",
+     "choices": [
+      "<code>public int balance;</code>",
+      "<code>private int balance;</code> with a <code>deposit</code> method that rejects negative amounts",
+      "<code>class Savings extends Account</code>",
+      "<code>Animal a = new Dog();</code>"
+     ],
+     "answer": 1,
+     "explain": "Encapsulation: the object protects its own data and controls changes through its methods."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-poly",
+     "question": "<code>Animal[] pets = {new Dog(&quot;Rex&quot;), new Cat(&quot;Tom&quot;)};</code> and each overrides <code>speak()</code>. What does polymorphism mean here?",
+     "choices": [
+      "Both print the <code>Animal</code> version",
+      "Each object runs its own class's <code>speak()</code>",
+      "The array can only hold one kind of animal",
+      "<code>speak()</code> must be static"
+     ],
+     "answer": 1,
+     "explain": "Cats and dogs can be used where animals are expected, and each still behaves as its own class."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-override",
+     "question": "What does <code>@Override</code> do?",
+     "choices": [
+      "Makes a method run faster",
+      "Asks the compiler to confirm the method really replaces an inherited one",
+      "Makes a method private",
+      "Creates a new method"
+     ],
+     "answer": 1,
+     "explain": "If the method doesn't match one in a superclass or interface (say, there's a typo), the compiler reports an error."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-array",
+     "question": "<code>String[] names = new String[4];</code> What is <code>names[3]</code> right after this line?",
+     "choices": [
+      "<code>&quot;&quot;</code>",
+      "<code>null</code>",
+      "An error",
+      "<code>&quot;names3&quot;</code>"
+     ],
+     "answer": 1,
+     "explain": "A new array of objects has <code>null</code> in every slot. Index 3 is the last valid one, since <code>length</code> is 4."
+    },
+    {
+     "type": "quiz",
+     "id": "ex1-q-list",
+     "question": "What's the main difference between an array and an <code>ArrayList</code>?",
+     "choices": [
+      "An <code>ArrayList</code> can only hold numbers",
+      "An array's size is fixed; an <code>ArrayList</code> grows as you add",
+      "Arrays are slower to index",
+      "An <code>ArrayList</code> can't be looped over"
+     ],
+     "answer": 1,
+     "explain": "An <code>ArrayList</code> is a list ADT backed by an array that it resizes for you."
+    },
+    {
+     "type": "h",
+     "html": "Part B: fix the code"
+    },
+    {
+     "type": "error",
+     "id": "ex1-fix-super",
+     "prompt": "<code>Dog</code> won't compile.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    private String breed;\n\n    public Dog(String name, String breed) {\n        this.breed = breed;\n    }\n}\n"
+      ],
+      [
+       "DogTester.java",
+       "public class DogTester {\n    public static void main(String[] args) {\n        Dog d = new Dog(\"Rex\", \"lab\");\n        System.out.println(d.getName());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Animal.java Dog.java DogTester.java",
+      "text": "Dog.java:4: error: constructor Animal in class Animal cannot be applied to given types;\n    public Dog(String name, String breed) {\n                                          ^\n  required: String\n  found:    no arguments\n  reason: actual and formal argument lists differ in length\n1 error"
+     },
+     "question": "What single line fixes it?",
+     "choices": [
+      "<code>this.name = name;</code> in <code>Dog</code>",
+      "<code>super(name);</code> as the first line of <code>Dog</code>'s constructor",
+      "<code>super();</code> as the last line",
+      "Delete <code>extends Animal</code>"
+     ],
+     "answer": 1,
+     "explain": "<code>Animal</code> has no no-argument constructor, so <code>Dog</code> must pass the name up with <code>super(name);</code> first. <code>name</code> is private to <code>Animal</code>.",
+     "fixedFiles": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    private String breed;\n\n    public Dog(String name, String breed) {\n        super(name);\n        this.breed = breed;\n    }\n}\n"
+      ],
+      [
+       "DogTester.java",
+       "public class DogTester {\n    public static void main(String[] args) {\n        Dog d = new Dog(\"Rex\", \"lab\");\n        System.out.println(d.getName());\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java DogTester",
+      "stdout": "Rex"
+     }
+    },
+    {
+     "type": "error",
+     "id": "ex1-fix-iface",
+     "prompt": "<code>Fan</code> claims to implement <code>Switchable</code>.",
+     "files": [
+      [
+       "Switchable.java",
+       "public interface Switchable {\n    void turnOn();\n}\n"
+      ],
+      [
+       "Fan.java",
+       "public class Fan implements Switchable {\n    void turnOn() {\n        System.out.println(\"Fan on\");\n    }\n}\n"
+      ],
+      [
+       "FanTester.java",
+       "public class FanTester {\n    public static void main(String[] args) {\n        new Fan().turnOn();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Fan.java FanTester.java Switchable.java",
+      "text": "Fan.java:2: error: turnOn() in Fan cannot implement turnOn() in Switchable\n    void turnOn() {\n         ^\n  attempting to assign weaker access privileges; was public\n1 error"
+     },
+     "question": "What's wrong?",
+     "choices": [
+      "<code>turnOn</code> must be <code>public</code>",
+      "<code>Fan</code> must extend <code>Switchable</code>",
+      "Interfaces can't have methods",
+      "<code>turnOn</code> must return <code>boolean</code>"
+     ],
+     "answer": 0,
+     "explain": "Interface methods are public, and an implementation can't be less accessible.",
+     "fixedFiles": [
+      [
+       "Switchable.java",
+       "public interface Switchable {\n    void turnOn();\n}\n"
+      ],
+      [
+       "Fan.java",
+       "public class Fan implements Switchable {\n    public void turnOn() {\n        System.out.println(\"Fan on\");\n    }\n}\n"
+      ],
+      [
+       "FanTester.java",
+       "public class FanTester {\n    public static void main(String[] args) {\n        new Fan().turnOn();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java FanTester",
+      "stdout": "Fan on"
+     }
+    },
+    {
+     "type": "error",
+     "id": "ex1-fix-loop",
+     "prompt": "This compiles, but crashes.",
+     "files": [
+      [
+       "Total.java",
+       "public class Total {\n    public static void main(String[] args) {\n        int[] prices = {4, 10, 6};\n        int sum = 0;\n        for (int i = 1; i <= prices.length; i++) {\n            sum = sum + prices[i];\n        }\n        System.out.println(sum);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java Total",
+      "stdout": "",
+      "text": "Exception in thread \"main\" java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3\n\tat Total.main(Total.java:6)"
+     },
+     "question": "Which loop header is correct?",
+     "choices": [
+      "<code>for (int i = 1; i &lt; prices.length; i++)</code>",
+      "<code>for (int i = 0; i &lt; prices.length; i++)</code>",
+      "<code>for (int i = 0; i &lt;= prices.length; i++)</code>",
+      "<code>for (int i = 1; i &lt;= prices.length - 1; i++)</code>"
+     ],
+     "answer": 1,
+     "explain": "Indexes run from 0 to <code>length - 1</code>. The original skipped index 0 and then went past the end.",
+     "fixedFiles": [
+      [
+       "Total.java",
+       "public class Total {\n    public static void main(String[] args) {\n        int[] prices = {4, 10, 6};\n        int sum = 0;\n        for (int i = 0; i < prices.length; i++) {\n            sum = sum + prices[i];\n        }\n        System.out.println(sum);\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java Total",
+      "stdout": "20"
+     }
+    },
+    {
+     "type": "h",
+     "html": "Part C: fill in the method bodies"
+    },
+    {
+     "type": "p",
+     "html": "Each file below compiles but gives wrong answers, because the method bodies are placeholders. Replace the placeholders, then run."
+    },
+    {
+     "type": "write",
+     "id": "ex1-fill-library",
+     "mode": "independent",
+     "title": "Fill in: a library's methods",
+     "goal": "<code>Book</code> is finished. In <code>Library</code>, fill in the bodies of <code>countAvailable()</code> and <code>find(String title)</code>. Some slots in the array may be <code>null</code>.",
+     "requirements": [
+      "Only change the two method bodies marked \"Fill in\""
+     ],
+     "files": [
+      "Book.java",
+      "Library.java",
+      "LibraryTester.java"
+     ],
+     "starter": [
+      [
+       "Book.java",
+       "public class Book {\n    private String title;\n    private boolean available;\n\n    public Book(String title) {\n        this.title = title;\n        available = true;\n    }\n\n    public String getTitle() {\n        return title;\n    }\n\n    public boolean isAvailable() {\n        return available;\n    }\n\n    public void checkOut() {\n        available = false;\n    }\n}\n"
+      ],
+      [
+       "Library.java",
+       "public class Library {\n    private Book[] books;\n\n    public Library(Book[] books) {\n        this.books = books;\n    }\n\n    public int countAvailable() {\n        // Fill in: how many non-empty slots hold an available book?\n        return 0;\n    }\n\n    public Book find(String title) {\n        // Fill in: the book with this title, or null if there isn't one.\n        return null;\n    }\n}\n"
+      ],
+      [
+       "LibraryTester.java",
+       "public class LibraryTester {\n    public static void main(String[] args) {\n        Book[] shelf = {new Book(\"Night Trains\"), null, new Book(\"Low Tide\"), new Book(\"Northbound\")};\n        Library lib = new Library(shelf);\n        System.out.println(lib.countAvailable());\n        lib.find(\"Low Tide\").checkOut();\n        System.out.println(lib.countAvailable());\n        System.out.println(lib.find(\"Missing Book\"));\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "Both loops need the null check first: <code>b != null &amp;&amp; ...</code>",
+      "Compare titles with <code>equals</code>."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "runtime",
+      "command": "java LibraryTester",
+      "stdout": "0",
+      "text": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"Book.checkOut()\" because the return value of \"Library.find(String)\" is null\n\tat LibraryTester.main(LibraryTester.java:6)"
+     },
+     "run": "LibraryTester",
+     "output": "3\n2\nnull",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Book.java",
+       "public class Book {\n    private String title;\n    private boolean available;\n\n    public Book(String title) {\n        this.title = title;\n        available = true;\n    }\n\n    public String getTitle() {\n        return title;\n    }\n\n    public boolean isAvailable() {\n        return available;\n    }\n\n    public void checkOut() {\n        available = false;\n    }\n}\n"
+      ],
+      [
+       "Library.java",
+       "public class Library {\n    private Book[] books;\n\n    public Library(Book[] books) {\n        this.books = books;\n    }\n\n    public int countAvailable() {\n        int count = 0;\n        for (Book b : books) {\n            if (b != null && b.isAvailable()) {\n                count++;\n            }\n        }\n        return count;\n    }\n\n    public Book find(String title) {\n        for (Book b : books) {\n            if (b != null && b.getTitle().equals(title)) {\n                return b;\n            }\n        }\n        return null;\n    }\n}\n"
+      ],
+      [
+       "LibraryTester.java",
+       "public class LibraryTester {\n    public static void main(String[] args) {\n        Book[] shelf = {new Book(\"Night Trains\"), null, new Book(\"Low Tide\"), new Book(\"Northbound\")};\n        Library lib = new Library(shelf);\n        System.out.println(lib.countAvailable());\n        lib.find(\"Low Tide\").checkOut();\n        System.out.println(lib.countAvailable());\n        System.out.println(lib.find(\"Missing Book\"));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "ex1-fill-shapes",
+     "mode": "independent",
+     "title": "Fill in: shapes behind an interface",
+     "goal": "Fill in <code>area()</code> for <code>Square</code> and <code>Triangle</code>, and <code>largest(Shape[] shapes)</code> in <code>Shapes</code>.",
+     "requirements": [
+      "Only change the bodies marked \"Fill in\""
+     ],
+     "files": [
+      "Shape.java",
+      "Square.java",
+      "Triangle.java",
+      "Shapes.java"
+     ],
+     "starter": [
+      [
+       "Shape.java",
+       "public interface Shape {\n    double area();\n}\n"
+      ],
+      [
+       "Square.java",
+       "public class Square implements Shape {\n    private double side;\n\n    public Square(double side) {\n        this.side = side;\n    }\n\n    @Override\n    public double area() {\n        // Fill in\n        return 0;\n    }\n}\n"
+      ],
+      [
+       "Triangle.java",
+       "public class Triangle implements Shape {\n    private double base;\n    private double height;\n\n    public Triangle(double base, double height) {\n        this.base = base;\n        this.height = height;\n    }\n\n    @Override\n    public double area() {\n        // Fill in\n        return 0;\n    }\n}\n"
+      ],
+      [
+       "Shapes.java",
+       "public class Shapes {\n    public static Shape largest(Shape[] shapes) {\n        // Fill in: return the shape with the largest area (the array is never empty)\n        return shapes[0];\n    }\n\n    public static void main(String[] args) {\n        Shape[] all = {new Square(3), new Triangle(10, 4), new Square(4)};\n        System.out.println(largest(all).area());\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "<code>largest</code> keeps the best shape so far and compares areas."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "ok",
+      "command": "java Shapes",
+      "stdout": "0.0"
+     },
+     "run": "Shapes",
+     "output": "20.0",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Shape.java",
+       "public interface Shape {\n    double area();\n}\n"
+      ],
+      [
+       "Square.java",
+       "public class Square implements Shape {\n    private double side;\n\n    public Square(double side) {\n        this.side = side;\n    }\n\n    @Override\n    public double area() {\n        return side * side;\n    }\n}\n"
+      ],
+      [
+       "Triangle.java",
+       "public class Triangle implements Shape {\n    private double base;\n    private double height;\n\n    public Triangle(double base, double height) {\n        this.base = base;\n        this.height = height;\n    }\n\n    @Override\n    public double area() {\n        return base * height / 2;\n    }\n}\n"
+      ],
+      [
+       "Shapes.java",
+       "public class Shapes {\n    public static Shape largest(Shape[] shapes) {\n        Shape best = shapes[0];\n        for (Shape s : shapes) {\n            if (s.area() > best.area()) {\n                best = s;\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        Shape[] all = {new Square(3), new Triangle(10, 4), new Square(4)};\n        System.out.println(largest(all).area());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Part D: write it from scratch"
+    },
+    {
+     "type": "write",
+     "id": "ex1-write-temp",
+     "mode": "independent",
+     "title": "A class with two constructors",
+     "goal": "Write <code>Temperature</code> with a private <code>double degrees</code>. The default constructor sets 20.0; another constructor takes the degrees. Add <code>getDegrees()</code>, <code>setDegrees(double)</code> that ignores values below -273.15, and a <code>toString</code> like <code>20.0 C</code>.",
+     "requirements": [],
+     "files": [
+      "Temperature.java",
+      "TempTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckTemp.java",
+       "public class CheckTemp {\n    public static void main(String[] args) {\n        Temperature t = new Temperature(5);\n        t.setDegrees(-273.15);\n        System.out.println(t);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckTemp",
+     "hints": [],
+     "checks": [],
+     "run": "TempTester",
+     "output": "20.0 C, 180.0 C\n20.0",
+     "testsOutput": "-273.15 C",
+     "solution": [
+      [
+       "Temperature.java",
+       "public class Temperature {\n    private double degrees;\n\n    public Temperature() {\n        degrees = 20.0;\n    }\n\n    public Temperature(double degrees) {\n        this.degrees = degrees;\n    }\n\n    public double getDegrees() {\n        return degrees;\n    }\n\n    public void setDegrees(double degrees) {\n        if (degrees >= -273.15) {\n            this.degrees = degrees;\n        }\n    }\n\n    @Override\n    public String toString() {\n        return degrees + \" C\";\n    }\n}\n"
+      ],
+      [
+       "TempTester.java",
+       "public class TempTester {\n    public static void main(String[] args) {\n        Temperature room = new Temperature();\n        Temperature oven = new Temperature(180.0);\n        System.out.println(room + \", \" + oven);\n        room.setDegrees(-500);\n        System.out.println(room.getDegrees());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "ex1-write-intern",
+     "mode": "independent",
+     "title": "A superclass and a subclass",
+     "goal": "Write <code>Worker</code> (private <code>name</code>, constructor, <code>getName()</code>, and <code>weeklyPay()</code> returning 800.0) and <code>Intern extends Worker</code>, which overrides <code>weeklyPay()</code> to return half of a worker's pay by calling <code>super.weeklyPay()</code>.",
+     "requirements": [],
+     "files": [
+      "Worker.java",
+      "Intern.java",
+      "PayTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckPay.java",
+       "public class CheckPay {\n    public static void main(String[] args) {\n        Worker w = new Intern(\"Kai\");\n        System.out.println(w.weeklyPay());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckPay",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "super\\.weeklyPay\\s*\\(\\s*\\)",
+       "message": "Use <code>super.weeklyPay()</code> in <code>Intern</code>."
+      }
+     ],
+     "run": "PayTester",
+     "output": "Ana: 800.0\nLeo: 400.0",
+     "testsOutput": "400.0",
+     "solution": [
+      [
+       "Worker.java",
+       "public class Worker {\n    private String name;\n\n    public Worker(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public double weeklyPay() {\n        return 800.0;\n    }\n}\n"
+      ],
+      [
+       "Intern.java",
+       "public class Intern extends Worker {\n    public Intern(String name) {\n        super(name);\n    }\n\n    @Override\n    public double weeklyPay() {\n        return super.weeklyPay() / 2;\n    }\n}\n"
+      ],
+      [
+       "PayTester.java",
+       "public class PayTester {\n    public static void main(String[] args) {\n        Worker[] team = {new Worker(\"Ana\"), new Intern(\"Leo\")};\n        for (Worker w : team) {\n            System.out.println(w.getName() + \": \" + w.weeklyPay());\n        }\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "ex1-write-discount",
+     "mode": "independent",
+     "title": "An interface and a class",
+     "goal": "Write an interface <code>Discountable</code> with <code>double finalPrice()</code>, and a class <code>SaleItem</code> (private <code>price</code> and <code>percentOff</code>) that implements it: the final price is the price minus that percentage.",
+     "requirements": [],
+     "files": [
+      "Discountable.java",
+      "SaleItem.java",
+      "SaleTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckSale.java",
+       "public class CheckSale {\n    public static void main(String[] args) {\n        System.out.println(new SaleItem(10.0, 0).finalPrice());\n        System.out.println(new SaleItem(80.0, 50).finalPrice());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSale",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "interface\\s+Discountable",
+       "message": "Declare <code>Discountable</code> as an interface."
+      }
+     ],
+     "run": "SaleTester",
+     "output": "30.0",
+     "testsOutput": "10.0\n40.0",
+     "solution": [
+      [
+       "Discountable.java",
+       "public interface Discountable {\n    double finalPrice();\n}\n"
+      ],
+      [
+       "SaleItem.java",
+       "public class SaleItem implements Discountable {\n    private double price;\n    private int percentOff;\n\n    public SaleItem(double price, int percentOff) {\n        this.price = price;\n        this.percentOff = percentOff;\n    }\n\n    @Override\n    public double finalPrice() {\n        return price - price * percentOff / 100;\n    }\n}\n"
+      ],
+      [
+       "SaleTester.java",
+       "public class SaleTester {\n    public static void main(String[] args) {\n        Discountable lamp = new SaleItem(40.0, 25);\n        System.out.println(lamp.finalPrice());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Inheritance",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Abstract Methods and Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Polymorphism",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Predefined Annotation Types (@Override)",
+     "url": "https://docs.oracle.com/javase/tutorial/java/annotations/predefined.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Controlling Access to Members of a Class",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Arrays",
+     "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Reading 8: Abstract Data Types",
+     "url": "https://web.mit.edu/6.005/www/fa14/classes/08-abstract-data-types/",
+     "org": "MIT, 6.005 Software Construction",
      "note": null
     }
    ]

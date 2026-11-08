@@ -129,3 +129,25 @@ JLS_OVERRIDE = s("8.4.8.1 Overriding (by Instance Methods)",
 JLS_INSTANCEOF = s("15.20.2 The instanceof Operator",
                    "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.20.2", JLS)
 OBJECT_API = s("java.lang.Object", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html", API)
+
+# ---- Interfaces
+IFACE_TUT = s("Interfaces", "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html", ORACLE)
+IFACE_DEF_TUT = s("Defining an Interface", "https://docs.oracle.com/javase/tutorial/java/IandI/interfaceDef.html", ORACLE)
+IFACE_IMPL_TUT = s("Implementing an Interface", "https://docs.oracle.com/javase/tutorial/java/IandI/usinginterface.html", ORACLE)
+IFACE_TYPE_TUT = s("Using an Interface as a Type", "https://docs.oracle.com/javase/tutorial/java/IandI/interfaceAsType.html", ORACLE)
+DEFAULT_METHODS_TUT = s("Default Methods", "https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html", ORACLE)
+HEL_9_2 = s("Part 9.2: Interfaces", "https://java-programming.mooc.fi/part-9/2-interface", HEL)
+JLS_IFACES = s("Chapter 9: Interfaces", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html", JLS)
+COMPARABLE_API = s("Comparable<T>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Comparable.html", API)
+ARRAYS_API = s("java.util.Arrays", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html", API)
+
+# ---- Data structures
+ALGS4_13 = s("1.3 Bags, Queues, and Stacks", "https://algs4.cs.princeton.edu/13stacks/",
+             "Princeton University, Algorithms (Sedgewick & Wayne)")
+MIT_ADT = s("Reading 8: Abstract Data Types", "https://web.mit.edu/6.005/www/fa14/classes/08-abstract-data-types/",
+            "MIT, 6.005 Software Construction")
+GENERICS_TUT = s("Generic Types", "https://docs.oracle.com/javase/tutorial/java/generics/types.html", ORACLE)
+GENERICS_WHY = s("Why Use Generics?", "https://docs.oracle.com/javase/tutorial/java/generics/why.html", ORACLE)
+ARRAYLIST_API = s("ArrayList<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html", API)
+HEL_12_1 = s("Part 12.1: Type parameters", "https://java-programming.mooc.fi/part-12/1-type-parameters", HEL)
+HEL_12_2 = s("Part 12.2: ArrayList and hash table", "https://java-programming.mooc.fi/part-12/2-arraylist-and-hashtable", HEL)

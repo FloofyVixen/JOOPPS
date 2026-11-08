@@ -134,6 +134,14 @@ def fill(files, values):
     return {name: BLANK_RE.sub(lambda m: values[m.group(1)], src) for name, src in files.items()}
 
 
+def same_output(a, b):
+    """Compare program output the way the editor does: trailing spaces on a line don't count."""
+    if a is None or b is None:
+        return a == b
+    clean = lambda t: "\n".join(line.rstrip() for line in t.split("\n")).rstrip("\n")
+    return clean(a) == clean(b)
+
+
 def blank_ids(files):
     ids = []
     for src in files.values():
@@ -185,7 +193,7 @@ def process_block(lesson_id, i, b, verified_sources):
         res = run_java(files, b.get("run"), b.get("stdin", ""))
         if res["kind"] != expect:
             fail(where, f"expected {expect}, got {res['kind']}: {res.get('text', res.get('stdout'))}")
-        if "output" in b and res.get("stdout") != b["output"]:
+        if "output" in b and not same_output(res.get("stdout"), b["output"]):
             fail(where, f"output mismatch.\nexpected:\n{b['output']}\nactual:\n{res.get('stdout')}")
         verified_sources.extend(files.values())
         hide = b.get("hide", [])
@@ -221,7 +229,7 @@ def process_block(lesson_id, i, b, verified_sources):
         base = run_java(fill(files, correct), b["run"])
         if base["kind"] != "ok":
             fail(where, f"correct answer does not run: {base}")
-        if "output" in b and base["stdout"] != b["output"]:
+        if "output" in b and not same_output(base["stdout"], b["output"]):
             fail(where, f"output mismatch.\nexpected:\n{b['output']}\nactual:\n{base['stdout']}")
         verified_sources.extend(fill(files, correct).values())
         out_blanks = {}
@@ -233,7 +241,7 @@ def process_block(lesson_id, i, b, verified_sources):
                 vals = dict(correct)
                 vals[k] = alt
                 r = run_java(fill(files, vals), b["run"])
-                if r["kind"] != "ok" or r["stdout"] != base["stdout"]:
+                if r["kind"] != "ok" or not same_output(r["stdout"], base["stdout"]):
                     fail(where, f"accepted answer {alt!r} for blank {k} does not behave the same: {r}")
                 accepted.append(norm(alt, exact))
             wrongs = []
@@ -243,7 +251,7 @@ def process_block(lesson_id, i, b, verified_sources):
                 vals = dict(correct)
                 vals[k] = w["answer"]
                 r = run_java(fill(files, vals), b["run"])
-                if r["kind"] == "ok" and r["stdout"] == base["stdout"]:
+                if r["kind"] == "ok" and same_output(r["stdout"], base["stdout"]):
                     fail(where, f"wrong answer {w['answer']!r} for blank {k} behaves exactly like the right one")
                 wrongs.append({"answer": norm(w["answer"], exact), "shown": w["answer"],
                                "why": inline(w["why"]), "result": r})
@@ -318,11 +326,11 @@ def check_stage(where, files, tests, run, output, tests_run, tests_output, check
     r = run_java(allf, run)
     if r["kind"] != "ok":
         fail(where, f"reference solution does not run: {r}")
-    if r["stdout"] != output:
+    if not same_output(r["stdout"], output):
         fail(where, f"reference output mismatch.\nexpected:\n{output}\nactual:\n{r['stdout']}")
     if tests_run:
         t = run_java(allf, tests_run)
-        if t["kind"] != "ok" or t["stdout"] != tests_output:
+        if t["kind"] != "ok" or not same_output(t["stdout"], tests_output):
             fail(where, f"hidden tests do not pass on the reference solution: {t}")
     code = "\n".join(strip_comments(s) for s in files.values())
     for c in checks:
@@ -369,7 +377,7 @@ def process_write(where, b):
     if set(sol) != set(b["files"]):
         fail(where, "solution files differ from the files the task asks for")
     check_stage(where, sol, tests, b["run"], b["output"], tests_run, b.get("tests_output"), checks)
-    if starter and out["starterResult"]["kind"] == "ok" and out["starterResult"]["stdout"] == b["output"]:
+    if starter and out["starterResult"]["kind"] == "ok" and same_output(out["starterResult"]["stdout"], b["output"]):
         fail(where, "starter code already passes the task")
     out.update({"run": b["run"], "output": b["output"], "testsOutput": b.get("tests_output"),
                 "solution": [[n, s] for n, s in sol.items()]})
@@ -389,6 +397,8 @@ def main():
     TASKS.update(load(os.path.join(ROOT, "content", "tasks_intro.py")).TASKS)
     TASKS.update(load(os.path.join(ROOT, "content", "tasks_classes.py")).TASKS)
     TASKS.update(load(os.path.join(ROOT, "content", "tasks_inheritance.py")).TASKS)
+    TASKS.update(load(os.path.join(ROOT, "content", "tasks_interfaces.py")).TASKS)
+    TASKS.update(load(os.path.join(ROOT, "content", "tasks_ds.py")).TASKS)
     lessons = {}
     ex_ids = set()
     for section in course.SECTIONS:
