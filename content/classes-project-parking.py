@@ -244,7 +244,7 @@ FIND_TESTER = """public class FindTester {
 LESSON = {
     "id": "classes-project-parking",
     "title": "Project: a parking lot",
-    "summary": "Put the whole section together: a manager class that parks cars in a fixed number of spots, frees spots, and counts what's parked.",
+    "summary": "Put the OOP units together: a manager class that parks cars in a fixed number of spots, frees spots, and counts what's parked.",
     "goals": [
         "Build a class that manages a fixed-size array of other objects",
         "Place an object in the first empty slot, and report when there's no room",

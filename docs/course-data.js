@@ -5,8 +5,8 @@ window.COURSE = {
  "java": "21.0.12.1",
  "sections": [
   {
-   "id": "intro",
-   "title": "Introduction",
+   "id": "intro-java",
+   "title": "Introduction to Java",
    "blurb": "Write, compile and run Java programs, and learn to read what the compiler tells you.",
    "lessons": [
     "intro-first-program",
@@ -18,107 +18,277 @@ window.COURSE = {
    ]
   },
   {
-   "id": "classes",
-   "title": "Classes and objects",
-   "blurb": "Design your own types: fields, constructors, toString, private data and arrays of objects.",
+   "id": "intro-oop",
+   "title": "Introduction to OOP",
+   "blurb": "Classes and objects: your own types, made with new.",
    "lessons": [
-    "classes-first-class",
+    "classes-first-class"
+   ]
+  },
+  {
+   "id": "oop-basics",
+   "title": "OOP: Basics in Java",
+   "blurb": "Constructors, this, and objects that describe themselves with toString.",
+   "lessons": [
     "classes-constructors",
-    "classes-tostring",
-    "classes-encapsulation",
-    "classes-arrays",
+    "classes-tostring"
+   ]
+  },
+  {
+   "id": "oop-use-cases",
+   "title": "OOP: Basics and Use cases",
+   "blurb": "Private fields, getters and setters: objects that are responsible for their own data.",
+   "lessons": [
+    "classes-encapsulation"
+   ]
+  },
+  {
+   "id": "oop-use-cases-2",
+   "title": "OOP: Basics and Use cases II",
+   "blurb": "Arrays of objects, empty slots, and classes that manage other objects.",
+   "lessons": [
+    "classes-arrays"
+   ]
+  },
+  {
+   "id": "oop-wrap-up",
+   "title": "OOP: Wrap up use cases",
+   "blurb": "A full project and a workshop that put the OOP units together.",
+   "lessons": [
     "classes-project-parking",
     "classes-workshop"
    ]
   },
   {
-   "id": "inheritance",
-   "title": "Inheritance",
-   "blurb": "Build new classes on top of existing ones with extends and super.",
+   "id": "intro-inheritance",
+   "title": "Introduction to inheritance",
+   "blurb": "Superclasses and subclasses with extends, and building the parent part with super.",
    "lessons": [
     "inh-extends",
-    "inh-super",
+    "inh-super"
+   ]
+  },
+  {
+   "id": "more-inheritance",
+   "title": "More inheritance",
+   "blurb": "Overriding methods, @Override, polymorphism, and the Object class at the top of every hierarchy.",
+   "lessons": [
     "inh-override",
-    "inh-abstract",
-    "inh-polymorphism",
-    "inh-project-fleet",
-    "inh-workshop"
+    "inh-polymorphism"
    ]
   },
   {
    "id": "interfaces",
-   "title": "Interfaces",
-   "blurb": "Promise what a class can do, and let one class keep several promises.",
+   "title": "Interfaces vs Objects",
+   "blurb": "Promise what a class can do with an interface, and let one class keep several promises.",
    "planned": [
     "What an interface is",
+    "implements versus extends",
     "Implementing more than one interface",
     "Using an interface as a type",
     "The Comparable interface",
-    "Project: a smart-home controller"
+    "Workshop"
    ]
   },
   {
-   "id": "data-structures",
-   "title": "Data structures",
-   "blurb": "Abstract data types, generics, and choosing the right structure.",
+   "id": "abstraction",
+   "title": "Abstraction with Inheritance",
+   "blurb": "Abstract methods and abstract classes: require a behavior without saying how it works.",
+   "lessons": [
+    "inh-abstract"
+   ]
+  },
+  {
+   "id": "wrap-inheritance",
+   "title": "Wrap up Inheritance",
+   "blurb": "A project and a workshop that combine inheritance, abstraction and polymorphism.",
+   "lessons": [
+    "inh-project-fleet",
+    "inh-workshop"
+   ],
+   "planned": [
+    "Exam practice: OOP and inheritance"
+   ]
+  },
+  {
+   "id": "ds-arrays",
+   "title": "Data Structures intro (arrays)",
+   "blurb": "What a data structure is, and the array as the simplest one.",
    "planned": [
     "Abstract data types",
-    "Interface versus implementation",
-    "Generic classes with <T>",
-    "Measuring cost with Big-O"
+    "Arrays in memory",
+    "Resizing an array",
+    "Generic classes with <T>"
    ]
   },
   {
-   "id": "arraylist",
-   "title": "ArrayList",
-   "blurb": "Lists that grow: using ArrayList, then building your own.",
+   "id": "arrays-stacks",
+   "title": "Arrays and Stacks",
+   "blurb": "Last in, first out: the stack and what it's used for.",
    "planned": [
-    "Using ArrayList",
-    "Removing while you loop",
-    "Wrapper classes and autoboxing",
-    "Building your own ArrayList",
-    "Project: a manager class with a list"
+    "The stack ADT: push, pop, peek",
+    "Using Java's ArrayDeque as a stack",
+    "Stack use: undo and back buttons"
    ]
   },
   {
    "id": "array-stack",
-   "title": "Array stack",
-   "blurb": "Last in, first out: push, pop and peek on top of an array.",
+   "title": "Array Stack implementations",
+   "blurb": "Build a stack on top of an array, including growing it when full.",
    "planned": [
-    "The stack ADT",
     "An array-based stack",
     "Growing the array",
-    "Project: checking balanced brackets"
+    "Handling an empty stack",
+    "Project: balanced brackets"
    ]
   },
   {
-   "id": "algorithms",
-   "title": "Algorithms",
-   "blurb": "Searching and sorting, and how to reason about their cost.",
+   "id": "big-o",
+   "title": "The return of big O! (algorithm complexity)",
+   "blurb": "Measuring how an algorithm's work grows with its input.",
    "planned": [
-    "Linear search",
-    "Binary search",
-    "Selection sort",
-    "Insertion sort",
-    "Recursion"
+    "Counting steps",
+    "Big-O notation",
+    "Linear versus binary search",
+    "The cost of stack operations"
+   ]
+  },
+  {
+   "id": "linked",
+   "title": "Linked Data Structures",
+   "blurb": "Nodes that point to other nodes.",
+   "planned": [
+    "The Node class",
+    "Walking a linked chain",
+    "Adding and removing nodes"
+   ]
+  },
+  {
+   "id": "linked-lists",
+   "title": "Linked Lists as ArrayLists and Stacks",
+   "blurb": "Using linked nodes to build a list and a stack.",
+   "planned": [
+    "Using Java's ArrayList",
+    "A linked list with list operations",
+    "A linked stack",
+    "Array versus linked: the trade-offs"
    ]
   },
   {
    "id": "queues",
-   "title": "Queues",
-   "blurb": "First in, first out: a circular-array queue and Java's own Queue.",
+   "title": "Introduction to Queues",
+   "blurb": "First in, first out: the queue and what it's used for.",
    "planned": [
-    "The queue ADT",
-    "A circular-array queue",
-    "Java's Queue and ArrayDeque",
-    "Project: a print-job line"
+    "The queue ADT: enqueue, dequeue, peek",
+    "Using Java's Queue",
+    "Queue use: waiting lines"
+   ]
+  },
+  {
+   "id": "queue-impl",
+   "title": "ArrayQueues vs Linked Queues",
+   "blurb": "Two ways to build a queue, and what each costs.",
+   "planned": [
+    "A circular array queue",
+    "A linked queue",
+    "Comparing the two"
+   ]
+  },
+  {
+   "id": "ds-use-cases",
+   "title": "Queues/Stacks/Linked List use cases",
+   "blurb": "Choosing the right structure for a real problem.",
+   "planned": [
+    "Matching problems to structures",
+    "Project: a print-job line",
+    "Workshop"
+   ]
+  },
+  {
+   "id": "collections",
+   "title": "Introduction to Collections (Java)",
+   "blurb": "Java's built-in List, Stack, Queue and Map classes.",
+   "planned": [
+    "The Collections framework",
+    "List and ArrayList",
+    "Map and HashMap",
+    "Iterating over a collection"
+   ]
+  },
+  {
+   "id": "trees",
+   "title": "Introduction to Trees",
+   "blurb": "Hierarchical data: roots, children, leaves.",
+   "planned": [
+    "Tree vocabulary",
+    "A tree node class",
+    "Binary trees"
+   ]
+  },
+  {
+   "id": "trees-vs-lists",
+   "title": "Basic Trees vs Linked Lists",
+   "blurb": "How trees and linked lists are alike, and where they differ.",
+   "planned": [
+    "Nodes with one link versus two",
+    "Binary search trees",
+    "Searching: list versus tree"
+   ]
+  },
+  {
+   "id": "tree-ops",
+   "title": "Non-Binary Tree operations",
+   "blurb": "Trees whose nodes can have any number of children.",
+   "planned": [
+    "Children stored in a list",
+    "Traversals",
+    "Counting and searching"
+   ]
+  },
+  {
+   "id": "heaps",
+   "title": "Tree variations: Heap Trees",
+   "blurb": "A tree that always keeps its smallest (or largest) item at the top.",
+   "planned": [
+    "The heap property",
+    "Storing a heap in an array"
+   ]
+  },
+  {
+   "id": "heap-ops",
+   "title": "Heap Tree operations",
+   "blurb": "Adding to and removing from a heap.",
+   "planned": [
+    "Insert and sift up",
+    "Remove and sift down",
+    "Priority queues"
+   ]
+  },
+  {
+   "id": "huffman",
+   "title": "Tree organization/Huffman Codes",
+   "blurb": "Using a tree to compress text.",
+   "planned": [
+    "Character frequencies",
+    "Building a Huffman tree",
+    "Encoding and decoding"
+   ]
+  },
+  {
+   "id": "hashing",
+   "title": "Introduction to Hashing",
+   "blurb": "Finding things in constant time with a hash table.",
+   "planned": [
+    "Hash functions",
+    "Collisions",
+    "hashCode and equals in Java"
    ]
   }
  ],
  "lessons": {
   "intro-first-program": {
    "id": "intro-first-program",
-   "section": "intro",
+   "section": "intro-java",
    "title": "Your first Java program",
    "summary": "What a Java program looks like, and the two commands that turn it into something you can run.",
    "goals": [
@@ -502,7 +672,7 @@ window.COURSE = {
   },
   "intro-variables": {
    "id": "intro-variables",
-   "section": "intro",
+   "section": "intro-java",
    "title": "Variables and types",
    "summary": "Store values in named variables, and pick the right type for each one.",
    "goals": [
@@ -544,7 +714,7 @@ window.COURSE = {
       "<code>int</code> holds whole numbers, like <code>19</code> or <code>-4</code>.",
       "<code>double</code> holds numbers with a decimal point, like <code>3.4</code>.",
       "<code>boolean</code> holds <code>true</code> or <code>false</code>.",
-      "<code>String</code> holds text in double quotes. It starts with a capital S because it's a class, which you'll learn about in the next section. The other three are <strong>primitive</strong> types, built into the language."
+      "<code>String</code> holds text in double quotes. It starts with a capital S because it's a class, which you'll learn about in \"Introduction to OOP\". The other three are <strong>primitive</strong> types, built into the language."
      ]
     },
     {
@@ -923,7 +1093,7 @@ window.COURSE = {
   },
   "intro-decisions-loops": {
    "id": "intro-decisions-loops",
-   "section": "intro",
+   "section": "intro-java",
    "title": "Decisions and loops",
    "summary": "Make a program choose between paths with <code>if</code>, and repeat work with <code>for</code> and <code>while</code>.",
    "goals": [
@@ -1336,7 +1506,7 @@ window.COURSE = {
   },
   "intro-methods": {
    "id": "intro-methods",
-   "section": "intro",
+   "section": "intro-java",
    "title": "Methods",
    "summary": "Give a piece of code a name so you can run it whenever you need it, with different inputs each time.",
    "goals": [
@@ -1385,7 +1555,7 @@ window.COURSE = {
      "type": "list",
      "items": [
       "<code>public</code> means code outside this class may call it.",
-      "<code>static</code> means it belongs to the class itself. Every method in this section is <code>static</code>; in the next section you'll write methods without it, which belong to objects.",
+      "<code>static</code> means it belongs to the class itself. Every method in this unit is <code>static</code>; in \"Introduction to OOP\" you'll write methods without it, which belong to objects.",
       "<code>int</code> is the <strong>return type</strong>: the kind of value the method hands back. <code>void</code> means it hands nothing back.",
       "<code>square</code> is the method's name, and <code>(int n)</code> is its parameter list."
      ]
@@ -1662,7 +1832,7 @@ window.COURSE = {
   },
   "intro-errors": {
    "id": "intro-errors",
-   "section": "intro",
+   "section": "intro-java",
    "title": "Reading error messages",
    "summary": "Error messages tell you the file, the line and the problem. Learning to read them saves more time than anything else in this course.",
    "goals": [
@@ -2058,7 +2228,7 @@ window.COURSE = {
   },
   "intro-workshop": {
    "id": "intro-workshop",
-   "section": "intro",
+   "section": "intro-java",
    "title": "Workshop: the basics",
    "summary": "Four programs written by you, from an empty editor. The first two walk you through it one step at a time; the last two give you only the goal.",
    "goals": [
@@ -2405,7 +2575,7 @@ window.COURSE = {
   },
   "classes-first-class": {
    "id": "classes-first-class",
-   "section": "classes",
+   "section": "intro-oop",
    "title": "Your first class",
    "summary": "A class describes a kind of thing. An object is one of those things, made with <code>new</code>.",
    "goals": [
@@ -2449,7 +2619,7 @@ window.COURSE = {
      "items": [
       "<code>title</code>, <code>artist</code> and <code>seconds</code> are <strong>fields</strong>, also called <strong>instance variables</strong>. Each object gets its own copy.",
       "<code>play()</code> is a method with no <code>static</code>. It belongs to an object, so it can use that object's fields directly.",
-      "The fields are <code>public</code> for now so the tester can set them. In lesson 4 of this section you'll see why most classes make them <code>private</code>."
+      "The fields are <code>public</code> for now so the tester can set them. In \"OOP: Basics and Use cases\" you'll see why most classes make them <code>private</code>."
      ]
     },
     {
@@ -2518,7 +2688,7 @@ window.COURSE = {
     },
     {
      "type": "p",
-     "html": "Seeing <code>null</code> or <code>0</code> in your output when you expected real data usually means a field never got set. You'll meet a common cause of this in the next lesson."
+     "html": "Seeing <code>null</code> or <code>0</code> in your output when you expected real data usually means a field never got set. You'll meet a common cause of this in the lesson on constructors."
     },
     {
      "type": "h",
@@ -2824,7 +2994,7 @@ window.COURSE = {
   },
   "classes-constructors": {
    "id": "classes-constructors",
-   "section": "classes",
+   "section": "oop-basics",
    "title": "Constructors and this",
    "summary": "A constructor sets up a new object the moment it's created, so it never starts out half-finished.",
    "goals": [
@@ -3262,7 +3432,7 @@ window.COURSE = {
   },
   "classes-tostring": {
    "id": "classes-tostring",
-   "section": "classes",
+   "section": "oop-basics",
    "title": "toString: printing objects",
    "summary": "Teach your class how to describe itself as text, so <code>println</code> shows something useful.",
    "goals": [
@@ -3300,7 +3470,7 @@ window.COURSE = {
     },
     {
      "type": "p",
-     "html": "Every Java class automatically comes with a <code>toString</code> method, inherited from Java's built-in <code>Object</code> class. You'll learn exactly how that works in the Inheritance section. The built-in version returns the class name, an <code>@</code>, and a number in hexadecimal. That's rarely what you want to see."
+     "html": "Every Java class automatically comes with a <code>toString</code> method, inherited from Java's built-in <code>Object</code> class. You'll learn exactly how that works in the inheritance units. The built-in version returns the class name, an <code>@</code>, and a number in hexadecimal. That's rarely what you want to see."
     },
     {
      "type": "h",
@@ -3662,7 +3832,7 @@ window.COURSE = {
   },
   "classes-encapsulation": {
    "id": "classes-encapsulation",
-   "section": "classes",
+   "section": "oop-use-cases",
    "title": "Private fields, getters and setters",
    "summary": "Hide an object's fields so the only way to change them is through methods that check the values.",
    "goals": [
@@ -4057,7 +4227,7 @@ window.COURSE = {
   },
   "classes-arrays": {
    "id": "classes-arrays",
-   "section": "classes",
+   "section": "oop-use-cases-2",
    "title": "Arrays of objects",
    "summary": "Keep many objects in one array, and handle the empty slots safely.",
    "goals": [
@@ -4600,9 +4770,9 @@ window.COURSE = {
   },
   "classes-project-parking": {
    "id": "classes-project-parking",
-   "section": "classes",
+   "section": "oop-wrap-up",
    "title": "Project: a parking lot",
-   "summary": "Put the whole section together: a manager class that parks cars in a fixed number of spots, frees spots, and counts what's parked.",
+   "summary": "Put the OOP units together: a manager class that parks cars in a fixed number of spots, frees spots, and counts what's parked.",
    "goals": [
     "Build a class that manages a fixed-size array of other objects",
     "Place an object in the first empty slot, and report when there's no room",
@@ -5267,7 +5437,7 @@ window.COURSE = {
   },
   "classes-workshop": {
    "id": "classes-workshop",
-   "section": "classes",
+   "section": "oop-wrap-up",
    "title": "Workshop: classes and objects",
    "summary": "Design classes from scratch: two guided builds, then two you write on your own.",
    "goals": [
@@ -5704,7 +5874,7 @@ window.COURSE = {
   },
   "inh-extends": {
    "id": "inh-extends",
-   "section": "inheritance",
+   "section": "intro-inheritance",
    "title": "Subclasses with extends",
    "summary": "Write the shared parts once in a superclass, and let subclasses inherit them and add their own.",
    "goals": [
@@ -5798,7 +5968,7 @@ window.COURSE = {
     {
      "type": "note",
      "label": "One parent only",
-     "html": "In Java, a class extends exactly one class. Every class except <code>Object</code> has one, and only one, direct superclass. You can still build chains (<code>Puppy extends Dog</code>, <code>Dog extends Animal</code>), and the Interfaces section shows how a class can promise several kinds of behavior."
+     "html": "In Java, a class extends exactly one class. Every class except <code>Object</code> has one, and only one, direct superclass. You can still build chains (<code>Puppy extends Dog</code>, <code>Dog extends Animal</code>), and the \"Interfaces vs Objects\" unit shows how a class can promise several kinds of behavior."
     },
     {
      "type": "h",
@@ -5896,7 +6066,7 @@ window.COURSE = {
         {
          "answer": "implements",
          "shown": "implements",
-         "why": "<code>implements</code> is for interfaces, which come in the next section; hence \"interface expected here\". <code>Animal</code> is a class, so use <code>extends</code>. The other errors all follow from the first one: without <code>extends</code>, <code>Cat</code> has no parent with a <code>getName()</code> or <code>eat()</code>. Fix the first error and they disappear.",
+         "why": "<code>implements</code> is for interfaces, which come later in the course; hence \"interface expected here\". <code>Animal</code> is a class, so use <code>extends</code>. The other errors all follow from the first one: without <code>extends</code>, <code>Cat</code> has no parent with a <code>getName()</code> or <code>eat()</code>. Fix the first error and they disappear.",
          "result": {
           "kind": "compile",
           "command": "javac Animal.java Cat.java CatTester.java",
@@ -6062,7 +6232,7 @@ window.COURSE = {
       "<code>Playlist extends Song</code>"
      ],
      "answer": 1,
-     "explain": "A square is a shape. A wheel is part of a car, a garage holds cars and a playlist holds songs. Those are \"has-a\" relationships, which are better modeled with fields, like the manager classes in the previous section."
+     "explain": "A square is a shape. A wheel is part of a car, a garage holds cars and a playlist holds songs. Those are \"has-a\" relationships, which are better modeled with fields, like the manager classes in the OOP units."
     },
     {
      "type": "h",
@@ -6257,7 +6427,7 @@ window.COURSE = {
   },
   "inh-super": {
    "id": "inh-super",
-   "section": "inheritance",
+   "section": "intro-inheritance",
    "title": "Calling the parent with super",
    "summary": "A subclass object contains a superclass part, and <code>super(...)</code> is how the subclass's constructor sets that part up.",
    "goals": [
@@ -6759,7 +6929,7 @@ window.COURSE = {
   },
   "inh-override": {
    "id": "inh-override",
-   "section": "inheritance",
+   "section": "more-inheritance",
    "title": "Overriding methods",
    "summary": "A subclass can replace an inherited method with its own version, and still reuse the parent's version with <code>super.</code>",
    "goals": [
@@ -6959,7 +7129,7 @@ window.COURSE = {
      "type": "list",
      "items": [
       "<strong>Overriding</strong>: a subclass method with the <strong>same</strong> name and parameters as an inherited one. It replaces the inherited behavior.",
-      "<strong>Overloading</strong>: methods (or constructors) with the same name but <strong>different</strong> parameters, like the two <code>Rectangle</code> constructors in the Classes section. Each one is a separate method."
+      "<strong>Overloading</strong>: methods (or constructors) with the same name but <strong>different</strong> parameters, like the two <code>Rectangle</code> constructors in \"OOP: Basics in Java\". Each one is a separate method."
      ]
     },
     {
@@ -7283,9 +7453,570 @@ window.COURSE = {
     }
    ]
   },
+  "inh-polymorphism": {
+   "id": "inh-polymorphism",
+   "section": "more-inheritance",
+   "title": "Polymorphism and the Object class",
+   "summary": "A variable of a superclass type can hold any subclass object, and each object still runs its own version of a method.",
+   "goals": [
+    "Store subclass objects in superclass variables and arrays",
+    "Predict which version of an overridden method runs",
+    "Use <code>instanceof</code> and a cast to reach subclass-only methods",
+    "Explain that every class ultimately inherits from <code>Object</code>, and summarize the four core ideas of OOP"
+   ],
+   "cos225": "The exam guide lists polymorphism (\"cats and dogs can be used where animals can be used\"), the question \"what does everything ultimately inherit from?\", and the four core features of Java OOP. All three are in this lesson; the four features are summarized at the end.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "A dog can be used where an animal is expected"
+    },
+    {
+     "type": "p",
+     "html": "Because a <code>Dog</code> <strong>is an</strong> <code>Animal</code>, Java lets you store a <code>Dog</code> in a variable or array of type <code>Animal</code>. <strong>Polymorphism</strong> (Greek for \"many forms\") means one variable type can hold objects of many classes, and when you call an overridden method, <strong>the object's actual class decides which version runs</strong>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Shelter.java",
+       "public class Shelter {\n    public static void main(String[] args) {\n        Animal[] animals = new Animal[3];\n        animals[0] = new Dog(\"Rex\");\n        animals[1] = new Cat(\"Tom\");\n        animals[2] = new Animal(\"Hoppy\");\n\n        for (Animal a : animals) {\n            a.speak();\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Shelter",
+      "stdout": "Rex says Woof!\nTom says Meow.\nHoppy makes a sound."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "The loop doesn't know or care which kind of animal is in each slot. It calls <code>speak()</code>, and each object answers in its own way. Add a <code>Cow</code> class tomorrow, and this loop works with cows without a single change."
+    },
+    {
+     "type": "h",
+     "html": "The variable's type decides what you can call"
+    },
+    {
+     "type": "p",
+     "html": "There are two types in play. The <strong>variable's type</strong> (<code>Animal</code>) decides which methods the compiler lets you call. The <strong>object's type</strong> (<code>Dog</code>) decides which version runs. So <code>Animal a = new Dog(&quot;Rex&quot;);</code> lets you call <code>a.speak()</code> (and Rex barks), but not <code>a.fetch()</code>: as far as the compiler knows, <code>a</code> might be a cat."
+    },
+    {
+     "type": "error",
+     "id": "poly-fetch",
+     "prompt": "Rex really is a dog, but the variable says <code>Animal</code>.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Fetch.java",
+       "public class Fetch {\n    public static void main(String[] args) {\n        Animal a = new Dog(\"Rex\");\n        a.speak();\n        a.fetch();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Animal.java Dog.java Fetch.java",
+      "text": "Fetch.java:5: error: cannot find symbol\n        a.fetch();\n         ^\n  symbol:   method fetch()\n  location: variable a of type Animal\n1 error"
+     },
+     "question": "Why does the compiler reject <code>a.fetch()</code> even though the object is a <code>Dog</code>?",
+     "choices": [
+      "Because <code>fetch</code> is private",
+      "Because the compiler only checks the variable's type, <code>Animal</code>, and <code>Animal</code> has no <code>fetch()</code>",
+      "Because <code>Rex</code> was spelled differently",
+      "Because <code>speak()</code> must be called last"
+     ],
+     "answer": 1,
+     "explain": "The compiler goes by what the variable promises. The message even says <code>location: variable a of type Animal</code>. Declaring <code>Dog a = new Dog(&quot;Rex&quot;);</code> fixes it.",
+     "fixedFiles": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Fetch.java",
+       "public class Fetch {\n    public static void main(String[] args) {\n        Dog a = new Dog(\"Rex\");\n        a.speak();\n        a.fetch();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java Fetch",
+      "stdout": "Rex says Woof!\nRex fetches the ball."
+     }
+    },
+    {
+     "type": "p",
+     "html": "When you have an <code>Animal</code> and need dog-only behavior, check with <code>instanceof</code> first, then <strong>cast</strong>: <code>(Dog) a</code> tells the compiler to treat the object as a <code>Dog</code>. Checking first matters, because casting a <code>Cat</code> to <code>Dog</code> crashes with a <code>ClassCastException</code>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Walk.java",
+       "public class Walk {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Dog(\"Fido\")};\n        for (Animal a : animals) {\n            if (a instanceof Dog) {\n                Dog d = (Dog) a;\n                d.fetch();\n            }\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Walk",
+      "stdout": "Rex fetches the ball.\nFido fetches the ball."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Everything is an Object"
+    },
+    {
+     "type": "p",
+     "html": "A class with no <code>extends</code> still has a superclass: Java's built-in <code>Object</code>. So every class sits in one big hierarchy with <code>Object</code> at the top. That's where the <code>toString()</code> you've been overriding comes from, along with <code>equals()</code> and a few other methods every object has."
+    },
+    {
+     "type": "p",
+     "html": "The exam guide puts it this way: a Programmer Cat is a Cat in Sweater, which is a Cat, which is an Object. Here's that chain in code. One object, referred to by four variables of different types:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Cat.java",
+       "public class Cat {\n    private String name;\n\n    public Cat(String name) {\n        this.name = name;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" the cat\";\n    }\n}\n"
+      ],
+      [
+       "CatInSweater.java",
+       "public class CatInSweater extends Cat {\n    private String color;\n\n    public CatInSweater(String name, String color) {\n        super(name);\n        this.color = color;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" in a \" + color + \" sweater\";\n    }\n}\n"
+      ],
+      [
+       "ProgrammerCat.java",
+       "public class ProgrammerCat extends CatInSweater {\n    private String language;\n\n    public ProgrammerCat(String name, String color, String language) {\n        super(name, color);\n        this.language = language;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \", writing \" + language;\n    }\n}\n"
+      ],
+      [
+       "CatTester.java",
+       "public class CatTester {\n    public static void main(String[] args) {\n        ProgrammerCat byte1 = new ProgrammerCat(\"Byte\", \"green\", \"Java\");\n        CatInSweater asSweater = byte1;\n        Cat asCat = byte1;\n        Object asObject = byte1;\n\n        System.out.println(byte1);\n        System.out.println(asCat);\n        System.out.println(asObject);\n        System.out.println(asObject instanceof Cat);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java CatTester",
+      "stdout": "Byte the cat in a green sweater, writing Java\nByte the cat in a green sweater, writing Java\nByte the cat in a green sweater, writing Java\ntrue"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "All three <code>println</code> calls print the same thing, because they're the same object, and <code>ProgrammerCat</code>'s <code>toString</code> runs no matter which variable you go through. Each level adds its part with <code>super.toString()</code>."
+    },
+    {
+     "type": "h",
+     "html": "The four core ideas of OOP"
+    },
+    {
+     "type": "p",
+     "html": "You've now used all four of the features the exam guide asks you to know:"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>Encapsulation</strong>: each object is responsible for its own data. Fields are <code>private</code>, and other code goes through methods that can check values (the OOP units).",
+      "<strong>Inheritance</strong>: a subclass takes an existing class and adds to it with <code>extends</code>. Java allows one direct superclass, but chains can be as long as you like.",
+      "<strong>Abstraction</strong>: describe what something does while leaving out how. In \"Abstraction with Inheritance\" you'll write abstract methods: every car can <code>start()</code>, without saying how any particular car does it.",
+      "<strong>Polymorphism</strong>: objects of different subclasses can be used wherever the superclass is expected, and each runs its own version of overridden methods."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "predict",
+     "id": "poly-predict",
+     "prompt": "Which version of <code>speak()</code> runs for each slot?",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Mix.java",
+       "public class Mix {\n    public static void main(String[] args) {\n        Animal first = new Cat(\"Tom\");\n        Animal second = new Animal(\"Hoppy\");\n        Dog third = new Dog(\"Fido\");\n        Animal fourth = third;\n        first.speak();\n        second.speak();\n        fourth.speak();\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "Tom makes a sound.\nHoppy makes a sound.\nFido makes a sound.",
+      "Tom says Meow.\nHoppy makes a sound.\nFido says Woof!",
+      "Tom says Meow.\nHoppy makes a sound.\nFido makes a sound.",
+      "A compile error: a Dog can't be stored in an Animal variable"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java Mix",
+      "stdout": "Tom says Meow.\nHoppy makes a sound.\nFido says Woof!"
+     },
+     "explain": "The object, not the variable, picks the version. <code>fourth</code> is an <code>Animal</code> variable, but it refers to Fido, a <code>Dog</code>, so Fido barks."
+    },
+    {
+     "type": "blanks",
+     "id": "poly-count",
+     "title": "Count the dogs",
+     "prompt": "Count how many animals in the array are dogs, and make each dog fetch.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "DogCount.java",
+       "public class DogCount {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Dog(\"Fido\"), new Cat(\"Kit\")};\n        int dogs = 0;\n        for (Animal a : animals) {\n            if (a [[check]] Dog) {\n                dogs++;\n                Dog d = [[cast]] a;\n                d.fetch();\n            }\n        }\n        System.out.println(dogs + \" dogs\");\n    }\n}\n"
+      ]
+     ],
+     "run": "DogCount",
+     "blanks": {
+      "check": {
+       "accept": [
+        "instanceof"
+       ],
+       "solution": "instanceof",
+       "hint": "Which operator tests an object's class?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "==",
+         "shown": "==",
+         "why": "<code>==</code> compares two values, so Java looks for a variable named <code>Dog</code> and finds none. <code>Dog</code> is a class, not a value. <code>instanceof</code> asks \"is this object a Dog (or a subclass of Dog)?\"",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
+          "text": "DogCount.java:6: error: cannot find symbol\n            if (a == Dog) {\n                     ^\n  symbol:   variable Dog\n  location: class DogCount\n1 error"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "cast": {
+       "accept": [
+        "(Dog)"
+       ],
+       "solution": "(Dog)",
+       "hint": "Tell the compiler to treat <code>a</code> as a <code>Dog</code>.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "",
+         "shown": "",
+         "why": "Without a cast, Java won't put an <code>Animal</code> into a <code>Dog</code> variable, even inside the <code>instanceof</code> check. Write <code>(Dog) a</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
+          "text": "DogCount.java:8: error: incompatible types: Animal cannot be converted to Dog\n                Dog d =  a;\n                         ^\n1 error"
+         }
+        },
+        {
+         "answer": "new Dog",
+         "shown": "new Dog",
+         "why": "<code>new Dog a</code> isn't valid. A cast doesn't create a new object; it changes how the compiler sees an existing one: <code>(Dog) a</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
+          "text": "DogCount.java:8: error: '(' or '[' expected\n                Dog d = new Dog a;\n                                ^\n1 error"
+         }
+        }
+       ],
+       "width": 7
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java DogCount",
+      "stdout": "Rex fetches the ball.\nFido fetches the ball.\n2 dogs"
+     },
+     "explain": "<code>instanceof</code> makes the cast safe: only dogs get cast to <code>Dog</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "poly-object",
+     "question": "<code>public class Plant { }</code> has no <code>extends</code>. What is its superclass?",
+     "choices": [
+      "It has none",
+      "<code>Object</code>",
+      "<code>Main</code>",
+      "Whichever class uses it"
+     ],
+     "answer": 1,
+     "explain": "Every class without an explicit <code>extends</code> implicitly extends <code>java.lang.Object</code>. That's why every object has <code>toString()</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "poly-pillar",
+     "question": "\"Our objects should be responsible for themselves, and not depend on others.\" Which core idea does the exam guide describe with this?",
+     "choices": [
+      "Abstraction",
+      "Encapsulation",
+      "Inheritance",
+      "Polymorphism"
+     ],
+     "answer": 1,
+     "explain": "Encapsulation: private data, managed by the object's own methods. Abstraction is about leaving out details (like how each car starts), inheritance about extending a class, and polymorphism about using subclasses where a superclass is expected."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-chorus",
+     "mode": "independent",
+     "title": "One loop, many forms",
+     "goal": "Write <code>Animal</code> (private <code>name</code>, <code>getName()</code>, <code>speak()</code> prints <code>&lt;name&gt; makes a sound.</code>) and three subclasses that override <code>speak()</code>: <code>Dog</code> (<code>says Woof!</code>), <code>Cat</code> (<code>says Meow.</code>) and <code>Cow</code> (<code>says Moo.</code>). In <code>ChorusTester</code>, put one of each in an <code>Animal[]</code> and make them all speak in one loop.",
+     "requirements": [],
+     "files": [
+      "Animal.java",
+      "Dog.java",
+      "Cat.java",
+      "Cow.java",
+      "ChorusTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckChorus.java",
+       "public class CheckChorus {\n    public static void main(String[] args) {\n        Animal a = new Cow(\"Daisy\");\n        a.speak();\n        Animal b = new Animal(\"Plain\");\n        b.speak();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckChorus",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "Animal\\s*\\[\\s*\\]",
+       "message": "Store the animals in an <code>Animal[]</code>."
+      }
+     ],
+     "run": "ChorusTester",
+     "output": "Rex says Woof!\nTom says Meow.\nBess says Moo.",
+     "testsOutput": "Daisy says Moo.\nPlain makes a sound.",
+     "solution": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Cow.java",
+       "public class Cow extends Animal {\n    public Cow(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Moo.\");\n    }\n}\n"
+      ],
+      [
+       "ChorusTester.java",
+       "public class ChorusTester {\n    public static void main(String[] args) {\n        Animal[] chorus = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Cow(\"Bess\")};\n        for (Animal a : chorus) {\n            a.speak();\n        }\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-purr",
+     "mode": "independent",
+     "title": "instanceof and a cast",
+     "goal": "Write <code>Animal</code> (as in the previous task), <code>Dog</code> and <code>Cat</code> (no overrides needed), where only <code>Cat</code> has <code>purr()</code> (prints <code>&lt;name&gt; purrs.</code>). In <code>CatCount</code>, loop over <code>{Dog Rex, Cat Tom, Cat Kit, Dog Fido}</code>, make each cat purr, and print how many cats there were.",
+     "requirements": [
+      "Check with <code>instanceof</code> before casting"
+     ],
+     "files": [
+      "Animal.java",
+      "Dog.java",
+      "Cat.java",
+      "CatCount.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "<code>if (a instanceof Cat)</code>, then <code>Cat c = (Cat) a;</code>"
+     ],
+     "checks": [
+      {
+       "pattern": "instanceof\\s+Cat",
+       "message": "Use <code>instanceof Cat</code> to find the cats."
+      },
+      {
+       "pattern": "\\(\\s*Cat\\s*\\)",
+       "message": "Cast with <code>(Cat)</code> before calling <code>purr()</code>."
+      }
+     ],
+     "run": "CatCount",
+     "output": "Tom purrs.\nKit purrs.\n2 cats",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    public void purr() {\n        System.out.println(getName() + \" purrs.\");\n    }\n}\n"
+      ],
+      [
+       "CatCount.java",
+       "public class CatCount {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Cat(\"Kit\"), new Dog(\"Fido\")};\n        int cats = 0;\n        for (Animal a : animals) {\n            if (a instanceof Cat) {\n                cats++;\n                Cat c = (Cat) a;\n                c.purr();\n            }\n        }\n        System.out.println(cats + \" cats\");\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-showcase",
+     "mode": "independent",
+     "title": "Everything is an Object",
+     "goal": "Write <code>Pet</code> (private <code>name</code>, <code>toString</code> returns <code>&lt;name&gt; the pet</code>) and <code>Showcase</code>, with a method <code>public static void show(Object item)</code> that prints <code>Showing: </code> followed by the item. Because every class extends <code>Object</code>, <code>show</code> accepts a <code>String</code>, a <code>Pet</code>, or anything else.",
+     "requirements": [],
+     "files": [
+      "Pet.java",
+      "Showcase.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckShowcase.java",
+       "public class CheckShowcase {\n    public static void main(String[] args) {\n        Showcase.show(new Pet(\"Nib\"));\n        Object o = new Pet(\"Pip\");\n        System.out.println(o);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckShowcase",
+     "hints": [
+      "The parameter type is <code>Object</code>. Joining it to text with <code>+</code> calls its <code>toString()</code>, so <code>Pet</code>'s version runs."
+     ],
+     "checks": [
+      {
+       "pattern": "show\\s*\\(\\s*Object\\s+\\w+\\s*\\)",
+       "message": "Give <code>show</code> a parameter of type <code>Object</code>."
+      }
+     ],
+     "run": "Showcase",
+     "output": "Showing: hello\nShowing: Biscuit the pet",
+     "testsOutput": "Showing: Nib the pet\nPip the pet",
+     "solution": [
+      [
+       "Pet.java",
+       "public class Pet {\n    private String name;\n\n    public Pet(String name) {\n        this.name = name;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" the pet\";\n    }\n}\n"
+      ],
+      [
+       "Showcase.java",
+       "public class Showcase {\n    public static void show(Object item) {\n        System.out.println(\"Showing: \" + item);\n    }\n\n    public static void main(String[] args) {\n        show(\"hello\");\n        show(new Pet(\"Biscuit\"));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Polymorphism",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Inheritance",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Object as a Superclass",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/objectclass.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "java.lang.Object",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "15.20.2 The instanceof Operator",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.20.2",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Part 9.3: Object polymorphism",
+     "url": "https://java-programming.mooc.fi/part-9/3-object-polymorphism",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
   "inh-abstract": {
    "id": "inh-abstract",
-   "section": "inheritance",
+   "section": "abstraction",
    "title": "Abstract classes",
    "summary": "Declare a behavior every subclass must have, without saying how it works, and let each subclass fill it in.",
    "goals": [
@@ -7743,578 +8474,17 @@ window.COURSE = {
     }
    ]
   },
-  "inh-polymorphism": {
-   "id": "inh-polymorphism",
-   "section": "inheritance",
-   "title": "Polymorphism and the Object class",
-   "summary": "A variable of a superclass type can hold any subclass object, and each object still runs its own version of a method.",
-   "goals": [
-    "Store subclass objects in superclass variables and arrays",
-    "Predict which version of an overridden method runs",
-    "Use <code>instanceof</code> and a cast to reach subclass-only methods",
-    "Explain that every class ultimately inherits from <code>Object</code>, and summarize the four core ideas of OOP"
-   ],
-   "cos225": "The exam guide lists polymorphism (\"cats and dogs can be used where animals can be used\"), the question \"what does everything ultimately inherit from?\", and the four core features of Java OOP. All three are in this lesson; the four features are summarized at the end.",
-   "blocks": [
-    {
-     "type": "h",
-     "html": "A dog can be used where an animal is expected"
-    },
-    {
-     "type": "p",
-     "html": "Because a <code>Dog</code> <strong>is an</strong> <code>Animal</code>, Java lets you store a <code>Dog</code> in a variable or array of type <code>Animal</code>. <strong>Polymorphism</strong> (Greek for \"many forms\") means one variable type can hold objects of many classes, and when you call an overridden method, <strong>the object's actual class decides which version runs</strong>."
-    },
-    {
-     "type": "code",
-     "files": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
-      ],
-      [
-       "Cat.java",
-       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
-      ],
-      [
-       "Shelter.java",
-       "public class Shelter {\n    public static void main(String[] args) {\n        Animal[] animals = new Animal[3];\n        animals[0] = new Dog(\"Rex\");\n        animals[1] = new Cat(\"Tom\");\n        animals[2] = new Animal(\"Hoppy\");\n\n        for (Animal a : animals) {\n            a.speak();\n        }\n    }\n}\n"
-      ]
-     ],
-     "result": {
-      "kind": "ok",
-      "command": "java Shelter",
-      "stdout": "Rex says Woof!\nTom says Meow.\nHoppy makes a sound."
-     },
-     "showResult": true,
-     "collapsed": false,
-     "caption": null,
-     "after": null
-    },
-    {
-     "type": "p",
-     "html": "The loop doesn't know or care which kind of animal is in each slot. It calls <code>speak()</code>, and each object answers in its own way. Add a <code>Cow</code> class tomorrow, and this loop works with cows without a single change."
-    },
-    {
-     "type": "h",
-     "html": "The variable's type decides what you can call"
-    },
-    {
-     "type": "p",
-     "html": "There are two types in play. The <strong>variable's type</strong> (<code>Animal</code>) decides which methods the compiler lets you call. The <strong>object's type</strong> (<code>Dog</code>) decides which version runs. So <code>Animal a = new Dog(&quot;Rex&quot;);</code> lets you call <code>a.speak()</code> (and Rex barks), but not <code>a.fetch()</code>: as far as the compiler knows, <code>a</code> might be a cat."
-    },
-    {
-     "type": "error",
-     "id": "poly-fetch",
-     "prompt": "Rex really is a dog, but the variable says <code>Animal</code>.",
-     "files": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
-      ],
-      [
-       "Fetch.java",
-       "public class Fetch {\n    public static void main(String[] args) {\n        Animal a = new Dog(\"Rex\");\n        a.speak();\n        a.fetch();\n    }\n}\n"
-      ]
-     ],
-     "result": {
-      "kind": "compile",
-      "command": "javac Animal.java Dog.java Fetch.java",
-      "text": "Fetch.java:5: error: cannot find symbol\n        a.fetch();\n         ^\n  symbol:   method fetch()\n  location: variable a of type Animal\n1 error"
-     },
-     "question": "Why does the compiler reject <code>a.fetch()</code> even though the object is a <code>Dog</code>?",
-     "choices": [
-      "Because <code>fetch</code> is private",
-      "Because the compiler only checks the variable's type, <code>Animal</code>, and <code>Animal</code> has no <code>fetch()</code>",
-      "Because <code>Rex</code> was spelled differently",
-      "Because <code>speak()</code> must be called last"
-     ],
-     "answer": 1,
-     "explain": "The compiler goes by what the variable promises. The message even says <code>location: variable a of type Animal</code>. Declaring <code>Dog a = new Dog(&quot;Rex&quot;);</code> fixes it.",
-     "fixedFiles": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
-      ],
-      [
-       "Fetch.java",
-       "public class Fetch {\n    public static void main(String[] args) {\n        Dog a = new Dog(\"Rex\");\n        a.speak();\n        a.fetch();\n    }\n}\n"
-      ]
-     ],
-     "fixedResult": {
-      "kind": "ok",
-      "command": "java Fetch",
-      "stdout": "Rex says Woof!\nRex fetches the ball."
-     }
-    },
-    {
-     "type": "p",
-     "html": "When you have an <code>Animal</code> and need dog-only behavior, check with <code>instanceof</code> first, then <strong>cast</strong>: <code>(Dog) a</code> tells the compiler to treat the object as a <code>Dog</code>. Checking first matters, because casting a <code>Cat</code> to <code>Dog</code> crashes with a <code>ClassCastException</code>."
-    },
-    {
-     "type": "code",
-     "files": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
-      ],
-      [
-       "Cat.java",
-       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
-      ],
-      [
-       "Walk.java",
-       "public class Walk {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Dog(\"Fido\")};\n        for (Animal a : animals) {\n            if (a instanceof Dog) {\n                Dog d = (Dog) a;\n                d.fetch();\n            }\n        }\n    }\n}\n"
-      ]
-     ],
-     "result": {
-      "kind": "ok",
-      "command": "java Walk",
-      "stdout": "Rex fetches the ball.\nFido fetches the ball."
-     },
-     "showResult": true,
-     "collapsed": false,
-     "caption": null,
-     "after": null
-    },
-    {
-     "type": "h",
-     "html": "Everything is an Object"
-    },
-    {
-     "type": "p",
-     "html": "A class with no <code>extends</code> still has a superclass: Java's built-in <code>Object</code>. So every class sits in one big hierarchy with <code>Object</code> at the top. That's where the <code>toString()</code> you've been overriding comes from, along with <code>equals()</code> and a few other methods every object has."
-    },
-    {
-     "type": "p",
-     "html": "The exam guide puts it this way: a Programmer Cat is a Cat in Sweater, which is a Cat, which is an Object. Here's that chain in code. One object, referred to by four variables of different types:"
-    },
-    {
-     "type": "code",
-     "files": [
-      [
-       "Cat.java",
-       "public class Cat {\n    private String name;\n\n    public Cat(String name) {\n        this.name = name;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" the cat\";\n    }\n}\n"
-      ],
-      [
-       "CatInSweater.java",
-       "public class CatInSweater extends Cat {\n    private String color;\n\n    public CatInSweater(String name, String color) {\n        super(name);\n        this.color = color;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" in a \" + color + \" sweater\";\n    }\n}\n"
-      ],
-      [
-       "ProgrammerCat.java",
-       "public class ProgrammerCat extends CatInSweater {\n    private String language;\n\n    public ProgrammerCat(String name, String color, String language) {\n        super(name, color);\n        this.language = language;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \", writing \" + language;\n    }\n}\n"
-      ],
-      [
-       "CatTester.java",
-       "public class CatTester {\n    public static void main(String[] args) {\n        ProgrammerCat byte1 = new ProgrammerCat(\"Byte\", \"green\", \"Java\");\n        CatInSweater asSweater = byte1;\n        Cat asCat = byte1;\n        Object asObject = byte1;\n\n        System.out.println(byte1);\n        System.out.println(asCat);\n        System.out.println(asObject);\n        System.out.println(asObject instanceof Cat);\n    }\n}\n"
-      ]
-     ],
-     "result": {
-      "kind": "ok",
-      "command": "java CatTester",
-      "stdout": "Byte the cat in a green sweater, writing Java\nByte the cat in a green sweater, writing Java\nByte the cat in a green sweater, writing Java\ntrue"
-     },
-     "showResult": true,
-     "collapsed": false,
-     "caption": null,
-     "after": null
-    },
-    {
-     "type": "p",
-     "html": "All three <code>println</code> calls print the same thing, because they're the same object, and <code>ProgrammerCat</code>'s <code>toString</code> runs no matter which variable you go through. Each level adds its part with <code>super.toString()</code>."
-    },
-    {
-     "type": "h",
-     "html": "The four core ideas of OOP"
-    },
-    {
-     "type": "p",
-     "html": "You've now used all four of the features the exam guide asks you to know:"
-    },
-    {
-     "type": "list",
-     "items": [
-      "<strong>Encapsulation</strong>: each object is responsible for its own data. Fields are <code>private</code>, and other code goes through methods that can check values (the Classes and objects section).",
-      "<strong>Inheritance</strong>: a subclass takes an existing class and adds to it with <code>extends</code>. Java allows one direct superclass, but chains can be as long as you like.",
-      "<strong>Abstraction</strong>: describe what something does while leaving out how. An abstract method says every car can <code>start()</code> without saying how any particular car does it.",
-      "<strong>Polymorphism</strong>: objects of different subclasses can be used wherever the superclass is expected, and each runs its own version of overridden methods."
-     ]
-    },
-    {
-     "type": "h",
-     "html": "Practice"
-    },
-    {
-     "type": "predict",
-     "id": "poly-predict",
-     "prompt": "Which version of <code>speak()</code> runs for each slot?",
-     "files": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
-      ],
-      [
-       "Cat.java",
-       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
-      ],
-      [
-       "Mix.java",
-       "public class Mix {\n    public static void main(String[] args) {\n        Animal first = new Cat(\"Tom\");\n        Animal second = new Animal(\"Hoppy\");\n        Dog third = new Dog(\"Fido\");\n        Animal fourth = third;\n        first.speak();\n        second.speak();\n        fourth.speak();\n    }\n}\n"
-      ]
-     ],
-     "choices": [
-      "Tom makes a sound.\nHoppy makes a sound.\nFido makes a sound.",
-      "Tom says Meow.\nHoppy makes a sound.\nFido says Woof!",
-      "Tom says Meow.\nHoppy makes a sound.\nFido makes a sound.",
-      "A compile error: a Dog can't be stored in an Animal variable"
-     ],
-     "answer": 1,
-     "result": {
-      "kind": "ok",
-      "command": "java Mix",
-      "stdout": "Tom says Meow.\nHoppy makes a sound.\nFido says Woof!"
-     },
-     "explain": "The object, not the variable, picks the version. <code>fourth</code> is an <code>Animal</code> variable, but it refers to Fido, a <code>Dog</code>, so Fido barks."
-    },
-    {
-     "type": "blanks",
-     "id": "poly-count",
-     "title": "Count the dogs",
-     "prompt": "Count how many animals in the array are dogs, and make each dog fetch.",
-     "files": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
-      ],
-      [
-       "Cat.java",
-       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
-      ],
-      [
-       "DogCount.java",
-       "public class DogCount {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Dog(\"Fido\"), new Cat(\"Kit\")};\n        int dogs = 0;\n        for (Animal a : animals) {\n            if (a [[check]] Dog) {\n                dogs++;\n                Dog d = [[cast]] a;\n                d.fetch();\n            }\n        }\n        System.out.println(dogs + \" dogs\");\n    }\n}\n"
-      ]
-     ],
-     "run": "DogCount",
-     "blanks": {
-      "check": {
-       "accept": [
-        "instanceof"
-       ],
-       "solution": "instanceof",
-       "hint": "Which operator tests an object's class?",
-       "exact": false,
-       "wrong": [
-        {
-         "answer": "==",
-         "shown": "==",
-         "why": "<code>==</code> compares two values, so Java looks for a variable named <code>Dog</code> and finds none. <code>Dog</code> is a class, not a value. <code>instanceof</code> asks \"is this object a Dog (or a subclass of Dog)?\"",
-         "result": {
-          "kind": "compile",
-          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
-          "text": "DogCount.java:6: error: cannot find symbol\n            if (a == Dog) {\n                     ^\n  symbol:   variable Dog\n  location: class DogCount\n1 error"
-         }
-        }
-       ],
-       "width": 10
-      },
-      "cast": {
-       "accept": [
-        "(Dog)"
-       ],
-       "solution": "(Dog)",
-       "hint": "Tell the compiler to treat <code>a</code> as a <code>Dog</code>.",
-       "exact": false,
-       "wrong": [
-        {
-         "answer": "",
-         "shown": "",
-         "why": "Without a cast, Java won't put an <code>Animal</code> into a <code>Dog</code> variable, even inside the <code>instanceof</code> check. Write <code>(Dog) a</code>.",
-         "result": {
-          "kind": "compile",
-          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
-          "text": "DogCount.java:8: error: incompatible types: Animal cannot be converted to Dog\n                Dog d =  a;\n                         ^\n1 error"
-         }
-        },
-        {
-         "answer": "new Dog",
-         "shown": "new Dog",
-         "why": "<code>new Dog a</code> isn't valid. A cast doesn't create a new object; it changes how the compiler sees an existing one: <code>(Dog) a</code>.",
-         "result": {
-          "kind": "compile",
-          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
-          "text": "DogCount.java:8: error: '(' or '[' expected\n                Dog d = new Dog a;\n                                ^\n1 error"
-         }
-        }
-       ],
-       "width": 7
-      }
-     },
-     "result": {
-      "kind": "ok",
-      "command": "java DogCount",
-      "stdout": "Rex fetches the ball.\nFido fetches the ball.\n2 dogs"
-     },
-     "explain": "<code>instanceof</code> makes the cast safe: only dogs get cast to <code>Dog</code>."
-    },
-    {
-     "type": "quiz",
-     "id": "poly-object",
-     "question": "<code>public class Plant { }</code> has no <code>extends</code>. What is its superclass?",
-     "choices": [
-      "It has none",
-      "<code>Object</code>",
-      "<code>Main</code>",
-      "Whichever class uses it"
-     ],
-     "answer": 1,
-     "explain": "Every class without an explicit <code>extends</code> implicitly extends <code>java.lang.Object</code>. That's why every object has <code>toString()</code>."
-    },
-    {
-     "type": "quiz",
-     "id": "poly-pillar",
-     "question": "\"Our objects should be responsible for themselves, and not depend on others.\" Which core idea does the exam guide describe with this?",
-     "choices": [
-      "Abstraction",
-      "Encapsulation",
-      "Inheritance",
-      "Polymorphism"
-     ],
-     "answer": 1,
-     "explain": "Encapsulation: private data, managed by the object's own methods. Abstraction is about leaving out details (like how each car starts), inheritance about extending a class, and polymorphism about using subclasses where a superclass is expected."
-    },
-    {
-     "type": "h",
-     "html": "Write it yourself"
-    },
-    {
-     "type": "p",
-     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
-    },
-    {
-     "type": "write",
-     "id": "w-chorus",
-     "mode": "independent",
-     "title": "One loop, many forms",
-     "goal": "Write <code>Animal</code> (private <code>name</code>, <code>getName()</code>, <code>speak()</code> prints <code>&lt;name&gt; makes a sound.</code>) and three subclasses that override <code>speak()</code>: <code>Dog</code> (<code>says Woof!</code>), <code>Cat</code> (<code>says Meow.</code>) and <code>Cow</code> (<code>says Moo.</code>). In <code>ChorusTester</code>, put one of each in an <code>Animal[]</code> and make them all speak in one loop.",
-     "requirements": [],
-     "files": [
-      "Animal.java",
-      "Dog.java",
-      "Cat.java",
-      "Cow.java",
-      "ChorusTester.java"
-     ],
-     "starter": [],
-     "tests": [
-      [
-       "CheckChorus.java",
-       "public class CheckChorus {\n    public static void main(String[] args) {\n        Animal a = new Cow(\"Daisy\");\n        a.speak();\n        Animal b = new Animal(\"Plain\");\n        b.speak();\n    }\n}\n"
-      ]
-     ],
-     "testsRun": "CheckChorus",
-     "hints": [],
-     "checks": [
-      {
-       "pattern": "Animal\\s*\\[\\s*\\]",
-       "message": "Store the animals in an <code>Animal[]</code>."
-      }
-     ],
-     "run": "ChorusTester",
-     "output": "Rex says Woof!\nTom says Meow.\nBess says Moo.",
-     "testsOutput": "Daisy says Moo.\nPlain makes a sound.",
-     "solution": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
-      ],
-      [
-       "Cat.java",
-       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
-      ],
-      [
-       "Cow.java",
-       "public class Cow extends Animal {\n    public Cow(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Moo.\");\n    }\n}\n"
-      ],
-      [
-       "ChorusTester.java",
-       "public class ChorusTester {\n    public static void main(String[] args) {\n        Animal[] chorus = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Cow(\"Bess\")};\n        for (Animal a : chorus) {\n            a.speak();\n        }\n    }\n}\n"
-      ]
-     ]
-    },
-    {
-     "type": "write",
-     "id": "w-purr",
-     "mode": "independent",
-     "title": "instanceof and a cast",
-     "goal": "Write <code>Animal</code> (as in the previous task), <code>Dog</code> and <code>Cat</code> (no overrides needed), where only <code>Cat</code> has <code>purr()</code> (prints <code>&lt;name&gt; purrs.</code>). In <code>CatCount</code>, loop over <code>{Dog Rex, Cat Tom, Cat Kit, Dog Fido}</code>, make each cat purr, and print how many cats there were.",
-     "requirements": [
-      "Check with <code>instanceof</code> before casting"
-     ],
-     "files": [
-      "Animal.java",
-      "Dog.java",
-      "Cat.java",
-      "CatCount.java"
-     ],
-     "starter": [],
-     "tests": [],
-     "testsRun": null,
-     "hints": [
-      "<code>if (a instanceof Cat)</code>, then <code>Cat c = (Cat) a;</code>"
-     ],
-     "checks": [
-      {
-       "pattern": "instanceof\\s+Cat",
-       "message": "Use <code>instanceof Cat</code> to find the cats."
-      },
-      {
-       "pattern": "\\(\\s*Cat\\s*\\)",
-       "message": "Cast with <code>(Cat)</code> before calling <code>purr()</code>."
-      }
-     ],
-     "run": "CatCount",
-     "output": "Tom purrs.\nKit purrs.\n2 cats",
-     "testsOutput": null,
-     "solution": [
-      [
-       "Animal.java",
-       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
-      ],
-      [
-       "Dog.java",
-       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n}\n"
-      ],
-      [
-       "Cat.java",
-       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    public void purr() {\n        System.out.println(getName() + \" purrs.\");\n    }\n}\n"
-      ],
-      [
-       "CatCount.java",
-       "public class CatCount {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Cat(\"Kit\"), new Dog(\"Fido\")};\n        int cats = 0;\n        for (Animal a : animals) {\n            if (a instanceof Cat) {\n                cats++;\n                Cat c = (Cat) a;\n                c.purr();\n            }\n        }\n        System.out.println(cats + \" cats\");\n    }\n}\n"
-      ]
-     ]
-    },
-    {
-     "type": "write",
-     "id": "w-showcase",
-     "mode": "independent",
-     "title": "Everything is an Object",
-     "goal": "Write <code>Pet</code> (private <code>name</code>, <code>toString</code> returns <code>&lt;name&gt; the pet</code>) and <code>Showcase</code>, with a method <code>public static void show(Object item)</code> that prints <code>Showing: </code> followed by the item. Because every class extends <code>Object</code>, <code>show</code> accepts a <code>String</code>, a <code>Pet</code>, or anything else.",
-     "requirements": [],
-     "files": [
-      "Pet.java",
-      "Showcase.java"
-     ],
-     "starter": [],
-     "tests": [
-      [
-       "CheckShowcase.java",
-       "public class CheckShowcase {\n    public static void main(String[] args) {\n        Showcase.show(new Pet(\"Nib\"));\n        Object o = new Pet(\"Pip\");\n        System.out.println(o);\n    }\n}\n"
-      ]
-     ],
-     "testsRun": "CheckShowcase",
-     "hints": [
-      "The parameter type is <code>Object</code>. Joining it to text with <code>+</code> calls its <code>toString()</code>, so <code>Pet</code>'s version runs."
-     ],
-     "checks": [
-      {
-       "pattern": "show\\s*\\(\\s*Object\\s+\\w+\\s*\\)",
-       "message": "Give <code>show</code> a parameter of type <code>Object</code>."
-      }
-     ],
-     "run": "Showcase",
-     "output": "Showing: hello\nShowing: Biscuit the pet",
-     "testsOutput": "Showing: Nib the pet\nPip the pet",
-     "solution": [
-      [
-       "Pet.java",
-       "public class Pet {\n    private String name;\n\n    public Pet(String name) {\n        this.name = name;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" the pet\";\n    }\n}\n"
-      ],
-      [
-       "Showcase.java",
-       "public class Showcase {\n    public static void show(Object item) {\n        System.out.println(\"Showing: \" + item);\n    }\n\n    public static void main(String[] args) {\n        show(\"hello\");\n        show(new Pet(\"Biscuit\"));\n    }\n}\n"
-      ]
-     ]
-    }
-   ],
-   "sources": [
-    {
-     "title": "Polymorphism",
-     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
-     "org": "Oracle, The Java Tutorials",
-     "note": null
-    },
-    {
-     "title": "Inheritance",
-     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
-     "org": "Oracle, The Java Tutorials",
-     "note": null
-    },
-    {
-     "title": "Object as a Superclass",
-     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/objectclass.html",
-     "org": "Oracle, The Java Tutorials",
-     "note": null
-    },
-    {
-     "title": "java.lang.Object",
-     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html",
-     "org": "Oracle, Java SE 21 API docs",
-     "note": null
-    },
-    {
-     "title": "15.20.2 The instanceof Operator",
-     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.20.2",
-     "org": "Oracle, Java Language Specification (Java SE 21)",
-     "note": null
-    },
-    {
-     "title": "Part 9.3: Object polymorphism",
-     "url": "https://java-programming.mooc.fi/part-9/3-object-polymorphism",
-     "org": "University of Helsinki, Java Programming MOOC",
-     "note": null
-    }
-   ]
-  },
   "inh-project-fleet": {
    "id": "inh-project-fleet",
-   "section": "inheritance",
+   "section": "wrap-inheritance",
    "title": "Project: a delivery fleet",
-   "summary": "Put the section together: an abstract <code>Vehicle</code>, three kinds of vehicle that price trips their own way, and a fleet that compares them without knowing which kind each one is.",
+   "summary": "Put the inheritance units together: an abstract <code>Vehicle</code>, three kinds of vehicle that price trips their own way, and a fleet that compares them without knowing which kind each one is.",
    "goals": [
     "Design an abstract superclass with one abstract method",
     "Write several subclasses that each implement it differently",
     "Write a manager class whose loops rely on polymorphism"
    ],
-   "cos225": "This project combines what the exam guide groups under OOP: an abstract class, subclasses with <code>super(...)</code> and <code>@Override</code>, and polymorphism through an array of the superclass type. It's the same manager-class shape as the Classes section, now holding a whole hierarchy.",
+   "cos225": "This project combines what the exam guide groups under OOP: an abstract class, subclasses with <code>super(...)</code> and <code>@Override</code>, and polymorphism through an array of the superclass type. It's the same manager-class shape as the OOP units' projects, now holding a whole hierarchy.",
    "blocks": [
     {
      "type": "h",
@@ -8634,7 +8804,7 @@ window.COURSE = {
     },
     {
      "type": "p",
-     "html": "<code>cheapestFor</code> uses the \"best so far\" pattern from the Classes workshop, comparing each vehicle's own price."
+     "html": "<code>cheapestFor</code> uses the \"best so far\" pattern from the OOP wrap-up workshop, comparing each vehicle's own price."
     },
     {
      "type": "code",
@@ -8857,7 +9027,7 @@ window.COURSE = {
   },
   "inh-workshop": {
    "id": "inh-workshop",
-   "section": "inheritance",
+   "section": "wrap-inheritance",
    "title": "Workshop: inheritance",
    "summary": "Design class hierarchies from scratch: two guided builds, then two you write on your own, one of them sized like an exam question.",
    "goals": [

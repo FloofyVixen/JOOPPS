@@ -67,7 +67,7 @@ LESSON = {
         {"type": "h", "text": "Printing an object"},
         {"type": "code", "files": {"Song.java": SONG_NO_TS, "SongTester.java": TESTER}, "run": "SongTester",
          "after": "Your output will show different characters after the `@`. They change from run to run."},
-        {"type": "p", "text": "Every Java class automatically comes with a `toString` method, inherited from Java's built-in `Object` class. You'll learn exactly how that works in the Inheritance section. The built-in version returns the class name, an `@`, and a number in hexadecimal. That's rarely what you want to see."},
+        {"type": "p", "text": "Every Java class automatically comes with a `toString` method, inherited from Java's built-in `Object` class. You'll learn exactly how that works in the inheritance units. The built-in version returns the class name, an `@`, and a number in hexadecimal. That's rarely what you want to see."},
 
         {"type": "h", "text": "Writing your own toString"},
         {"type": "p", "text": "To replace it, write a method with exactly this header: `public String toString()`. It must **return** a `String`. `println` calls it for you whenever you print the object, and so does `+` when you join an object to text."},

@@ -188,13 +188,13 @@ T4 = """public class FleetTester {
 LESSON = {
     "id": "inh-project-fleet",
     "title": "Project: a delivery fleet",
-    "summary": "Put the section together: an abstract `Vehicle`, three kinds of vehicle that price trips their own way, and a fleet that compares them without knowing which kind each one is.",
+    "summary": "Put the inheritance units together: an abstract `Vehicle`, three kinds of vehicle that price trips their own way, and a fleet that compares them without knowing which kind each one is.",
     "goals": [
         "Design an abstract superclass with one abstract method",
         "Write several subclasses that each implement it differently",
         "Write a manager class whose loops rely on polymorphism",
     ],
-    "cos225": "This project combines what the exam guide groups under OOP: an abstract class, subclasses with `super(...)` and `@Override`, and polymorphism through an array of the superclass type. It's the same manager-class shape as the Classes section, now holding a whole hierarchy.",
+    "cos225": "This project combines what the exam guide groups under OOP: an abstract class, subclasses with `super(...)` and `@Override`, and polymorphism through an array of the superclass type. It's the same manager-class shape as the OOP units' projects, now holding a whole hierarchy.",
     "blocks": [
         {"type": "h", "text": "The specification"},
         {"type": "list", "items": [
@@ -250,7 +250,7 @@ LESSON = {
          "explain": "The fleet has 3 slots, so the fourth `add` returns `false`."},
 
         {"type": "h", "text": "Step 4: the cheapest vehicle"},
-        {"type": "p", "text": "`cheapestFor` uses the \"best so far\" pattern from the Classes workshop, comparing each vehicle's own price."},
+        {"type": "p", "text": "`cheapestFor` uses the \"best so far\" pattern from the OOP wrap-up workshop, comparing each vehicle's own price."},
         {"type": "code", "files": {"Vehicle.java": VEHICLE, "Fleet.java": FLEET + CHEAPEST + END}, "hide": ["Vehicle.java"],
          "show": False, "caption": "`Fleet.java`, finished"},
         {"type": "predict", "id": "fleet-final",

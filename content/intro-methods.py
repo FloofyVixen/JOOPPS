@@ -37,7 +37,7 @@ LESSON = {
         {"type": "snippet", "code": "public static int square(int n) {"},
         {"type": "list", "items": [
             "`public` means code outside this class may call it.",
-            "`static` means it belongs to the class itself. Every method in this section is `static`; in the next section you'll write methods without it, which belong to objects.",
+            "`static` means it belongs to the class itself. Every method in this unit is `static`; in \"Introduction to OOP\" you'll write methods without it, which belong to objects.",
             "`int` is the **return type**: the kind of value the method hands back. `void` means it hands nothing back.",
             "`square` is the method's name, and `(int n)` is its parameter list.",
         ]},

@@ -177,9 +177,9 @@ LESSON = {
         {"type": "h", "text": "The four core ideas of OOP"},
         {"type": "p", "text": "You've now used all four of the features the exam guide asks you to know:"},
         {"type": "list", "items": [
-            "**Encapsulation**: each object is responsible for its own data. Fields are `private`, and other code goes through methods that can check values (the Classes and objects section).",
+            "**Encapsulation**: each object is responsible for its own data. Fields are `private`, and other code goes through methods that can check values (the OOP units).",
             "**Inheritance**: a subclass takes an existing class and adds to it with `extends`. Java allows one direct superclass, but chains can be as long as you like.",
-            "**Abstraction**: describe what something does while leaving out how. An abstract method says every car can `start()` without saying how any particular car does it.",
+            "**Abstraction**: describe what something does while leaving out how. In \"Abstraction with Inheritance\" you'll write abstract methods: every car can `start()`, without saying how any particular car does it.",
             "**Polymorphism**: objects of different subclasses can be used wherever the superclass is expected, and each runs its own version of overridden methods.",
         ]},
 

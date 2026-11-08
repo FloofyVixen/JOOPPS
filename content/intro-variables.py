@@ -43,7 +43,7 @@ LESSON = {
             "`int` holds whole numbers, like `19` or `-4`.",
             "`double` holds numbers with a decimal point, like `3.4`.",
             "`boolean` holds `true` or `false`.",
-            "`String` holds text in double quotes. It starts with a capital S because it's a class, which you'll learn about in the next section. The other three are **primitive** types, built into the language.",
+            "`String` holds text in double quotes. It starts with a capital S because it's a class, which you'll learn about in \"Introduction to OOP\". The other three are **primitive** types, built into the language.",
         ]},
         {"type": "p", "text": "The line `age = age + 1;` reads the current value of `age`, adds one, and stores the result back in `age`. You only write the type once, when you first declare the variable."},
         {"type": "p", "text": "When one side of `+` is a `String`, Java joins the two sides into longer text instead of adding numbers. That's how `name + \" is \" + age` builds a sentence."},

@@ -58,7 +58,7 @@ LESSON = {
         {"type": "list", "items": [
             "`title`, `artist` and `seconds` are **fields**, also called **instance variables**. Each object gets its own copy.",
             "`play()` is a method with no `static`. It belongs to an object, so it can use that object's fields directly.",
-            "The fields are `public` for now so the tester can set them. In lesson 4 of this section you'll see why most classes make them `private`.",
+            "The fields are `public` for now so the tester can set them. In \"OOP: Basics and Use cases\" you'll see why most classes make them `private`.",
         ]},
 
         {"type": "h", "text": "Making objects with new"},
@@ -70,7 +70,7 @@ LESSON = {
         {"type": "h", "text": "Fields you never set"},
         {"type": "p", "text": "A field that is never given a value isn't empty. Java fills it with a default: `0` for numbers, `false` for `boolean`, and `null` for objects such as `String`. `null` means \"no object\"."},
         {"type": "code", "files": {"Song.java": SONG, "DefaultsTester.java": DEFAULTS}, "run": "DefaultsTester"},
-        {"type": "p", "text": "Seeing `null` or `0` in your output when you expected real data usually means a field never got set. You'll meet a common cause of this in the next lesson."},
+        {"type": "p", "text": "Seeing `null` or `0` in your output when you expected real data usually means a field never got set. You'll meet a common cause of this in the lesson on constructors."},
 
         {"type": "h", "text": "Practice"},
         {"type": "blanks", "id": "class-movie", "title": "Create and use an object",

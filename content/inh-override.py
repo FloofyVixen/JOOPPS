@@ -133,7 +133,7 @@ LESSON = {
         {"type": "h", "text": "Overriding versus overloading"},
         {"type": "list", "items": [
             "**Overriding**: a subclass method with the **same** name and parameters as an inherited one. It replaces the inherited behavior.",
-            "**Overloading**: methods (or constructors) with the same name but **different** parameters, like the two `Rectangle` constructors in the Classes section. Each one is a separate method.",
+            "**Overloading**: methods (or constructors) with the same name but **different** parameters, like the two `Rectangle` constructors in \"OOP: Basics in Java\". Each one is a separate method.",
         ]},
 
         {"type": "h", "text": "Practice"},

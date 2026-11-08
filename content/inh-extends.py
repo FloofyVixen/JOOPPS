@@ -108,7 +108,7 @@ LESSON = {
         ]},
         {"type": "p", "text": "Use inheritance when the subclass really **is a** kind of the superclass: a dog is an animal, a truck is a vehicle. If the sentence \"a ___ is a ___\" sounds wrong, inheritance is probably the wrong tool."},
         {"type": "note", "label": "One parent only",
-         "text": "In Java, a class extends exactly one class. Every class except `Object` has one, and only one, direct superclass. You can still build chains (`Puppy extends Dog`, `Dog extends Animal`), and the Interfaces section shows how a class can promise several kinds of behavior."},
+         "text": "In Java, a class extends exactly one class. Every class except `Object` has one, and only one, direct superclass. You can still build chains (`Puppy extends Dog`, `Dog extends Animal`), and the \"Interfaces vs Objects\" unit shows how a class can promise several kinds of behavior."},
 
         {"type": "h", "text": "Private fields stay private"},
         {"type": "p", "text": "`name` is `private` in `Animal`. Private means \"only code inside `Animal`\", and that includes subclasses: `Dog` can't read `name` directly. It uses the public getter instead. That's encapsulation working across the hierarchy. Each class is responsible for its own data."},
@@ -149,7 +149,7 @@ LESSON = {
          "run": "CatTester", "output": "Tom is eating.\nTom climbs the shelf.",
          "blanks": {
              "ext": {"accept": ["extends"], "hint": "Which keyword makes a class a subclass?",
-                     "wrong": [{"answer": "implements", "why": "`implements` is for interfaces, which come in the next section; hence \"interface expected here\". `Animal` is a class, so use `extends`. The other errors all follow from the first one: without `extends`, `Cat` has no parent with a `getName()` or `eat()`. Fix the first error and they disappear."},
+                     "wrong": [{"answer": "implements", "why": "`implements` is for interfaces, which come later in the course; hence \"interface expected here\". `Animal` is a class, so use `extends`. The other errors all follow from the first one: without `extends`, `Cat` has no parent with a `getName()` or `eat()`. Fix the first error and they disappear."},
                                {"answer": "inherits", "why": "Java's keyword is `extends`, not `inherits`."}]},
              "sup": {"accept": ["super"], "hint": "Call the superclass's constructor.",
                      "wrong": [{"answer": "Animal", "why": "You can't call a constructor by its class name like a method, so `Animal(name)` is \"cannot find symbol\". And because the constructor no longer starts with `super(...)`, Java adds `super();` for you, but `Animal` has no constructor without parameters. That's the first error. The next lesson explains this in detail."},
@@ -191,7 +191,7 @@ LESSON = {
          "question": "Which pair is a good fit for inheritance?",
          "choices": ["`Wheel extends Car`", "`Square extends Shape`", "`Garage extends Car`", "`Playlist extends Song`"],
          "answer": 1,
-         "explain": "A square is a shape. A wheel is part of a car, a garage holds cars and a playlist holds songs. Those are \"has-a\" relationships, which are better modeled with fields, like the manager classes in the previous section."},
+         "explain": "A square is a shape. A wheel is part of a car, a garage holds cars and a playlist holds songs. Those are \"has-a\" relationships, which are better modeled with fields, like the manager classes in the OOP units."},
     ],
     "sources": [SUBCLASSES_TUT, JLS_SUPERCLASS, SUPER_TUT, ACCESS_TUT, HEL_9_1],
 }
