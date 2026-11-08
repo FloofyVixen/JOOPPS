@@ -422,8 +422,10 @@
   function renderSidebar(currentId) {
     var done = finished();
     var html = '<a class="home-link" href="#start"' + (currentId ? "" : ' aria-current="page"') + ">Course home</a>";
-    C.sections.forEach(function (s, n) {
-      html += "<h2>" + (n + 1) + ". " + esc(s.title) + "</h2>";
+    var unitNo = 0;
+    C.sections.forEach(function (s) {
+      if (s.kind === "exam") html += '<h2 class="exam-head">' + esc(s.title) + "</h2>";
+      else { unitNo += 1; html += "<h2>" + unitNo + ". " + esc(s.title) + "</h2>"; }
       if (s.lessons && s.lessons.length) {
         html += "<ol>";
         s.lessons.forEach(function (id) {
@@ -451,7 +453,7 @@
       "Short explanations, real programs, and fill-in-the-blank practice that shows you the same error messages you'll see in VS Code's terminal.</p>" +
       '<p><a class="btn primary" href="#' + ORDER[0] + '">Start with lesson 1</a></p>' +
       '<div class="facts">' +
-      "<div><h2>Follows COS 225</h2><p>The " + C.sections.length + " units follow the path of UMaine's COS 225 (Object-Oriented Design, Programming and Data Structures), from Introduction to Java to Introduction to Hashing. Where its materials aren't public, the University of Helsinki's Java MOOC and similar courses fill the gaps.</p></div>" +
+      "<div><h2>Follows COS 225</h2><p>The " + C.sections.filter(function (x) { return x.kind !== "exam"; }).length + " units, with three exam-practice checkpoints along the way, follow the path of UMaine's COS 225 (Object-Oriented Design, Programming and Data Structures), from Introduction to Java to Introduction to Hashing. Where its materials aren't public, the University of Helsinki's Java MOOC and similar courses fill the gaps.</p></div>" +
       "<div><h2>Practice, not answers</h2><p>The projects have the same shape as COS 225 homework, with different subjects. Do the lesson, then write your assignment yourself.</p></div>" +
       "<div><h2>Every program is real</h2><p>All " + "code on this site was compiled and run with OpenJDK " + esc(C.java) + " on " + esc(C.built) +
       ". Every output and error message shown is exactly what Java printed. Each lesson lists the official documentation and university courses its explanations rely on.</p></div>" +
@@ -460,9 +462,11 @@
       "<h2>What's in the course</h2>" +
       "<p>" + lessonCount + " lessons are ready. The rest of the outline is planned and will be added unit by unit.</p>";
     var ol = el("ol", { "class": "outline" });
-    C.sections.forEach(function (s, i) {
-      var li = el("li");
-      var inner = '<span class="num">' + (i + 1) + '</span><div><h3>' + esc(s.title) + "</h3><p>" + esc(s.blurb) + "</p>";
+    var unitCount = 0;
+    C.sections.forEach(function (s) {
+      var li = el("li", s.kind === "exam" ? { "class": "exam" } : null);
+      var label = s.kind === "exam" ? "Exam" : String(++unitCount);
+      var inner = '<span class="num">' + label + '</span><div><h3>' + esc(s.title) + "</h3><p>" + esc(s.blurb) + "</p>";
       var ready = (s.lessons || []).filter(function (id) { return C.lessons[id]; });
       if (!ready.length) inner += '<p class="status">Planned</p>';
       inner += "<ol>" + ready.map(function (id) {
