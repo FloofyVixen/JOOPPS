@@ -92,8 +92,11 @@ def run_java(files, main, stdin=""):
             r = subprocess.run(["java", main], cwd=d, capture_output=True, text=True,
                                env=ENV, timeout=20, input=stdin)
             if r.returncode != 0:
+                err = r.stderr.rstrip("\n").split("\n")
+                if len(err) > 14:  # e.g. StackOverflowError prints ~1000 identical lines
+                    err = err[:12] + [f"\t... ({len(err) - 12} more lines not shown)"]
                 res = {"kind": "runtime", "command": "java " + main,
-                       "stdout": r.stdout.rstrip("\n"), "text": r.stderr.rstrip("\n")}
+                       "stdout": r.stdout.rstrip("\n"), "text": "\n".join(err)}
             else:
                 res = {"kind": "ok", "command": "java " + main, "stdout": r.stdout.rstrip("\n")}
     finally:
@@ -385,6 +388,7 @@ def main():
     course = load(os.path.join(ROOT, "content", "course.py"))
     TASKS.update(load(os.path.join(ROOT, "content", "tasks_intro.py")).TASKS)
     TASKS.update(load(os.path.join(ROOT, "content", "tasks_classes.py")).TASKS)
+    TASKS.update(load(os.path.join(ROOT, "content", "tasks_inheritance.py")).TASKS)
     lessons = {}
     ex_ids = set()
     for section in course.SECTIONS:

@@ -108,3 +108,24 @@ STRING_EQUALS = s("String.equals(Object)",
                   API)
 HEL_3_3 = s("Part 3.3: Arrays", "https://java-programming.mooc.fi/part-3/3-arrays", HEL)
 HEL_4_2 = s("Part 4.2: Objects in a list", "https://java-programming.mooc.fi/part-4/2-objects-in-a-list", HEL)
+
+# ---- Inheritance
+SUBCLASSES_TUT = s("Inheritance", "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html", ORACLE)
+SUPER_TUT = s("Using the Keyword super", "https://docs.oracle.com/javase/tutorial/java/IandI/super.html", ORACLE)
+OVERRIDE_METHODS_TUT = s("Overriding and Hiding Methods",
+                         "https://docs.oracle.com/javase/tutorial/java/IandI/override.html", ORACLE)
+ABSTRACT_TUT = s("Abstract Methods and Classes", "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html", ORACLE)
+POLY_TUT = s("Polymorphism", "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html", ORACLE)
+HEL_9_1 = s("Part 9.1: Class inheritance", "https://java-programming.mooc.fi/part-9/1-inheritance", HEL)
+HEL_9_3 = s("Part 9.3: Object polymorphism", "https://java-programming.mooc.fi/part-9/3-object-polymorphism", HEL)
+JLS_SUPERCLASS = s("8.1.4 Superclasses and Subclasses",
+                   "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.1.4", JLS)
+JLS_CTOR_BODY = s("8.8.7 Constructor Body",
+                  "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.8.7", JLS)
+JLS_ABSTRACT = s("8.1.1.1 abstract Classes",
+                 "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.1.1.1", JLS)
+JLS_OVERRIDE = s("8.4.8.1 Overriding (by Instance Methods)",
+                 "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.4.8.1", JLS)
+JLS_INSTANCEOF = s("15.20.2 The instanceof Operator",
+                   "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.20.2", JLS)
+OBJECT_API = s("java.lang.Object", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html", API)

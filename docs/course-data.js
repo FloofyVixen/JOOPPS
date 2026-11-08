@@ -35,13 +35,14 @@ window.COURSE = {
    "id": "inheritance",
    "title": "Inheritance",
    "blurb": "Build new classes on top of existing ones with extends and super.",
-   "planned": [
-    "Subclasses with extends",
-    "Calling the parent with super",
-    "Overriding methods",
-    "Abstract classes",
-    "Polymorphism and the Object class",
-    "Project: a clothing store"
+   "lessons": [
+    "inh-extends",
+    "inh-super",
+    "inh-override",
+    "inh-abstract",
+    "inh-polymorphism",
+    "inh-project-fleet",
+    "inh-workshop"
    ]
   },
   {
@@ -5696,6 +5697,3686 @@ window.COURSE = {
     {
      "title": "Part 4.2: Objects in a list",
      "url": "https://java-programming.mooc.fi/part-4/2-objects-in-a-list",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "inh-extends": {
+   "id": "inh-extends",
+   "section": "inheritance",
+   "title": "Subclasses with extends",
+   "summary": "Write the shared parts once in a superclass, and let subclasses inherit them and add their own.",
+   "goals": [
+    "Define the terms superclass and subclass, and recognize an \"is-a\" relationship",
+    "Write a subclass with <code>extends</code> that inherits fields' getters and methods",
+    "Explain why a subclass can't touch its superclass's <code>private</code> fields directly"
+   ],
+   "cos225": "The COS 225 exam guide asks you to \"know the definition of superclass and subclass, and be ready to write them\". Its example: all cars can start, so a subclass of car inherits the behavior of starting.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "The same code, twice"
+    },
+    {
+     "type": "p",
+     "html": "Here are two classes written separately. Look at how much of them is identical: the <code>name</code> field, the constructor and <code>eat()</code>. If you fixed a bug in <code>eat()</code>, you'd have to remember to fix it in both."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Dog.java",
+       "public class Dog {\n    private String name;\n\n    public Dog(String name) {\n        this.name = name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n\n    public void fetch() {\n        System.out.println(name + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat {\n    private String name;\n\n    public Cat(String name) {\n        this.name = name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n\n    public void climb() {\n        System.out.println(name + \" climbs the shelf.\");\n    }\n}\n"
+      ],
+      [
+       "PetTester.java",
+       "public class PetTester {\n    public static void main(String[] args) {\n        new Dog(\"Rex\").eat();\n        new Cat(\"Tom\").eat();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java PetTester",
+      "stdout": "Rex is eating.\nTom is eating."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "A superclass and a subclass"
+    },
+    {
+     "type": "p",
+     "html": "<strong>Inheritance</strong> lets you write the shared part once. Put it in a general class, the <strong>superclass</strong> (also called the parent). Then each specific class <strong>extends</strong> it: it becomes a <strong>subclass</strong> (the child) and automatically has everything the superclass offers. The subclass adds only what's different about it."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "AnimalTester.java",
+       "public class AnimalTester {\n    public static void main(String[] args) {\n        Dog rex = new Dog(\"Rex\");\n        rex.eat();\n        rex.fetch();\n\n        Animal generic = new Animal(\"Generic\");\n        generic.eat();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java AnimalTester",
+      "stdout": "Rex is eating.\nRex fetches the ball.\nGeneric is eating."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>public class Dog extends Animal</code> makes <code>Dog</code> a subclass of <code>Animal</code>.",
+      "<code>Dog</code> never declares <code>eat()</code> or <code>getName()</code>, but <code>rex.eat()</code> works: those methods are <strong>inherited</strong> from <code>Animal</code>.",
+      "<code>fetch()</code> exists only in <code>Dog</code>. An <code>Animal</code> that isn't a <code>Dog</code> can't fetch.",
+      "<code>super(name);</code> hands the name to <code>Animal</code>'s constructor, which stores it. You'll see exactly how this works in the next lesson."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "Use inheritance when the subclass really <strong>is a</strong> kind of the superclass: a dog is an animal, a truck is a vehicle. If the sentence \"a ___ is a ___\" sounds wrong, inheritance is probably the wrong tool."
+    },
+    {
+     "type": "note",
+     "label": "One parent only",
+     "html": "In Java, a class extends exactly one class. Every class except <code>Object</code> has one, and only one, direct superclass. You can still build chains (<code>Puppy extends Dog</code>, <code>Dog extends Animal</code>), and the Interfaces section shows how a class can promise several kinds of behavior."
+    },
+    {
+     "type": "h",
+     "html": "Private fields stay private"
+    },
+    {
+     "type": "p",
+     "html": "<code>name</code> is <code>private</code> in <code>Animal</code>. Private means \"only code inside <code>Animal</code>\", and that includes subclasses: <code>Dog</code> can't read <code>name</code> directly. It uses the public getter instead. That's encapsulation working across the hierarchy. Each class is responsible for its own data."
+    },
+    {
+     "type": "error",
+     "id": "ext-private",
+     "prompt": "This version of <code>fetch</code> tries to use the inherited field directly.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    public void fetch() {\n        System.out.println(name + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "AnimalTester.java",
+       "public class AnimalTester {\n    public static void main(String[] args) {\n        Dog rex = new Dog(\"Rex\");\n        rex.eat();\n        rex.fetch();\n\n        Animal generic = new Animal(\"Generic\");\n        generic.eat();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Animal.java AnimalTester.java Dog.java",
+      "text": "Dog.java:7: error: name has private access in Animal\n        System.out.println(name + \" fetches the ball.\");\n                           ^\n1 error"
+     },
+     "question": "What's the best fix?",
+     "choices": [
+      "Make <code>name</code> public in <code>Animal</code>",
+      "Use the inherited getter, <code>getName()</code>, instead of <code>name</code>",
+      "Declare another <code>name</code> field in <code>Dog</code>",
+      "Remove <code>extends Animal</code>"
+     ],
+     "answer": 1,
+     "explain": "<code>Dog</code> inherits the public <code>getName()</code> method, so it can read the name without breaking <code>Animal</code>'s encapsulation. A second <code>name</code> field in <code>Dog</code> would compile, but it would be a separate, empty variable.",
+     "fixedFiles": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "AnimalTester.java",
+       "public class AnimalTester {\n    public static void main(String[] args) {\n        Dog rex = new Dog(\"Rex\");\n        rex.eat();\n        rex.fetch();\n\n        Animal generic = new Animal(\"Generic\");\n        generic.eat();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java AnimalTester",
+      "stdout": "Rex is eating.\nRex fetches the ball.\nGeneric is eating."
+     }
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "ext-cat",
+     "title": "Write a subclass",
+     "prompt": "Make <code>Cat</code> a subclass of <code>Animal</code> and pass the name up to <code>Animal</code>'s constructor.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat [[ext]] Animal {\n    public Cat(String name) {\n        [[sup]](name);\n    }\n\n    public void climb() {\n        System.out.println([[who]] + \" climbs the shelf.\");\n    }\n}\n"
+      ],
+      [
+       "CatTester.java",
+       "public class CatTester {\n    public static void main(String[] args) {\n        Cat tom = new Cat(\"Tom\");\n        tom.eat();\n        tom.climb();\n    }\n}\n"
+      ]
+     ],
+     "run": "CatTester",
+     "blanks": {
+      "ext": {
+       "accept": [
+        "extends"
+       ],
+       "solution": "extends",
+       "hint": "Which keyword makes a class a subclass?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "implements",
+         "shown": "implements",
+         "why": "<code>implements</code> is for interfaces, which come in the next section; hence \"interface expected here\". <code>Animal</code> is a class, so use <code>extends</code>. The other errors all follow from the first one: without <code>extends</code>, <code>Cat</code> has no parent with a <code>getName()</code> or <code>eat()</code>. Fix the first error and they disappear.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java CatTester.java",
+          "text": "Cat.java:1: error: interface expected here\npublic class Cat implements Animal {\n                            ^\nCat.java:3: error: constructor Object in class Object cannot be applied to given types;\n        super(name);\n        ^\n  required: no arguments\n  found:    String\n  reason: actual and formal argument lists differ in length\nCat.java:7: error: cannot find symbol\n        System.out.println(getName() + \" climbs the shelf.\");\n                           ^\n  symbol:   method getName()\n  location: class Cat\nCatTester.java:4: error: cannot find symbol\n        tom.eat();\n           ^\n  symbol:   method eat()\n  location: variable tom of type Cat\n4 errors"
+         }
+        },
+        {
+         "answer": "inherits",
+         "shown": "inherits",
+         "why": "Java's keyword is <code>extends</code>, not <code>inherits</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java CatTester.java",
+          "text": "Cat.java:1: error: '{' expected\npublic class Cat inherits Animal {\n                ^\n1 error"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "sup": {
+       "accept": [
+        "super"
+       ],
+       "solution": "super",
+       "hint": "Call the superclass's constructor.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "Animal",
+         "shown": "Animal",
+         "why": "You can't call a constructor by its class name like a method, so <code>Animal(name)</code> is \"cannot find symbol\". And because the constructor no longer starts with <code>super(...)</code>, Java adds <code>super();</code> for you, but <code>Animal</code> has no constructor without parameters. That's the first error. The next lesson explains this in detail.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java CatTester.java",
+          "text": "Cat.java:2: error: constructor Animal in class Animal cannot be applied to given types;\n    public Cat(String name) {\n                            ^\n  required: String\n  found:    no arguments\n  reason: actual and formal argument lists differ in length\nCat.java:3: error: cannot find symbol\n        Animal(name);\n        ^\n  symbol:   method Animal(String)\n  location: class Cat\n2 errors"
+         }
+        },
+        {
+         "answer": "this",
+         "shown": "this",
+         "why": "<code>this(name)</code> would call <code>Cat</code>'s own constructor, which is the one you're writing, so it would call itself forever. Java catches this as \"recursive constructor invocation\".",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java CatTester.java",
+          "text": "Cat.java:3: error: recursive constructor invocation\n        this(name);\n        ^\n1 error"
+         }
+        }
+       ],
+       "width": 6
+      },
+      "who": {
+       "accept": [
+        "getName()"
+       ],
+       "solution": "getName()",
+       "hint": "<code>name</code> is private in <code>Animal</code>.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "name",
+         "shown": "name",
+         "why": "<code>name</code> is <code>private</code> in <code>Animal</code>, so <code>Cat</code> can't use it directly. Use the inherited getter.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java CatTester.java",
+          "text": "Cat.java:7: error: name has private access in Animal\n        System.out.println(name + \" climbs the shelf.\");\n                           ^\n1 error"
+         }
+        },
+        {
+         "answer": "getName",
+         "shown": "getName",
+         "why": "Without parentheses, Java looks for a field called <code>getName</code>. Calling a method needs <code>()</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java CatTester.java",
+          "text": "Cat.java:7: error: cannot find symbol\n        System.out.println(getName + \" climbs the shelf.\");\n                           ^\n  symbol:   variable getName\n  location: class Cat\n1 error"
+         }
+        }
+       ],
+       "width": 9
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java CatTester",
+      "stdout": "Tom is eating.\nTom climbs the shelf."
+     },
+     "explain": "<code>Cat</code> gets <code>eat()</code> and <code>getName()</code> from <code>Animal</code> and adds <code>climb()</code>."
+    },
+    {
+     "type": "error",
+     "id": "ext-not-in-parent",
+     "prompt": "The tester calls a <code>Dog</code> method on a plain <code>Animal</code>.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "AnimalTester.java",
+       "public class AnimalTester {\n    public static void main(String[] args) {\n        Animal generic = new Animal(\"Generic\");\n        generic.fetch();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Animal.java AnimalTester.java Dog.java",
+      "text": "AnimalTester.java:4: error: cannot find symbol\n        generic.fetch();\n               ^\n  symbol:   method fetch()\n  location: variable generic of type Animal\n1 error"
+     },
+     "question": "Why can't Java find <code>fetch()</code>?",
+     "choices": [
+      "<code>fetch</code> is spelled wrong",
+      "Inheritance goes one way: <code>Dog</code> gets <code>Animal</code>'s methods, but <code>Animal</code> doesn't get <code>Dog</code>'s",
+      "<code>generic</code> should be declared <code>private</code>",
+      "Animals can only call <code>static</code> methods"
+     ],
+     "answer": 1,
+     "explain": "A subclass inherits from its superclass, never the other way round. <code>Animal</code> has no <code>fetch()</code> method, so only a <code>Dog</code> object can fetch.",
+     "fixedFiles": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "AnimalTester.java",
+       "public class AnimalTester {\n    public static void main(String[] args) {\n        Dog generic = new Dog(\"Generic\");\n        generic.fetch();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java AnimalTester",
+      "stdout": "Generic fetches the ball."
+     }
+    },
+    {
+     "type": "quiz",
+     "id": "ext-terms",
+     "question": "<code>public class Truck extends Vehicle</code>. Which statement is correct?",
+     "choices": [
+      "<code>Truck</code> is the superclass and <code>Vehicle</code> is the subclass",
+      "<code>Vehicle</code> is the superclass and <code>Truck</code> is the subclass",
+      "<code>Truck</code> and <code>Vehicle</code> share the same fields, but not methods",
+      "<code>Truck</code> can extend a second class as well"
+     ],
+     "answer": 1,
+     "explain": "The class after <code>extends</code> is the superclass (parent). <code>Truck</code> inherits its public methods, and can't extend anything else, because Java allows one direct superclass."
+    },
+    {
+     "type": "quiz",
+     "id": "ext-is-a",
+     "question": "Which pair is a good fit for inheritance?",
+     "choices": [
+      "<code>Wheel extends Car</code>",
+      "<code>Square extends Shape</code>",
+      "<code>Garage extends Car</code>",
+      "<code>Playlist extends Song</code>"
+     ],
+     "answer": 1,
+     "explain": "A square is a shape. A wheel is part of a car, a garage holds cars and a playlist holds songs. Those are \"has-a\" relationships, which are better modeled with fields, like the manager classes in the previous section."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-truck",
+     "mode": "independent",
+     "title": "A superclass and a subclass",
+     "goal": "Write <code>Vehicle</code> with a private <code>make</code>, a constructor, <code>getMake()</code> and <code>honk()</code> (prints <code>&lt;make&gt; honks.</code>). Write <code>Truck extends Vehicle</code>, which adds <code>load(int tons)</code> (prints <code>&lt;make&gt; truck loads &lt;tons&gt; tons.</code>). In <code>TruckTester</code>, make a Volvo truck honk and load 8 tons.",
+     "requirements": [
+      "<code>Truck</code> doesn't declare its own <code>make</code> field or <code>honk()</code>; it inherits them"
+     ],
+     "files": [
+      "Vehicle.java",
+      "Truck.java",
+      "TruckTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckTruck.java",
+       "public class CheckTruck {\n    public static void main(String[] args) {\n        Truck mack = new Truck(\"Mack\");\n        mack.honk();\n        mack.load(1);\n        new Vehicle(\"Ford\").honk();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckTruck",
+     "hints": [
+      "<code>Truck</code>'s constructor is one line: <code>super(make);</code>",
+      "Inside <code>Truck</code>, read the make with <code>getMake()</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "class\\s+Truck\\s+extends\\s+Vehicle",
+       "message": "Declare <code>public class Truck extends Vehicle</code>."
+      }
+     ],
+     "run": "TruckTester",
+     "output": "Volvo honks.\nVolvo truck loads 8 tons.",
+     "testsOutput": "Mack honks.\nMack truck loads 1 tons.\nFord honks.",
+     "solution": [
+      [
+       "Vehicle.java",
+       "public class Vehicle {\n    private String make;\n\n    public Vehicle(String make) {\n        this.make = make;\n    }\n\n    public String getMake() {\n        return make;\n    }\n\n    public void honk() {\n        System.out.println(make + \" honks.\");\n    }\n}\n"
+      ],
+      [
+       "Truck.java",
+       "public class Truck extends Vehicle {\n    public Truck(String make) {\n        super(make);\n    }\n\n    public void load(int tons) {\n        System.out.println(getMake() + \" truck loads \" + tons + \" tons.\");\n    }\n}\n"
+      ],
+      [
+       "TruckTester.java",
+       "public class TruckTester {\n    public static void main(String[] args) {\n        Truck volvo = new Truck(\"Volvo\");\n        volvo.honk();\n        volvo.load(8);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-savingsaccount",
+     "mode": "independent",
+     "title": "A subclass that uses inherited methods",
+     "goal": "Write <code>Account</code> (private <code>double balance</code>, a constructor, <code>getBalance()</code>, and <code>deposit(double)</code> for positive amounts) and <code>SavingsAccount extends Account</code>, which also stores an interest rate. <code>addInterest()</code> deposits <code>balance \u00d7 rate</code>, using only the inherited methods.",
+     "requirements": [
+      "<code>balance</code> stays <code>private</code> in <code>Account</code>",
+      "<code>SavingsAccount</code> changes the balance only by calling <code>deposit</code>"
+     ],
+     "files": [
+      "Account.java",
+      "SavingsAccount.java",
+      "SavingsTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckSavings.java",
+       "public class CheckSavings {\n    public static void main(String[] args) {\n        SavingsAccount s = new SavingsAccount(40.0, 0.25);\n        s.addInterest();\n        System.out.println(s.getBalance());\n        s.deposit(-5.0);\n        System.out.println(s.getBalance());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSavings",
+     "hints": [
+      "<code>SavingsAccount(double balance, double rate)</code> passes the balance up with <code>super(balance);</code>, then stores the rate.",
+      "<code>addInterest</code> is one line: <code>deposit(getBalance() * rate);</code>"
+     ],
+     "checks": [
+      {
+       "pattern": "private\\s+double\\s+balance",
+       "message": "Keep <code>balance</code> as <code>private double balance</code> in <code>Account</code>."
+      }
+     ],
+     "run": "SavingsTester",
+     "output": "210.0",
+     "testsOutput": "50.0\n50.0",
+     "solution": [
+      [
+       "Account.java",
+       "public class Account {\n    private double balance;\n\n    public Account(double balance) {\n        this.balance = balance;\n    }\n\n    public double getBalance() {\n        return balance;\n    }\n\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance = balance + amount;\n        }\n    }\n}\n"
+      ],
+      [
+       "SavingsAccount.java",
+       "public class SavingsAccount extends Account {\n    private double rate;\n\n    public SavingsAccount(double balance, double rate) {\n        super(balance);\n        this.rate = rate;\n    }\n\n    public void addInterest() {\n        deposit(getBalance() * rate);\n    }\n}\n"
+      ],
+      [
+       "SavingsTester.java",
+       "public class SavingsTester {\n    public static void main(String[] args) {\n        SavingsAccount savings = new SavingsAccount(200.0, 0.05);\n        savings.addInterest();\n        System.out.println(savings.getBalance());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-devices",
+     "mode": "independent",
+     "title": "A chain of three classes",
+     "goal": "Write <code>Device</code> (private <code>name</code>, <code>getName()</code>, <code>powerOn()</code> prints <code>&lt;name&gt; is on.</code>), <code>Phone extends Device</code> (adds <code>call(String who)</code>, which prints <code>&lt;name&gt; calls &lt;who&gt;.</code>) and <code>SmartPhone extends Phone</code> (adds <code>browse()</code>, which prints <code>&lt;name&gt; opens the browser.</code>). A <code>SmartPhone</code> can do all three.",
+     "requirements": [],
+     "files": [
+      "Device.java",
+      "Phone.java",
+      "SmartPhone.java",
+      "DeviceTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDevices.java",
+       "public class CheckDevices {\n    public static void main(String[] args) {\n        Phone flip = new Phone(\"Flip\");\n        flip.powerOn();\n        flip.call(\"Sam\");\n        new SmartPhone(\"Tab\").powerOn();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDevices",
+     "hints": [
+      "<code>SmartPhone extends Phone</code>, not <code>Device</code>. It gets <code>Device</code>'s methods through <code>Phone</code>.",
+      "Each constructor passes the name one level up with <code>super(name);</code>."
+     ],
+     "checks": [],
+     "run": "DeviceTester",
+     "output": "Pixel is on.\nPixel calls Mom.\nPixel opens the browser.",
+     "testsOutput": "Flip is on.\nFlip calls Sam.\nTab is on.",
+     "solution": [
+      [
+       "Device.java",
+       "public class Device {\n    private String name;\n\n    public Device(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void powerOn() {\n        System.out.println(name + \" is on.\");\n    }\n}\n"
+      ],
+      [
+       "Phone.java",
+       "public class Phone extends Device {\n    public Phone(String name) {\n        super(name);\n    }\n\n    public void call(String who) {\n        System.out.println(getName() + \" calls \" + who + \".\");\n    }\n}\n"
+      ],
+      [
+       "SmartPhone.java",
+       "public class SmartPhone extends Phone {\n    public SmartPhone(String name) {\n        super(name);\n    }\n\n    public void browse() {\n        System.out.println(getName() + \" opens the browser.\");\n    }\n}\n"
+      ],
+      [
+       "DeviceTester.java",
+       "public class DeviceTester {\n    public static void main(String[] args) {\n        SmartPhone pixel = new SmartPhone(\"Pixel\");\n        pixel.powerOn();\n        pixel.call(\"Mom\");\n        pixel.browse();\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Inheritance",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "8.1.4 Superclasses and Subclasses",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.1.4",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Using the Keyword super",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/super.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Controlling Access to Members of a Class",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Part 9.1: Class inheritance",
+     "url": "https://java-programming.mooc.fi/part-9/1-inheritance",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "inh-super": {
+   "id": "inh-super",
+   "section": "inheritance",
+   "title": "Calling the parent with super",
+   "summary": "A subclass object contains a superclass part, and <code>super(...)</code> is how the subclass's constructor sets that part up.",
+   "goals": [
+    "Write a subclass constructor that passes values to the superclass with <code>super(...)</code>",
+    "Add new fields in a subclass while the superclass keeps its own fields private",
+    "Predict the order constructors run in, and read the errors when <code>super</code> is missing or misplaced"
+   ],
+   "cos225": "The exam guide says encapsulation \"also refers to the management of data members in each class in an inheritance hierarchy\". In practice: each class stores and protects its own fields, and a subclass reaches the parent's through <code>super(...)</code> and getters.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Each class sets up its own fields"
+    },
+    {
+     "type": "p",
+     "html": "An <code>Employee</code> is a <code>Person</code> with a salary. <code>Person</code> already knows how to store a name and an age, and those fields are private, so <code>Employee</code> couldn't set them even if it wanted to. Instead, its constructor calls <code>super(name, age)</code>: \"run my superclass's constructor with these values\". Then it sets the one field that belongs to <code>Employee</code>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Person.java",
+       "public class Person {\n    private String name;\n    private int age;\n\n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getAge() {\n        return age;\n    }\n}\n"
+      ],
+      [
+       "Employee.java",
+       "public class Employee extends Person {\n    private double salary;\n\n    public Employee(String name, int age, double salary) {\n        super(name, age);\n        this.salary = salary;\n    }\n\n    public double getSalary() {\n        return salary;\n    }\n}\n"
+      ],
+      [
+       "EmployeeTester.java",
+       "public class EmployeeTester {\n    public static void main(String[] args) {\n        Employee jo = new Employee(\"Jo\", 34, 52000.0);\n        System.out.println(jo.getName() + \", \" + jo.getAge());\n        System.out.println(\"Salary: \" + jo.getSalary());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java EmployeeTester",
+      "stdout": "Jo, 34\nSalary: 52000.0"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>super(...)</code> must be the <strong>first statement</strong> in the constructor, because the superclass part has to be ready before the subclass adds to it.",
+      "The arguments must match one of the superclass's constructors, just like a normal <code>new</code> call.",
+      "<code>Employee</code> reads the name with the inherited <code>getName()</code>. The subclass doesn't need its own copy of <code>name</code>."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Constructors run from the top down"
+    },
+    {
+     "type": "p",
+     "html": "When you create a subclass object, the superclass's constructor runs first, then the subclass's. In a longer chain, Java starts at the top. If a constructor doesn't call <code>super(...)</code> itself, Java quietly inserts <code>super();</code> (a call to the no-parameter constructor) as its first line."
+    },
+    {
+     "type": "predict",
+     "id": "super-order",
+     "prompt": "<code>Cabin extends House</code>, and <code>House extends Building</code>. Only <code>Cabin</code> calls <code>super()</code> explicitly. What does <code>new Cabin()</code> print?",
+     "files": [
+      [
+       "Building.java",
+       "public class Building {\n    public Building() {\n        System.out.println(\"Building constructor\");\n    }\n}\n"
+      ],
+      [
+       "House.java",
+       "public class House extends Building {\n    public House() {\n        System.out.println(\"House constructor\");\n    }\n}\n"
+      ],
+      [
+       "Cabin.java",
+       "public class Cabin extends House {\n    public Cabin() {\n        super();\n        System.out.println(\"Cabin constructor\");\n    }\n}\n"
+      ],
+      [
+       "BuildTester.java",
+       "public class BuildTester {\n    public static void main(String[] args) {\n        new Cabin();\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "Cabin constructor",
+      "Cabin constructor\nHouse constructor\nBuilding constructor",
+      "Building constructor\nHouse constructor\nCabin constructor",
+      "House constructor\nCabin constructor"
+     ],
+     "answer": 2,
+     "result": {
+      "kind": "ok",
+      "command": "java BuildTester",
+      "stdout": "Building constructor\nHouse constructor\nCabin constructor"
+     },
+     "explain": "<code>Cabin</code>'s <code>super()</code> runs <code>House</code>'s constructor before printing anything. <code>House</code> has no <code>super</code> line, so Java inserts <code>super();</code>, which runs <code>Building</code>'s constructor first. The prints happen as each constructor finishes its <code>super</code> call: top of the chain first."
+    },
+    {
+     "type": "h",
+     "html": "When the automatic super() doesn't work"
+    },
+    {
+     "type": "p",
+     "html": "The inserted <code>super();</code> only works if the superclass has a constructor with no parameters. <code>Person</code> has only <code>Person(String, int)</code>, so a subclass that forgets to call <code>super(...)</code> doesn't compile:"
+    },
+    {
+     "type": "error",
+     "id": "super-missing",
+     "prompt": "This <code>Employee</code> constructor forgot <code>super(...)</code>.",
+     "files": [
+      [
+       "Person.java",
+       "public class Person {\n    private String name;\n    private int age;\n\n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getAge() {\n        return age;\n    }\n}\n"
+      ],
+      [
+       "Employee.java",
+       "public class Employee extends Person {\n    private double salary;\n\n    public Employee(String name, int age, double salary) {\n        this.salary = salary;\n    }\n\n    public double getSalary() {\n        return salary;\n    }\n}\n"
+      ],
+      [
+       "EmployeeTester.java",
+       "public class EmployeeTester {\n    public static void main(String[] args) {\n        Employee jo = new Employee(\"Jo\", 34, 52000.0);\n        System.out.println(jo.getName() + \", \" + jo.getAge());\n        System.out.println(\"Salary: \" + jo.getSalary());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Employee.java EmployeeTester.java Person.java",
+      "text": "Employee.java:4: error: constructor Person in class Person cannot be applied to given types;\n    public Employee(String name, int age, double salary) {\n                                                         ^\n  required: String,int\n  found:    no arguments\n  reason: actual and formal argument lists differ in length\n1 error"
+     },
+     "question": "Why does the compiler talk about <code>Person</code>'s constructor when the mistake is in <code>Employee</code>?",
+     "choices": [
+      "Because <code>Person.java</code> has a syntax error",
+      "Because Java inserted <code>super();</code> for you, and <code>Person</code> has no constructor without parameters",
+      "Because <code>salary</code> should be declared in <code>Person</code>",
+      "Because subclasses can't have constructors"
+     ],
+     "answer": 1,
+     "explain": "With no <code>super(...)</code> written, Java calls <code>super()</code>, meaning <code>Person()</code>. That constructor doesn't exist (\"actual and formal argument lists differ in length\"). Pass the name and age up with <code>super(name, age);</code>.",
+     "fixedFiles": [
+      [
+       "Person.java",
+       "public class Person {\n    private String name;\n    private int age;\n\n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getAge() {\n        return age;\n    }\n}\n"
+      ],
+      [
+       "Employee.java",
+       "public class Employee extends Person {\n    private double salary;\n\n    public Employee(String name, int age, double salary) {\n        super(name, age);\n        this.salary = salary;\n    }\n\n    public double getSalary() {\n        return salary;\n    }\n}\n"
+      ],
+      [
+       "EmployeeTester.java",
+       "public class EmployeeTester {\n    public static void main(String[] args) {\n        Employee jo = new Employee(\"Jo\", 34, 52000.0);\n        System.out.println(jo.getName() + \", \" + jo.getAge());\n        System.out.println(\"Salary: \" + jo.getSalary());\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java EmployeeTester",
+      "stdout": "Jo, 34\nSalary: 52000.0"
+     }
+    },
+    {
+     "type": "error",
+     "id": "super-not-first",
+     "prompt": "Here <code>super(...)</code> is called, but not first.",
+     "files": [
+      [
+       "Person.java",
+       "public class Person {\n    private String name;\n    private int age;\n\n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getAge() {\n        return age;\n    }\n}\n"
+      ],
+      [
+       "Employee.java",
+       "public class Employee extends Person {\n    private double salary;\n\n    public Employee(String name, int age, double salary) {\n        this.salary = salary;\n        super(name, age);\n    }\n\n    public double getSalary() {\n        return salary;\n    }\n}\n"
+      ],
+      [
+       "EmployeeTester.java",
+       "public class EmployeeTester {\n    public static void main(String[] args) {\n        Employee jo = new Employee(\"Jo\", 34, 52000.0);\n        System.out.println(jo.getName() + \", \" + jo.getAge());\n        System.out.println(\"Salary: \" + jo.getSalary());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Employee.java EmployeeTester.java Person.java",
+      "text": "Employee.java:6: error: call to super must be first statement in constructor\n        super(name, age);\n             ^\n1 error"
+     },
+     "question": "How do you fix it?",
+     "choices": [
+      "Move <code>super(name, age);</code> to the first line of the constructor",
+      "Change <code>super</code> to <code>this</code>",
+      "Delete the <code>salary</code> line",
+      "Make <code>salary</code> public"
+     ],
+     "answer": 0,
+     "explain": "The superclass part must be built before anything else happens in the subclass constructor, so Java requires <code>super(...)</code> as the very first statement.",
+     "fixedFiles": [
+      [
+       "Person.java",
+       "public class Person {\n    private String name;\n    private int age;\n\n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getAge() {\n        return age;\n    }\n}\n"
+      ],
+      [
+       "Employee.java",
+       "public class Employee extends Person {\n    private double salary;\n\n    public Employee(String name, int age, double salary) {\n        super(name, age);\n        this.salary = salary;\n    }\n\n    public double getSalary() {\n        return salary;\n    }\n}\n"
+      ],
+      [
+       "EmployeeTester.java",
+       "public class EmployeeTester {\n    public static void main(String[] args) {\n        Employee jo = new Employee(\"Jo\", 34, 52000.0);\n        System.out.println(jo.getName() + \", \" + jo.getAge());\n        System.out.println(\"Salary: \" + jo.getSalary());\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java EmployeeTester",
+      "stdout": "Jo, 34\nSalary: 52000.0"
+     }
+    },
+    {
+     "type": "note",
+     "label": "What about protected?",
+     "html": "Java has a fourth access level, <code>protected</code>, which lets subclasses use a field directly. Oracle's tutorial recommends using the most restrictive access that makes sense, so this course keeps fields <code>private</code> and gives subclasses getters. You'll see <code>protected</code> in other people's code; it's not wrong, but it ties subclasses to the parent's internals."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "super-manager",
+     "title": "Pass values up the chain",
+     "prompt": "<code>Manager</code> is an <code>Employee</code> that also has a team size. Finish its constructor.",
+     "files": [
+      [
+       "Person.java",
+       "public class Person {\n    private String name;\n    private int age;\n\n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getAge() {\n        return age;\n    }\n}\n"
+      ],
+      [
+       "Employee.java",
+       "public class Employee extends Person {\n    private double salary;\n\n    public Employee(String name, int age, double salary) {\n        super(name, age);\n        this.salary = salary;\n    }\n\n    public double getSalary() {\n        return salary;\n    }\n}\n"
+      ],
+      [
+       "Manager.java",
+       "public class Manager extends Employee {\n    private int teamSize;\n\n    public Manager(String name, int age, double salary, int teamSize) {\n        [[sup]];\n        [[own]] = teamSize;\n    }\n\n    public int getTeamSize() {\n        return teamSize;\n    }\n}\n"
+      ],
+      [
+       "ManagerTester.java",
+       "public class ManagerTester {\n    public static void main(String[] args) {\n        Manager kim = new Manager(\"Kim\", 45, 78000.0, 6);\n        System.out.println(kim.getName() + \" manages \" + kim.getTeamSize() + \" people.\");\n        System.out.println(\"Salary: \" + kim.getSalary());\n    }\n}\n"
+      ]
+     ],
+     "run": "ManagerTester",
+     "blanks": {
+      "sup": {
+       "accept": [
+        "super(name,age,salary)"
+       ],
+       "solution": "super(name, age, salary)",
+       "hint": "<code>Manager</code>'s parent is <code>Employee</code>, whose constructor takes three values.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "super(name,age)",
+         "shown": "super(name, age)",
+         "why": "<code>Manager</code>'s direct superclass is <code>Employee</code>, not <code>Person</code>, and <code>Employee</code>'s constructor needs the salary too.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Employee.java Manager.java ManagerTester.java Person.java",
+          "text": "Manager.java:5: error: constructor Employee in class Employee cannot be applied to given types;\n        super(name, age);\n        ^\n  required: String,int,double\n  found:    String,int\n  reason: actual and formal argument lists differ in length\n1 error"
+         }
+        },
+        {
+         "answer": "super(name,age,salary,teamSize)",
+         "shown": "super(name, age, salary, teamSize)",
+         "why": "<code>Employee</code> has no constructor with four parameters. The team size belongs to <code>Manager</code>, so set it here instead.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Employee.java Manager.java ManagerTester.java Person.java",
+          "text": "Manager.java:5: error: constructor Employee in class Employee cannot be applied to given types;\n        super(name, age, salary, teamSize);\n        ^\n  required: String,int,double\n  found:    String,int,double,int\n  reason: actual and formal argument lists differ in length\n1 error"
+         }
+        }
+       ],
+       "width": 34
+      },
+      "own": {
+       "accept": [
+        "this.teamSize"
+       ],
+       "solution": "this.teamSize",
+       "hint": "The parameter and the field have the same name.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "teamSize",
+         "shown": "teamSize",
+         "why": "<code>teamSize = teamSize;</code> assigns the parameter to itself, so the field stays 0. Use <code>this.teamSize</code>.",
+         "result": {
+          "kind": "ok",
+          "command": "java ManagerTester",
+          "stdout": "Kim manages 0 people.\nSalary: 78000.0"
+         }
+        }
+       ],
+       "width": 13
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java ManagerTester",
+      "stdout": "Kim manages 6 people.\nSalary: 78000.0"
+     },
+     "explain": "Each class in the chain stores its own fields: <code>Person</code> the name and age, <code>Employee</code> the salary, <code>Manager</code> the team size."
+    },
+    {
+     "type": "quiz",
+     "id": "super-first",
+     "question": "Which rule about <code>super(...)</code> in a constructor is correct?",
+     "choices": [
+      "It can go anywhere in the constructor",
+      "It must be the first statement, and if you leave it out Java inserts <code>super()</code>",
+      "It's only needed when the subclass has no fields",
+      "It calls the subclass's other constructor"
+     ],
+     "answer": 1,
+     "explain": "<code>super(...)</code> comes first. Leave it out and Java inserts a call to the superclass's no-parameter constructor, which is a compile error if that constructor doesn't exist. Calling another constructor of the same class is <code>this(...)</code>."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-bedroom",
+     "mode": "independent",
+     "title": "A subclass with its own field",
+     "goal": "Write <code>Room</code> (private <code>name</code>, <code>width</code>, <code>length</code>; a constructor; <code>getName()</code>; <code>area()</code> returns width \u00d7 length) and <code>Bedroom extends Room</code>, which adds a private <code>beds</code> field. <code>Bedroom</code>'s constructor takes all four values. Its <code>describe()</code> prints <code>&lt;name&gt;: &lt;area&gt; sq m, &lt;beds&gt; beds</code>.",
+     "requirements": [],
+     "files": [
+      "Room.java",
+      "Bedroom.java",
+      "RoomTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBedroom.java",
+       "public class CheckBedroom {\n    public static void main(String[] args) {\n        Bedroom b = new Bedroom(\"Loft\", 5.0, 2.5, 1);\n        b.describe();\n        System.out.println(b.area());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBedroom",
+     "hints": [
+      "<code>super(name, width, length);</code> must be the first line of <code>Bedroom</code>'s constructor.",
+      "<code>describe()</code> can call the inherited <code>getName()</code> and <code>area()</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "super\\s*\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*\\w+\\s*\\)",
+       "message": "Pass the three room values up with <code>super(name, width, length);</code>."
+      }
+     ],
+     "run": "RoomTester",
+     "output": "Guest room: 12.0 sq m, 2 beds",
+     "testsOutput": "Loft: 12.5 sq m, 1 beds\n12.5",
+     "solution": [
+      [
+       "Room.java",
+       "public class Room {\n    private String name;\n    private double width;\n    private double length;\n\n    public Room(String name, double width, double length) {\n        this.name = name;\n        this.width = width;\n        this.length = length;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public double area() {\n        return width * length;\n    }\n}\n"
+      ],
+      [
+       "Bedroom.java",
+       "public class Bedroom extends Room {\n    private int beds;\n\n    public Bedroom(String name, double width, double length, int beds) {\n        super(name, width, length);\n        this.beds = beds;\n    }\n\n    public void describe() {\n        System.out.println(getName() + \": \" + area() + \" sq m, \" + beds + \" beds\");\n    }\n}\n"
+      ],
+      [
+       "RoomTester.java",
+       "public class RoomTester {\n    public static void main(String[] args) {\n        Bedroom guest = new Bedroom(\"Guest room\", 3.0, 4.0, 2);\n        guest.describe();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-plants",
+     "mode": "independent",
+     "title": "Constructor order",
+     "goal": "Write <code>Plant</code>, <code>Tree extends Plant</code> and <code>Oak extends Tree</code>. Each has a no-parameter constructor that prints one line: <code>Plant ready</code>, <code>Tree ready</code>, <code>Oak ready</code>. <code>new Oak()</code> should print all three, top of the chain first. Don't write any <code>super()</code> calls; let Java insert them.",
+     "requirements": [],
+     "files": [
+      "Plant.java",
+      "Tree.java",
+      "Oak.java",
+      "PlantTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckPlants.java",
+       "public class CheckPlants {\n    public static void main(String[] args) {\n        new Tree();\n        System.out.println(\"--\");\n        new Plant();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckPlants",
+     "hints": [
+      "You only need to print in each constructor. The order comes from Java's automatic <code>super();</code>."
+     ],
+     "checks": [],
+     "run": "PlantTester",
+     "output": "Plant ready\nTree ready\nOak ready",
+     "testsOutput": "Plant ready\nTree ready\n--\nPlant ready",
+     "solution": [
+      [
+       "Plant.java",
+       "public class Plant {\n    public Plant() {\n        System.out.println(\"Plant ready\");\n    }\n}\n"
+      ],
+      [
+       "Tree.java",
+       "public class Tree extends Plant {\n    public Tree() {\n        System.out.println(\"Tree ready\");\n    }\n}\n"
+      ],
+      [
+       "Oak.java",
+       "public class Oak extends Tree {\n    public Oak() {\n        System.out.println(\"Oak ready\");\n    }\n}\n"
+      ],
+      [
+       "PlantTester.java",
+       "public class PlantTester {\n    public static void main(String[] args) {\n        new Oak();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-vipticket",
+     "mode": "independent",
+     "title": "Constructor chaining with getters",
+     "goal": "Write <code>Ticket</code> (private <code>event</code> and <code>price</code>, a constructor, getters) and <code>VipTicket extends Ticket</code>, which adds a private <code>seat</code>. Its <code>summary()</code> returns text like <code>Gala, seat A1: $120.0</code>.",
+     "requirements": [],
+     "files": [
+      "Ticket.java",
+      "VipTicket.java",
+      "TicketTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckTicket.java",
+       "public class CheckTicket {\n    public static void main(String[] args) {\n        VipTicket t = new VipTicket(\"Opera\", 95.5, \"B7\");\n        System.out.println(t.summary());\n        System.out.println(t.getEvent() + \" \" + t.getPrice());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckTicket",
+     "hints": [
+      "<code>summary()</code> returns a <code>String</code>; the tester prints it."
+     ],
+     "checks": [],
+     "run": "TicketTester",
+     "output": "Gala, seat A1: $120.0\nA1",
+     "testsOutput": "Opera, seat B7: $95.5\nOpera 95.5",
+     "solution": [
+      [
+       "Ticket.java",
+       "public class Ticket {\n    private String event;\n    private double price;\n\n    public Ticket(String event, double price) {\n        this.event = event;\n        this.price = price;\n    }\n\n    public String getEvent() {\n        return event;\n    }\n\n    public double getPrice() {\n        return price;\n    }\n}\n"
+      ],
+      [
+       "VipTicket.java",
+       "public class VipTicket extends Ticket {\n    private String seat;\n\n    public VipTicket(String event, double price, String seat) {\n        super(event, price);\n        this.seat = seat;\n    }\n\n    public String getSeat() {\n        return seat;\n    }\n\n    public String summary() {\n        return getEvent() + \", seat \" + seat + \": $\" + getPrice();\n    }\n}\n"
+      ],
+      [
+       "TicketTester.java",
+       "public class TicketTester {\n    public static void main(String[] args) {\n        VipTicket gala = new VipTicket(\"Gala\", 120.0, \"A1\");\n        System.out.println(gala.summary());\n        System.out.println(gala.getSeat());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Using the Keyword super",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/super.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "8.8.7 Constructor Body",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.8.7",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "8.8.9 Default Constructor",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.8.9",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Providing Constructors for Your Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/constructors.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Controlling Access to Members of a Class",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Part 9.1: Class inheritance",
+     "url": "https://java-programming.mooc.fi/part-9/1-inheritance",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "inh-override": {
+   "id": "inh-override",
+   "section": "inheritance",
+   "title": "Overriding methods",
+   "summary": "A subclass can replace an inherited method with its own version, and still reuse the parent's version with <code>super.</code>",
+   "goals": [
+    "Override an inherited method and mark it with <code>@Override</code>",
+    "Extend the parent's behavior with <code>super.methodName()</code>",
+    "Tell overriding (same signature, in a subclass) from overloading (different parameters)"
+   ],
+   "cos225": "<code>@override</code> is its own bullet in the COS 225 exam guide. Know what it does, and why it's worth writing even though it's optional.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Replacing an inherited method"
+    },
+    {
+     "type": "p",
+     "html": "Every <code>Animal</code> can <code>speak()</code>, but the general version is vague. A subclass can <strong>override</strong> the method: declare a method with the same name, the same parameters and the same return type. When the method is called on that subclass's objects, the subclass's version runs instead."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
+      ],
+      [
+       "Cow.java",
+       "public class Cow extends Animal {\n    public Cow(String name) {\n        super(name);\n    }\n}\n"
+      ],
+      [
+       "SpeakTester.java",
+       "public class SpeakTester {\n    public static void main(String[] args) {\n        new Animal(\"Generic\").speak();\n        new Dog(\"Rex\").speak();\n        new Cow(\"Bessie\").speak();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java SpeakTester",
+      "stdout": "Generic makes a sound.\nRex says Woof!\nBessie makes a sound."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "<code>Cow</code> doesn't override <code>speak()</code>, so it uses the inherited version. Overriding is optional: a subclass overrides only the methods it wants to behave differently."
+    },
+    {
+     "type": "h",
+     "html": "What @Override is for"
+    },
+    {
+     "type": "p",
+     "html": "<code>@Override</code> is an annotation: a note to the compiler that says \"this method is meant to replace one from a superclass\". If it doesn't (because of a typo in the name, or different parameters), the compiler stops with an error. Without the annotation, the misspelled method would silently become a new, separate method, and the old behavior would quietly stay."
+    },
+    {
+     "type": "error",
+     "id": "override-typo",
+     "prompt": "<code>Dog</code>'s method name has a typo.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speek() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
+      ],
+      [
+       "Cow.java",
+       "public class Cow extends Animal {\n    public Cow(String name) {\n        super(name);\n    }\n}\n"
+      ],
+      [
+       "SpeakTester.java",
+       "public class SpeakTester {\n    public static void main(String[] args) {\n        new Animal(\"Generic\").speak();\n        new Dog(\"Rex\").speak();\n        new Cow(\"Bessie\").speak();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Animal.java Cow.java Dog.java SpeakTester.java",
+      "text": "Dog.java:6: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n1 error"
+     },
+     "question": "What would happen if the <code>@Override</code> line weren't there?",
+     "choices": [
+      "The same compile error",
+      "It would compile, and <code>new Dog(&quot;Rex&quot;).speak()</code> would print <code>Rex makes a sound.</code>",
+      "It would compile, and print <code>Rex says Woof!</code>",
+      "The program would crash when it runs"
+     ],
+     "answer": 1,
+     "explain": "Without <code>@Override</code>, <code>speek</code> is just a new method that nobody calls, and <code>Dog</code> inherits the general <code>speak()</code>. The annotation turns that silent bug into a compile error that points at the right line.",
+     "fixedFiles": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
+      ],
+      [
+       "Cow.java",
+       "public class Cow extends Animal {\n    public Cow(String name) {\n        super(name);\n    }\n}\n"
+      ],
+      [
+       "SpeakTester.java",
+       "public class SpeakTester {\n    public static void main(String[] args) {\n        new Animal(\"Generic\").speak();\n        new Dog(\"Rex\").speak();\n        new Cow(\"Bessie\").speak();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java SpeakTester",
+      "stdout": "Generic makes a sound.\nRex says Woof!\nBessie makes a sound."
+     }
+    },
+    {
+     "type": "p",
+     "html": "Here is the same typo with the <code>@Override</code> line removed. It compiles, and the dog has quietly lost its bark:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    public void speek() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
+      ],
+      [
+       "Cow.java",
+       "public class Cow extends Animal {\n    public Cow(String name) {\n        super(name);\n    }\n}\n"
+      ],
+      [
+       "SpeakTester.java",
+       "public class SpeakTester {\n    public static void main(String[] args) {\n        new Animal(\"Generic\").speak();\n        new Dog(\"Rex\").speak();\n        new Cow(\"Bessie\").speak();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java SpeakTester",
+      "stdout": "Generic makes a sound.\nRex makes a sound.\nBessie makes a sound."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Reusing the parent's version with super."
+    },
+    {
+     "type": "p",
+     "html": "Often the subclass wants to add to the parent's behavior, not throw it away. Inside the overriding method, <code>super.toString()</code> calls the superclass's version. This is the usual way to write <code>toString</code> in a hierarchy: each class adds its own part."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Product.java",
+       "public class Product {\n    private String name;\n    private double price;\n\n    public Product(String name, double price) {\n        this.name = name;\n        this.price = price;\n    }\n\n    public double getPrice() {\n        return price;\n    }\n\n    @Override\n    public String toString() {\n        return name + \": $\" + price;\n    }\n}\n"
+      ],
+      [
+       "SaleProduct.java",
+       "public class SaleProduct extends Product {\n    private int percentOff;\n\n    public SaleProduct(String name, double price, int percentOff) {\n        super(name, price);\n        this.percentOff = percentOff;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" (\" + percentOff + \"% off)\";\n    }\n}\n"
+      ],
+      [
+       "StoreTester.java",
+       "public class StoreTester {\n    public static void main(String[] args) {\n        System.out.println(new Product(\"Lamp\", 30.0));\n        System.out.println(new SaleProduct(\"Rug\", 80.0, 25));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java StoreTester",
+      "stdout": "Lamp: $30.0\nRug: $80.0 (25% off)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "<code>SaleProduct</code> can't read <code>name</code> or <code>price</code> (they're private), but it doesn't need to: <code>super.toString()</code> already formats them."
+    },
+    {
+     "type": "h",
+     "html": "Overriding versus overloading"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>Overriding</strong>: a subclass method with the <strong>same</strong> name and parameters as an inherited one. It replaces the inherited behavior.",
+      "<strong>Overloading</strong>: methods (or constructors) with the same name but <strong>different</strong> parameters, like the two <code>Rectangle</code> constructors in the Classes section. Each one is a separate method."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "predict",
+     "id": "override-which",
+     "prompt": "<code>Puppy extends Dog</code>, and only <code>Dog</code> overrides <code>speak()</code>. What prints?",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
+      ],
+      [
+       "Puppy.java",
+       "public class Puppy extends Dog {\n    public Puppy(String name) {\n        super(name);\n    }\n}\n"
+      ],
+      [
+       "PuppyTester.java",
+       "public class PuppyTester {\n    public static void main(String[] args) {\n        new Puppy(\"Bit\").speak();\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "Bit makes a sound.",
+      "Bit says Woof!",
+      "Nothing; Puppy has no speak method",
+      "A compile error"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java PuppyTester",
+      "stdout": "Bit says Woof!"
+     },
+     "explain": "Java looks for <code>speak()</code> starting at the object's own class and moving up. <code>Puppy</code> has none, so it uses <code>Dog</code>'s, the closest one, before reaching <code>Animal</code>'s."
+    },
+    {
+     "type": "blanks",
+     "id": "override-tostring",
+     "title": "Extend toString",
+     "prompt": "<code>Ebook</code> adds its file size to the description that <code>Item</code> already builds.",
+     "files": [
+      [
+       "Item.java",
+       "public class Item {\n    private String title;\n\n    public Item(String title) {\n        this.title = title;\n    }\n\n    @Override\n    public String toString() {\n        return \"Item: \" + title;\n    }\n}\n"
+      ],
+      [
+       "Ebook.java",
+       "public class Ebook extends Item {\n    private int megabytes;\n\n    public Ebook(String title, int megabytes) {\n        super(title);\n        this.megabytes = megabytes;\n    }\n\n    [[ann]]\n    public String toString() {\n        return [[parent]] + \", \" + megabytes + \" MB\";\n    }\n}\n"
+      ],
+      [
+       "EbookTester.java",
+       "public class EbookTester {\n    public static void main(String[] args) {\n        System.out.println(new Ebook(\"Night Trains\", 3));\n    }\n}\n"
+      ]
+     ],
+     "run": "EbookTester",
+     "blanks": {
+      "ann": {
+       "accept": [
+        "@Override"
+       ],
+       "solution": "@Override",
+       "hint": "The annotation that asks the compiler to check this really replaces an inherited method.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "@override",
+         "shown": "@override",
+         "why": "Annotations are case-sensitive. It's <code>@Override</code> with a capital O.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Ebook.java EbookTester.java Item.java",
+          "text": "Ebook.java:9: error: cannot find symbol\n    @override\n     ^\n  symbol:   class override\n  location: class Ebook\n1 error"
+         }
+        }
+       ],
+       "width": 9
+      },
+      "parent": {
+       "accept": [
+        "super.toString()"
+       ],
+       "solution": "super.toString()",
+       "hint": "Reuse <code>Item</code>'s version.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "toString()",
+         "shown": "toString()",
+         "why": "Calling <code>toString()</code> here calls <code>Ebook</code>'s own <code>toString</code>, which calls itself again, forever. Java runs out of room and crashes with a <code>StackOverflowError</code>. <code>super.</code> picks the parent's version.",
+         "result": {
+          "kind": "runtime",
+          "command": "java EbookTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.StackOverflowError\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\tat Ebook.toString(Ebook.java:11)\n\t... (1013 more lines not shown)"
+         }
+        },
+        {
+         "answer": "title",
+         "shown": "title",
+         "why": "<code>title</code> is <code>private</code> in <code>Item</code>, so <code>Ebook</code> can't use it. <code>super.toString()</code> gets the formatted text without touching the field.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Ebook.java EbookTester.java Item.java",
+          "text": "Ebook.java:11: error: title has private access in Item\n        return title + \", \" + megabytes + \" MB\";\n               ^\n1 error"
+         }
+        }
+       ],
+       "width": 16
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java EbookTester",
+      "stdout": "Item: Night Trains, 3 MB"
+     },
+     "explain": "<code>super.toString()</code> returns <code>Item: Night Trains</code>, and <code>Ebook</code> adds its own part to the end."
+    },
+    {
+     "type": "quiz",
+     "id": "override-vs-overload",
+     "question": "<code>Animal</code> has <code>speak()</code>. Which method in <code>Dog</code> overrides it?",
+     "choices": [
+      "<code>public void speak(String sound)</code>",
+      "<code>public void speak()</code>",
+      "<code>public void Speak()</code>",
+      "<code>public void speakLoudly()</code>"
+     ],
+     "answer": 1,
+     "explain": "Only the exact same name and parameter list overrides. <code>speak(String)</code> overloads it (a different method), and <code>Speak</code> is a different name, because Java is case-sensitive."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-instruments",
+     "mode": "independent",
+     "title": "Override a method",
+     "goal": "Write <code>Instrument</code> (private <code>name</code>, a constructor, <code>play()</code> prints <code>&lt;name&gt; plays a note.</code>), <code>Guitar</code> (prints <code>Guitar strums a chord.</code>) and <code>Drum</code> (prints <code>Drum goes boom.</code>). <code>Guitar</code> and <code>Drum</code> have no-parameter constructors that pass their own name up, and override <code>play()</code>.",
+     "requirements": [],
+     "files": [
+      "Instrument.java",
+      "Guitar.java",
+      "Drum.java",
+      "BandTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckBand.java",
+       "public class CheckBand {\n    public static void main(String[] args) {\n        new Drum().play();\n        System.out.println(new Guitar().getName());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBand",
+     "hints": [
+      "<code>Guitar</code>'s constructor: <code>super(&quot;Guitar&quot;);</code>"
+     ],
+     "checks": [
+      {
+       "pattern": "@Override",
+       "message": "Mark the overriding methods with <code>@Override</code>."
+      }
+     ],
+     "run": "BandTester",
+     "output": "Kazoo plays a note.\nGuitar strums a chord.\nDrum goes boom.",
+     "testsOutput": "Drum goes boom.\nGuitar",
+     "solution": [
+      [
+       "Instrument.java",
+       "public class Instrument {\n    private String name;\n\n    public Instrument(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void play() {\n        System.out.println(name + \" plays a note.\");\n    }\n}\n"
+      ],
+      [
+       "Guitar.java",
+       "public class Guitar extends Instrument {\n    public Guitar() {\n        super(\"Guitar\");\n    }\n\n    @Override\n    public void play() {\n        System.out.println(getName() + \" strums a chord.\");\n    }\n}\n"
+      ],
+      [
+       "Drum.java",
+       "public class Drum extends Instrument {\n    public Drum() {\n        super(\"Drum\");\n    }\n\n    @Override\n    public void play() {\n        System.out.println(getName() + \" goes boom.\");\n    }\n}\n"
+      ],
+      [
+       "BandTester.java",
+       "public class BandTester {\n    public static void main(String[] args) {\n        new Instrument(\"Kazoo\").play();\n        new Guitar().play();\n        new Drum().play();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-manager-tostring",
+     "mode": "independent",
+     "title": "toString with super.toString()",
+     "goal": "Write <code>Employee</code> (private <code>name</code> and <code>salary</code>, a constructor, and <code>toString</code> returning <code>Jo earns 52000.0</code>) and <code>Manager extends Employee</code>, which adds a private <code>teamSize</code>. <code>Manager</code>'s <code>toString</code> reuses <code>Employee</code>'s and adds <code> and manages 6</code>.",
+     "requirements": [],
+     "files": [
+      "Employee.java",
+      "Manager.java",
+      "StaffTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckStaff.java",
+       "public class CheckStaff {\n    public static void main(String[] args) {\n        Employee e = new Manager(\"Lee\", 60000.0, 2);\n        System.out.println(e);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckStaff",
+     "hints": [
+      "<code>Manager</code> can't read <code>name</code> or <code>salary</code>. <code>super.toString()</code> gives it that part ready-made."
+     ],
+     "checks": [
+      {
+       "pattern": "super\\.toString\\s*\\(\\s*\\)",
+       "message": "Reuse the parent's text with <code>super.toString()</code>."
+      }
+     ],
+     "run": "StaffTester",
+     "output": "Jo earns 52000.0\nKim earns 78000.0 and manages 6",
+     "testsOutput": "Lee earns 60000.0 and manages 2",
+     "solution": [
+      [
+       "Employee.java",
+       "public class Employee {\n    private String name;\n    private double salary;\n\n    public Employee(String name, double salary) {\n        this.name = name;\n        this.salary = salary;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" earns \" + salary;\n    }\n}\n"
+      ],
+      [
+       "Manager.java",
+       "public class Manager extends Employee {\n    private int teamSize;\n\n    public Manager(String name, double salary, int teamSize) {\n        super(name, salary);\n        this.teamSize = teamSize;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" and manages \" + teamSize;\n    }\n}\n"
+      ],
+      [
+       "StaffTester.java",
+       "public class StaffTester {\n    public static void main(String[] args) {\n        System.out.println(new Employee(\"Jo\", 52000.0));\n        System.out.println(new Manager(\"Kim\", 78000.0, 6));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-urgent",
+     "mode": "independent",
+     "title": "Add to the parent's behavior",
+     "goal": "Write <code>Message</code> (private <code>text</code>, a constructor, <code>send()</code> prints <code>Sending: &lt;text&gt;</code>) and <code>UrgentMessage extends Message</code>, whose <code>send()</code> first prints <code>URGENT!</code> and then does everything a normal message does.",
+     "requirements": [],
+     "files": [
+      "Message.java",
+      "UrgentMessage.java",
+      "MessageTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckMessage.java",
+       "public class CheckMessage {\n    public static void main(String[] args) {\n        Message m = new UrgentMessage(\"Test\");\n        m.send();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckMessage",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "super\\.send\\s*\\(\\s*\\)",
+       "message": "Call the parent's version with <code>super.send()</code>."
+      }
+     ],
+     "run": "MessageTester",
+     "output": "Sending: Lunch at noon\nURGENT!\nSending: Fire drill now",
+     "testsOutput": "URGENT!\nSending: Test",
+     "solution": [
+      [
+       "Message.java",
+       "public class Message {\n    private String text;\n\n    public Message(String text) {\n        this.text = text;\n    }\n\n    public void send() {\n        System.out.println(\"Sending: \" + text);\n    }\n}\n"
+      ],
+      [
+       "UrgentMessage.java",
+       "public class UrgentMessage extends Message {\n    public UrgentMessage(String text) {\n        super(text);\n    }\n\n    @Override\n    public void send() {\n        System.out.println(\"URGENT!\");\n        super.send();\n    }\n}\n"
+      ],
+      [
+       "MessageTester.java",
+       "public class MessageTester {\n    public static void main(String[] args) {\n        new Message(\"Lunch at noon\").send();\n        new UrgentMessage(\"Fire drill now\").send();\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Overriding and Hiding Methods",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/override.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Predefined Annotation Types (@Override)",
+     "url": "https://docs.oracle.com/javase/tutorial/java/annotations/predefined.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Using the Keyword super",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/super.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "8.4.8.1 Overriding (by Instance Methods)",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.4.8.1",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Part 9.1: Class inheritance",
+     "url": "https://java-programming.mooc.fi/part-9/1-inheritance",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "inh-abstract": {
+   "id": "inh-abstract",
+   "section": "inheritance",
+   "title": "Abstract classes",
+   "summary": "Declare a behavior every subclass must have, without saying how it works, and let each subclass fill it in.",
+   "goals": [
+    "Write an <code>abstract</code> method and an <code>abstract</code> class",
+    "Explain why you can't create an object of an abstract class",
+    "Write a subclass that implements every abstract method it inherits"
+   ],
+   "cos225": "From the exam guide: an abstract method defines a behavior that derived classes are required to implement, without saying how it works. \"A car should start, but each car starts its own way.\" You \"cannot inherit a class without defining its abstract methods\". An abstract class can be entirely abstract, or define a few things and leave the rest to the subclasses.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "A method with no body"
+    },
+    {
+     "type": "p",
+     "html": "Every shape has an area, but there's no single formula: a rectangle multiplies, a triangle halves. <code>Shape</code> can promise that every shape has <code>area()</code> without writing a body for it. That's an <strong>abstract method</strong>: the word <code>abstract</code>, the method header, and a semicolon instead of braces."
+    },
+    {
+     "type": "p",
+     "html": "A class with an abstract method must itself be marked <code>abstract</code>. An abstract class can still have fields, a constructor and ordinary methods. Here, <code>describe()</code> is a normal method that calls the abstract <code>area()</code>, trusting each subclass to provide it."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Shape.java",
+       "public abstract class Shape {\n    private String name;\n\n    public Shape(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double area();\n\n    public void describe() {\n        System.out.println(name + \" with area \" + area());\n    }\n}\n"
+      ],
+      [
+       "Rectangle.java",
+       "public class Rectangle extends Shape {\n    private double width;\n    private double height;\n\n    public Rectangle(double width, double height) {\n        super(\"Rectangle\");\n        this.width = width;\n        this.height = height;\n    }\n\n    @Override\n    public double area() {\n        return width * height;\n    }\n}\n"
+      ],
+      [
+       "Triangle.java",
+       "public class Triangle extends Shape {\n    private double base;\n    private double height;\n\n    public Triangle(double base, double height) {\n        super(\"Triangle\");\n        this.base = base;\n        this.height = height;\n    }\n\n    @Override\n    public double area() {\n        return base * height / 2;\n    }\n}\n"
+      ],
+      [
+       "ShapeTester.java",
+       "public class ShapeTester {\n    public static void main(String[] args) {\n        Rectangle r = new Rectangle(3, 4);\n        Triangle t = new Triangle(6, 5);\n        r.describe();\n        t.describe();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ShapeTester",
+      "stdout": "Rectangle with area 12.0\nTriangle with area 15.0"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>public abstract double area();</code> has no body, just a semicolon.",
+      "Each subclass <strong>implements</strong> <code>area()</code> by overriding it with a real body. <code>@Override</code> works here too.",
+      "<code>describe()</code> is written once, in <code>Shape</code>, and works for every subclass, because each one supplies its own <code>area()</code>.",
+      "This is <strong>abstraction</strong>: <code>Shape</code> describes what all shapes can do, while leaving out details it can't know."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Two rules the compiler enforces"
+    },
+    {
+     "type": "p",
+     "html": "<strong>You can't create an object of an abstract class.</strong> A plain <code>Shape</code> would have no way to compute its area, so <code>new Shape(...)</code> is an error:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Shape.java",
+       "public abstract class Shape {\n    private String name;\n\n    public Shape(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double area();\n\n    public void describe() {\n        System.out.println(name + \" with area \" + area());\n    }\n}\n"
+      ],
+      [
+       "MakeShape.java",
+       "public class MakeShape {\n    public static void main(String[] args) {\n        Shape s = new Shape(\"Blob\");\n        s.describe();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac MakeShape.java Shape.java",
+      "text": "MakeShape.java:3: error: Shape is abstract; cannot be instantiated\n        Shape s = new Shape(\"Blob\");\n                  ^\n1 error"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "<strong>A subclass must implement every abstract method it inherits</strong>, or be declared abstract itself. Forgetting one is caught at compile time, with a message that names the missing method:"
+    },
+    {
+     "type": "error",
+     "id": "abstract-missing",
+     "prompt": "This <code>Circle</code> forgot something.",
+     "files": [
+      [
+       "Shape.java",
+       "public abstract class Shape {\n    private String name;\n\n    public Shape(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double area();\n\n    public void describe() {\n        System.out.println(name + \" with area \" + area());\n    }\n}\n"
+      ],
+      [
+       "Circle.java",
+       "public class Circle extends Shape {\n    private double radius;\n\n    public Circle(double radius) {\n        super(\"Circle\");\n        this.radius = radius;\n    }\n}\n"
+      ],
+      [
+       "CircleTester.java",
+       "public class CircleTester {\n    public static void main(String[] args) {\n        new Circle(1).describe();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Circle.java CircleTester.java Shape.java",
+      "text": "Circle.java:1: error: Circle is not abstract and does not override abstract method area() in Shape\npublic class Circle extends Shape {\n       ^\n1 error"
+     },
+     "question": "What does the message ask for?",
+     "choices": [
+      "Remove <code>abstract</code> from <code>Shape</code>",
+      "Give <code>Circle</code> an <code>area()</code> method (or make <code>Circle</code> abstract too)",
+      "Add a <code>describe()</code> method to <code>Circle</code>",
+      "Change <code>radius</code> to an <code>int</code>"
+     ],
+     "answer": 1,
+     "explain": "\"<code>Circle</code> is not abstract and does not override abstract method <code>area()</code> in <code>Shape</code>\": it inherited a promise it didn't keep. Implement <code>area()</code>. <code>describe()</code> is already inherited.",
+     "fixedFiles": [
+      [
+       "Shape.java",
+       "public abstract class Shape {\n    private String name;\n\n    public Shape(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double area();\n\n    public void describe() {\n        System.out.println(name + \" with area \" + area());\n    }\n}\n"
+      ],
+      [
+       "Circle.java",
+       "public class Circle extends Shape {\n    private double radius;\n\n    public Circle(double radius) {\n        super(\"Circle\");\n        this.radius = radius;\n    }\n\n    @Override\n    public double area() {\n        return 3 * radius * radius;\n    }\n}\n"
+      ],
+      [
+       "CircleTester.java",
+       "public class CircleTester {\n    public static void main(String[] args) {\n        new Circle(1).describe();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java CircleTester",
+      "stdout": "Circle with area 3.0"
+     }
+    },
+    {
+     "type": "p",
+     "html": "(The fix above uses 3 instead of \u03c0 just to keep the number short. A real circle would use <code>Math.PI</code>.)"
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "abstract-car",
+     "title": "Each car starts its own way",
+     "prompt": "Finish the exam guide's example: every <code>Car</code> can <code>start()</code>, but each kind of car starts differently.",
+     "files": [
+      [
+       "Car.java",
+       "public [[cls]] class Car {\n    private String model;\n\n    public Car(String model) {\n        this.model = model;\n    }\n\n    public String getModel() {\n        return model;\n    }\n\n    public abstract void start()[[end]]\n}\n"
+      ],
+      [
+       "ElectricCar.java",
+       "public class ElectricCar extends Car {\n    public ElectricCar(String model) {\n        super(model);\n    }\n\n    @Override\n    public void [[name]]() {\n        System.out.println(getModel() + \" hums silently.\");\n    }\n}\n"
+      ],
+      [
+       "CarTester.java",
+       "public class CarTester {\n    public static void main(String[] args) {\n        ElectricCar volt = new ElectricCar(\"Volt\");\n        volt.start();\n    }\n}\n"
+      ]
+     ],
+     "run": "CarTester",
+     "blanks": {
+      "cls": {
+       "accept": [
+        "abstract"
+       ],
+       "solution": "abstract",
+       "hint": "A class with an abstract method must say so.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "",
+         "shown": "",
+         "why": "Without <code>abstract</code> on the class, <code>Car</code> would claim to be complete while one of its methods has no body. Java points at the class.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Car.java CarTester.java ElectricCar.java",
+          "text": "Car.java:1: error: Car is not abstract and does not override abstract method start() in Car\npublic  class Car {\n        ^\n1 error"
+         }
+        }
+       ],
+       "width": 8
+      },
+      "end": {
+       "accept": [
+        ";"
+       ],
+       "solution": ";",
+       "hint": "An abstract method has no body. What ends it instead of braces?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "{}",
+         "shown": "{}",
+         "why": "Braces give the method a body, even an empty one, and abstract methods can't have one.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Car.java CarTester.java ElectricCar.java",
+          "text": "Car.java:12: error: abstract methods cannot have a body\n    public abstract void start(){}\n                         ^\n1 error"
+         }
+        }
+       ],
+       "width": 2
+      },
+      "name": {
+       "accept": [
+        "start"
+       ],
+       "solution": "start",
+       "hint": "The subclass must implement the abstract method with the same name.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "go",
+         "shown": "go",
+         "why": "<code>go()</code> is a new method, so <code>start()</code> is still unimplemented, and <code>@Override</code> complains that <code>go</code> doesn't override anything.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Car.java CarTester.java ElectricCar.java",
+          "text": "ElectricCar.java:1: error: ElectricCar is not abstract and does not override abstract method start() in Car\npublic class ElectricCar extends Car {\n       ^\nElectricCar.java:6: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n2 errors"
+         }
+        }
+       ],
+       "width": 5
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java CarTester",
+      "stdout": "Volt hums silently."
+     },
+     "explain": "<code>Car</code> promises <code>start()</code>, and <code>ElectricCar</code> keeps the promise. A <code>GasCar</code> would write its own <code>start()</code> that does something else."
+    },
+    {
+     "type": "quiz",
+     "id": "abstract-can-have",
+     "question": "Which of these can an abstract class NOT do?",
+     "choices": [
+      "Have private fields",
+      "Have a constructor",
+      "Have methods with bodies",
+      "Be created directly with <code>new</code>"
+     ],
+     "answer": 3,
+     "explain": "An abstract class can have fields, constructors and normal methods; subclasses use them through <code>super(...)</code> and inheritance. What it can't do is be instantiated with <code>new</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "abstract-only",
+     "question": "An abstract class has 3 abstract methods. A subclass implements 2 of them. What happens?",
+     "choices": [
+      "It compiles; the third method does nothing",
+      "It's a compile error, unless the subclass is also declared <code>abstract</code>",
+      "It compiles, but crashes when the third method is called",
+      "Java writes the third method automatically"
+     ],
+     "answer": 1,
+     "explain": "A concrete (non-abstract) class must implement every abstract method it inherits. A subclass that's also <code>abstract</code> can leave some for its own subclasses."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-cars",
+     "mode": "independent",
+     "title": "Each car starts its own way",
+     "goal": "Write the exam guide's example from scratch: an abstract <code>Car</code> with a private <code>model</code>, a constructor, <code>getModel()</code> and an abstract <code>start()</code>. <code>ElectricCar</code> prints <code>&lt;model&gt; hums silently.</code> and <code>GasCar</code> prints <code>&lt;model&gt; roars to life.</code>",
+     "requirements": [],
+     "files": [
+      "Car.java",
+      "ElectricCar.java",
+      "GasCar.java",
+      "GarageTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCars.java",
+       "public class CheckCars {\n    public static void main(String[] args) {\n        Car c = new GasCar(\"Civic\");\n        c.start();\n        System.out.println(c.getModel());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCars",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "abstract\\s+class\\s+Car",
+       "message": "Declare <code>public abstract class Car</code>."
+      },
+      {
+       "pattern": "abstract\\s+void\\s+start\\s*\\(\\s*\\)\\s*;",
+       "message": "Declare <code>public abstract void start();</code> (no body)."
+      }
+     ],
+     "run": "GarageTester",
+     "output": "Volt hums silently.\nMustang roars to life.",
+     "testsOutput": "Civic roars to life.\nCivic",
+     "solution": [
+      [
+       "Car.java",
+       "public abstract class Car {\n    private String model;\n\n    public Car(String model) {\n        this.model = model;\n    }\n\n    public String getModel() {\n        return model;\n    }\n\n    public abstract void start();\n}\n"
+      ],
+      [
+       "ElectricCar.java",
+       "public class ElectricCar extends Car {\n    public ElectricCar(String model) {\n        super(model);\n    }\n\n    @Override\n    public void start() {\n        System.out.println(getModel() + \" hums silently.\");\n    }\n}\n"
+      ],
+      [
+       "GasCar.java",
+       "public class GasCar extends Car {\n    public GasCar(String model) {\n        super(model);\n    }\n\n    @Override\n    public void start() {\n        System.out.println(getModel() + \" roars to life.\");\n    }\n}\n"
+      ],
+      [
+       "GarageTester.java",
+       "public class GarageTester {\n    public static void main(String[] args) {\n        new ElectricCar(\"Volt\").start();\n        new GasCar(\"Mustang\").start();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-beverages",
+     "mode": "independent",
+     "title": "An ordinary method that uses an abstract one",
+     "goal": "Write an abstract <code>Beverage</code> with a private <code>name</code>, an abstract <code>int brewMinutes()</code>, and a normal method <code>describe()</code> that prints <code>&lt;name&gt; takes &lt;minutes&gt; minutes.</code> Write <code>Tea</code> (4 minutes) and <code>Coffee</code> (6 minutes).",
+     "requirements": [],
+     "files": [
+      "Beverage.java",
+      "Tea.java",
+      "Coffee.java",
+      "CafeTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCafe.java",
+       "public class CheckCafe {\n    public static void main(String[] args) {\n        Beverage b = new Coffee();\n        System.out.println(b.brewMinutes());\n        b.describe();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCafe",
+     "hints": [
+      "<code>describe()</code> lives in <code>Beverage</code> and calls <code>brewMinutes()</code>; each subclass supplies the number."
+     ],
+     "checks": [],
+     "run": "CafeTester",
+     "output": "Tea takes 4 minutes.\nCoffee takes 6 minutes.",
+     "testsOutput": "6\nCoffee takes 6 minutes.",
+     "solution": [
+      [
+       "Beverage.java",
+       "public abstract class Beverage {\n    private String name;\n\n    public Beverage(String name) {\n        this.name = name;\n    }\n\n    public abstract int brewMinutes();\n\n    public void describe() {\n        System.out.println(name + \" takes \" + brewMinutes() + \" minutes.\");\n    }\n}\n"
+      ],
+      [
+       "Tea.java",
+       "public class Tea extends Beverage {\n    public Tea() {\n        super(\"Tea\");\n    }\n\n    @Override\n    public int brewMinutes() {\n        return 4;\n    }\n}\n"
+      ],
+      [
+       "Coffee.java",
+       "public class Coffee extends Beverage {\n    public Coffee() {\n        super(\"Coffee\");\n    }\n\n    @Override\n    public int brewMinutes() {\n        return 6;\n    }\n}\n"
+      ],
+      [
+       "CafeTester.java",
+       "public class CafeTester {\n    public static void main(String[] args) {\n        new Tea().describe();\n        new Coffee().describe();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-games",
+     "mode": "independent",
+     "title": "Two abstract methods",
+     "goal": "Write an abstract <code>Game</code> with two abstract methods, <code>String name()</code> and <code>int players()</code>, and a normal method <code>summary()</code> that returns text like <code>Chess (players: 2)</code>. Write <code>Chess</code> (2 players) and <code>Solitaire</code> (1 player).",
+     "requirements": [],
+     "files": [
+      "Game.java",
+      "Chess.java",
+      "Solitaire.java",
+      "GameTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckGames.java",
+       "public class CheckGames {\n    public static void main(String[] args) {\n        Game g = new Solitaire();\n        System.out.println(g.name() + \" \" + g.players());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckGames",
+     "hints": [
+      "<code>Game</code> has no fields and no constructor, so the subclasses don't need <code>super(...)</code>.",
+      "A subclass that implements only one of the two abstract methods won't compile. Read that message: it names the missing one."
+     ],
+     "checks": [],
+     "run": "GameTester",
+     "output": "Chess (players: 2)\nSolitaire (players: 1)",
+     "testsOutput": "Solitaire 1",
+     "solution": [
+      [
+       "Game.java",
+       "public abstract class Game {\n    public abstract String name();\n\n    public abstract int players();\n\n    public String summary() {\n        return name() + \" (players: \" + players() + \")\";\n    }\n}\n"
+      ],
+      [
+       "Chess.java",
+       "public class Chess extends Game {\n    @Override\n    public String name() {\n        return \"Chess\";\n    }\n\n    @Override\n    public int players() {\n        return 2;\n    }\n}\n"
+      ],
+      [
+       "Solitaire.java",
+       "public class Solitaire extends Game {\n    @Override\n    public String name() {\n        return \"Solitaire\";\n    }\n\n    @Override\n    public int players() {\n        return 1;\n    }\n}\n"
+      ],
+      [
+       "GameTester.java",
+       "public class GameTester {\n    public static void main(String[] args) {\n        System.out.println(new Chess().summary());\n        System.out.println(new Solitaire().summary());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Abstract Methods and Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "8.1.1.1 abstract Classes",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.1.1.1",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Predefined Annotation Types (@Override)",
+     "url": "https://docs.oracle.com/javase/tutorial/java/annotations/predefined.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Part 9.1: Class inheritance",
+     "url": "https://java-programming.mooc.fi/part-9/1-inheritance",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "inh-polymorphism": {
+   "id": "inh-polymorphism",
+   "section": "inheritance",
+   "title": "Polymorphism and the Object class",
+   "summary": "A variable of a superclass type can hold any subclass object, and each object still runs its own version of a method.",
+   "goals": [
+    "Store subclass objects in superclass variables and arrays",
+    "Predict which version of an overridden method runs",
+    "Use <code>instanceof</code> and a cast to reach subclass-only methods",
+    "Explain that every class ultimately inherits from <code>Object</code>, and summarize the four core ideas of OOP"
+   ],
+   "cos225": "The exam guide lists polymorphism (\"cats and dogs can be used where animals can be used\"), the question \"what does everything ultimately inherit from?\", and the four core features of Java OOP. All three are in this lesson; the four features are summarized at the end.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "A dog can be used where an animal is expected"
+    },
+    {
+     "type": "p",
+     "html": "Because a <code>Dog</code> <strong>is an</strong> <code>Animal</code>, Java lets you store a <code>Dog</code> in a variable or array of type <code>Animal</code>. <strong>Polymorphism</strong> (Greek for \"many forms\") means one variable type can hold objects of many classes, and when you call an overridden method, <strong>the object's actual class decides which version runs</strong>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Shelter.java",
+       "public class Shelter {\n    public static void main(String[] args) {\n        Animal[] animals = new Animal[3];\n        animals[0] = new Dog(\"Rex\");\n        animals[1] = new Cat(\"Tom\");\n        animals[2] = new Animal(\"Hoppy\");\n\n        for (Animal a : animals) {\n            a.speak();\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Shelter",
+      "stdout": "Rex says Woof!\nTom says Meow.\nHoppy makes a sound."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "The loop doesn't know or care which kind of animal is in each slot. It calls <code>speak()</code>, and each object answers in its own way. Add a <code>Cow</code> class tomorrow, and this loop works with cows without a single change."
+    },
+    {
+     "type": "h",
+     "html": "The variable's type decides what you can call"
+    },
+    {
+     "type": "p",
+     "html": "There are two types in play. The <strong>variable's type</strong> (<code>Animal</code>) decides which methods the compiler lets you call. The <strong>object's type</strong> (<code>Dog</code>) decides which version runs. So <code>Animal a = new Dog(&quot;Rex&quot;);</code> lets you call <code>a.speak()</code> (and Rex barks), but not <code>a.fetch()</code>: as far as the compiler knows, <code>a</code> might be a cat."
+    },
+    {
+     "type": "error",
+     "id": "poly-fetch",
+     "prompt": "Rex really is a dog, but the variable says <code>Animal</code>.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Fetch.java",
+       "public class Fetch {\n    public static void main(String[] args) {\n        Animal a = new Dog(\"Rex\");\n        a.speak();\n        a.fetch();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac Animal.java Dog.java Fetch.java",
+      "text": "Fetch.java:5: error: cannot find symbol\n        a.fetch();\n         ^\n  symbol:   method fetch()\n  location: variable a of type Animal\n1 error"
+     },
+     "question": "Why does the compiler reject <code>a.fetch()</code> even though the object is a <code>Dog</code>?",
+     "choices": [
+      "Because <code>fetch</code> is private",
+      "Because the compiler only checks the variable's type, <code>Animal</code>, and <code>Animal</code> has no <code>fetch()</code>",
+      "Because <code>Rex</code> was spelled differently",
+      "Because <code>speak()</code> must be called last"
+     ],
+     "answer": 1,
+     "explain": "The compiler goes by what the variable promises. The message even says <code>location: variable a of type Animal</code>. Declaring <code>Dog a = new Dog(&quot;Rex&quot;);</code> fixes it.",
+     "fixedFiles": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Fetch.java",
+       "public class Fetch {\n    public static void main(String[] args) {\n        Dog a = new Dog(\"Rex\");\n        a.speak();\n        a.fetch();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "command": "java Fetch",
+      "stdout": "Rex says Woof!\nRex fetches the ball."
+     }
+    },
+    {
+     "type": "p",
+     "html": "When you have an <code>Animal</code> and need dog-only behavior, check with <code>instanceof</code> first, then <strong>cast</strong>: <code>(Dog) a</code> tells the compiler to treat the object as a <code>Dog</code>. Checking first matters, because casting a <code>Cat</code> to <code>Dog</code> crashes with a <code>ClassCastException</code>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Walk.java",
+       "public class Walk {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Dog(\"Fido\")};\n        for (Animal a : animals) {\n            if (a instanceof Dog) {\n                Dog d = (Dog) a;\n                d.fetch();\n            }\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Walk",
+      "stdout": "Rex fetches the ball.\nFido fetches the ball."
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Everything is an Object"
+    },
+    {
+     "type": "p",
+     "html": "A class with no <code>extends</code> still has a superclass: Java's built-in <code>Object</code>. So every class sits in one big hierarchy with <code>Object</code> at the top. That's where the <code>toString()</code> you've been overriding comes from, along with <code>equals()</code> and a few other methods every object has."
+    },
+    {
+     "type": "p",
+     "html": "The exam guide puts it this way: a Programmer Cat is a Cat in Sweater, which is a Cat, which is an Object. Here's that chain in code. One object, referred to by four variables of different types:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Cat.java",
+       "public class Cat {\n    private String name;\n\n    public Cat(String name) {\n        this.name = name;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" the cat\";\n    }\n}\n"
+      ],
+      [
+       "CatInSweater.java",
+       "public class CatInSweater extends Cat {\n    private String color;\n\n    public CatInSweater(String name, String color) {\n        super(name);\n        this.color = color;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" in a \" + color + \" sweater\";\n    }\n}\n"
+      ],
+      [
+       "ProgrammerCat.java",
+       "public class ProgrammerCat extends CatInSweater {\n    private String language;\n\n    public ProgrammerCat(String name, String color, String language) {\n        super(name, color);\n        this.language = language;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \", writing \" + language;\n    }\n}\n"
+      ],
+      [
+       "CatTester.java",
+       "public class CatTester {\n    public static void main(String[] args) {\n        ProgrammerCat byte1 = new ProgrammerCat(\"Byte\", \"green\", \"Java\");\n        CatInSweater asSweater = byte1;\n        Cat asCat = byte1;\n        Object asObject = byte1;\n\n        System.out.println(byte1);\n        System.out.println(asCat);\n        System.out.println(asObject);\n        System.out.println(asObject instanceof Cat);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java CatTester",
+      "stdout": "Byte the cat in a green sweater, writing Java\nByte the cat in a green sweater, writing Java\nByte the cat in a green sweater, writing Java\ntrue"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "All three <code>println</code> calls print the same thing, because they're the same object, and <code>ProgrammerCat</code>'s <code>toString</code> runs no matter which variable you go through. Each level adds its part with <code>super.toString()</code>."
+    },
+    {
+     "type": "h",
+     "html": "The four core ideas of OOP"
+    },
+    {
+     "type": "p",
+     "html": "You've now used all four of the features the exam guide asks you to know:"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>Encapsulation</strong>: each object is responsible for its own data. Fields are <code>private</code>, and other code goes through methods that can check values (the Classes and objects section).",
+      "<strong>Inheritance</strong>: a subclass takes an existing class and adds to it with <code>extends</code>. Java allows one direct superclass, but chains can be as long as you like.",
+      "<strong>Abstraction</strong>: describe what something does while leaving out how. An abstract method says every car can <code>start()</code> without saying how any particular car does it.",
+      "<strong>Polymorphism</strong>: objects of different subclasses can be used wherever the superclass is expected, and each runs its own version of overridden methods."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "predict",
+     "id": "poly-predict",
+     "prompt": "Which version of <code>speak()</code> runs for each slot?",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Mix.java",
+       "public class Mix {\n    public static void main(String[] args) {\n        Animal first = new Cat(\"Tom\");\n        Animal second = new Animal(\"Hoppy\");\n        Dog third = new Dog(\"Fido\");\n        Animal fourth = third;\n        first.speak();\n        second.speak();\n        fourth.speak();\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "Tom makes a sound.\nHoppy makes a sound.\nFido makes a sound.",
+      "Tom says Meow.\nHoppy makes a sound.\nFido says Woof!",
+      "Tom says Meow.\nHoppy makes a sound.\nFido makes a sound.",
+      "A compile error: a Dog can't be stored in an Animal variable"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java Mix",
+      "stdout": "Tom says Meow.\nHoppy makes a sound.\nFido says Woof!"
+     },
+     "explain": "The object, not the variable, picks the version. <code>fourth</code> is an <code>Animal</code> variable, but it refers to Fido, a <code>Dog</code>, so Fido barks."
+    },
+    {
+     "type": "blanks",
+     "id": "poly-count",
+     "title": "Count the dogs",
+     "prompt": "Count how many animals in the array are dogs, and make each dog fetch.",
+     "files": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n\n    public void fetch() {\n        System.out.println(getName() + \" fetches the ball.\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "DogCount.java",
+       "public class DogCount {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Dog(\"Fido\"), new Cat(\"Kit\")};\n        int dogs = 0;\n        for (Animal a : animals) {\n            if (a [[check]] Dog) {\n                dogs++;\n                Dog d = [[cast]] a;\n                d.fetch();\n            }\n        }\n        System.out.println(dogs + \" dogs\");\n    }\n}\n"
+      ]
+     ],
+     "run": "DogCount",
+     "blanks": {
+      "check": {
+       "accept": [
+        "instanceof"
+       ],
+       "solution": "instanceof",
+       "hint": "Which operator tests an object's class?",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "==",
+         "shown": "==",
+         "why": "<code>==</code> compares two values, so Java looks for a variable named <code>Dog</code> and finds none. <code>Dog</code> is a class, not a value. <code>instanceof</code> asks \"is this object a Dog (or a subclass of Dog)?\"",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
+          "text": "DogCount.java:6: error: cannot find symbol\n            if (a == Dog) {\n                     ^\n  symbol:   variable Dog\n  location: class DogCount\n1 error"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "cast": {
+       "accept": [
+        "(Dog)"
+       ],
+       "solution": "(Dog)",
+       "hint": "Tell the compiler to treat <code>a</code> as a <code>Dog</code>.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "",
+         "shown": "",
+         "why": "Without a cast, Java won't put an <code>Animal</code> into a <code>Dog</code> variable, even inside the <code>instanceof</code> check. Write <code>(Dog) a</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
+          "text": "DogCount.java:8: error: incompatible types: Animal cannot be converted to Dog\n                Dog d =  a;\n                         ^\n1 error"
+         }
+        },
+        {
+         "answer": "new Dog",
+         "shown": "new Dog",
+         "why": "<code>new Dog a</code> isn't valid. A cast doesn't create a new object; it changes how the compiler sees an existing one: <code>(Dog) a</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Animal.java Cat.java Dog.java DogCount.java",
+          "text": "DogCount.java:8: error: '(' or '[' expected\n                Dog d = new Dog a;\n                                ^\n1 error"
+         }
+        }
+       ],
+       "width": 7
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java DogCount",
+      "stdout": "Rex fetches the ball.\nFido fetches the ball.\n2 dogs"
+     },
+     "explain": "<code>instanceof</code> makes the cast safe: only dogs get cast to <code>Dog</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "poly-object",
+     "question": "<code>public class Plant { }</code> has no <code>extends</code>. What is its superclass?",
+     "choices": [
+      "It has none",
+      "<code>Object</code>",
+      "<code>Main</code>",
+      "Whichever class uses it"
+     ],
+     "answer": 1,
+     "explain": "Every class without an explicit <code>extends</code> implicitly extends <code>java.lang.Object</code>. That's why every object has <code>toString()</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "poly-pillar",
+     "question": "\"Our objects should be responsible for themselves, and not depend on others.\" Which core idea does the exam guide describe with this?",
+     "choices": [
+      "Abstraction",
+      "Encapsulation",
+      "Inheritance",
+      "Polymorphism"
+     ],
+     "answer": 1,
+     "explain": "Encapsulation: private data, managed by the object's own methods. Abstraction is about leaving out details (like how each car starts), inheritance about extending a class, and polymorphism about using subclasses where a superclass is expected."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-chorus",
+     "mode": "independent",
+     "title": "One loop, many forms",
+     "goal": "Write <code>Animal</code> (private <code>name</code>, <code>getName()</code>, <code>speak()</code> prints <code>&lt;name&gt; makes a sound.</code>) and three subclasses that override <code>speak()</code>: <code>Dog</code> (<code>says Woof!</code>), <code>Cat</code> (<code>says Meow.</code>) and <code>Cow</code> (<code>says Moo.</code>). In <code>ChorusTester</code>, put one of each in an <code>Animal[]</code> and make them all speak in one loop.",
+     "requirements": [],
+     "files": [
+      "Animal.java",
+      "Dog.java",
+      "Cat.java",
+      "Cow.java",
+      "ChorusTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckChorus.java",
+       "public class CheckChorus {\n    public static void main(String[] args) {\n        Animal a = new Cow(\"Daisy\");\n        a.speak();\n        Animal b = new Animal(\"Plain\");\n        b.speak();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckChorus",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "Animal\\s*\\[\\s*\\]",
+       "message": "Store the animals in an <code>Animal[]</code>."
+      }
+     ],
+     "run": "ChorusTester",
+     "output": "Rex says Woof!\nTom says Meow.\nBess says Moo.",
+     "testsOutput": "Daisy says Moo.\nPlain makes a sound.",
+     "solution": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Woof!\");\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Meow.\");\n    }\n}\n"
+      ],
+      [
+       "Cow.java",
+       "public class Cow extends Animal {\n    public Cow(String name) {\n        super(name);\n    }\n\n    @Override\n    public void speak() {\n        System.out.println(getName() + \" says Moo.\");\n    }\n}\n"
+      ],
+      [
+       "ChorusTester.java",
+       "public class ChorusTester {\n    public static void main(String[] args) {\n        Animal[] chorus = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Cow(\"Bess\")};\n        for (Animal a : chorus) {\n            a.speak();\n        }\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-purr",
+     "mode": "independent",
+     "title": "instanceof and a cast",
+     "goal": "Write <code>Animal</code> (as in the previous task), <code>Dog</code> and <code>Cat</code> (no overrides needed), where only <code>Cat</code> has <code>purr()</code> (prints <code>&lt;name&gt; purrs.</code>). In <code>CatCount</code>, loop over <code>{Dog Rex, Cat Tom, Cat Kit, Dog Fido}</code>, make each cat purr, and print how many cats there were.",
+     "requirements": [
+      "Check with <code>instanceof</code> before casting"
+     ],
+     "files": [
+      "Animal.java",
+      "Dog.java",
+      "Cat.java",
+      "CatCount.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "<code>if (a instanceof Cat)</code>, then <code>Cat c = (Cat) a;</code>"
+     ],
+     "checks": [
+      {
+       "pattern": "instanceof\\s+Cat",
+       "message": "Use <code>instanceof Cat</code> to find the cats."
+      },
+      {
+       "pattern": "\\(\\s*Cat\\s*\\)",
+       "message": "Cast with <code>(Cat)</code> before calling <code>purr()</code>."
+      }
+     ],
+     "run": "CatCount",
+     "output": "Tom purrs.\nKit purrs.\n2 cats",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Animal.java",
+       "public class Animal {\n    private String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void speak() {\n        System.out.println(name + \" makes a sound.\");\n    }\n}\n"
+      ],
+      [
+       "Dog.java",
+       "public class Dog extends Animal {\n    public Dog(String name) {\n        super(name);\n    }\n}\n"
+      ],
+      [
+       "Cat.java",
+       "public class Cat extends Animal {\n    public Cat(String name) {\n        super(name);\n    }\n\n    public void purr() {\n        System.out.println(getName() + \" purrs.\");\n    }\n}\n"
+      ],
+      [
+       "CatCount.java",
+       "public class CatCount {\n    public static void main(String[] args) {\n        Animal[] animals = {new Dog(\"Rex\"), new Cat(\"Tom\"), new Cat(\"Kit\"), new Dog(\"Fido\")};\n        int cats = 0;\n        for (Animal a : animals) {\n            if (a instanceof Cat) {\n                cats++;\n                Cat c = (Cat) a;\n                c.purr();\n            }\n        }\n        System.out.println(cats + \" cats\");\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-showcase",
+     "mode": "independent",
+     "title": "Everything is an Object",
+     "goal": "Write <code>Pet</code> (private <code>name</code>, <code>toString</code> returns <code>&lt;name&gt; the pet</code>) and <code>Showcase</code>, with a method <code>public static void show(Object item)</code> that prints <code>Showing: </code> followed by the item. Because every class extends <code>Object</code>, <code>show</code> accepts a <code>String</code>, a <code>Pet</code>, or anything else.",
+     "requirements": [],
+     "files": [
+      "Pet.java",
+      "Showcase.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckShowcase.java",
+       "public class CheckShowcase {\n    public static void main(String[] args) {\n        Showcase.show(new Pet(\"Nib\"));\n        Object o = new Pet(\"Pip\");\n        System.out.println(o);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckShowcase",
+     "hints": [
+      "The parameter type is <code>Object</code>. Joining it to text with <code>+</code> calls its <code>toString()</code>, so <code>Pet</code>'s version runs."
+     ],
+     "checks": [
+      {
+       "pattern": "show\\s*\\(\\s*Object\\s+\\w+\\s*\\)",
+       "message": "Give <code>show</code> a parameter of type <code>Object</code>."
+      }
+     ],
+     "run": "Showcase",
+     "output": "Showing: hello\nShowing: Biscuit the pet",
+     "testsOutput": "Showing: Nib the pet\nPip the pet",
+     "solution": [
+      [
+       "Pet.java",
+       "public class Pet {\n    private String name;\n\n    public Pet(String name) {\n        this.name = name;\n    }\n\n    @Override\n    public String toString() {\n        return name + \" the pet\";\n    }\n}\n"
+      ],
+      [
+       "Showcase.java",
+       "public class Showcase {\n    public static void show(Object item) {\n        System.out.println(\"Showing: \" + item);\n    }\n\n    public static void main(String[] args) {\n        show(\"hello\");\n        show(new Pet(\"Biscuit\"));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Polymorphism",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Inheritance",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Object as a Superclass",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/objectclass.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "java.lang.Object",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "15.20.2 The instanceof Operator",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.20.2",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    },
+    {
+     "title": "Part 9.3: Object polymorphism",
+     "url": "https://java-programming.mooc.fi/part-9/3-object-polymorphism",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "inh-project-fleet": {
+   "id": "inh-project-fleet",
+   "section": "inheritance",
+   "title": "Project: a delivery fleet",
+   "summary": "Put the section together: an abstract <code>Vehicle</code>, three kinds of vehicle that price trips their own way, and a fleet that compares them without knowing which kind each one is.",
+   "goals": [
+    "Design an abstract superclass with one abstract method",
+    "Write several subclasses that each implement it differently",
+    "Write a manager class whose loops rely on polymorphism"
+   ],
+   "cos225": "This project combines what the exam guide groups under OOP: an abstract class, subclasses with <code>super(...)</code> and <code>@Override</code>, and polymorphism through an array of the superclass type. It's the same manager-class shape as the Classes section, now holding a whole hierarchy.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "The specification"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>Vehicle</strong> (abstract): a private <code>id</code>, a constructor that takes it, <code>getId()</code>, an abstract method <code>double costFor(int km)</code>, and a <code>toString</code> that returns the id.",
+      "<strong>Bike</strong>: costs $2 plus $0.50 per km. <strong>Van</strong>: $10 plus $1.50 per km. <strong>Drone</strong>: $8 plus $0.25 per km.",
+      "<strong>Fleet</strong>: a private <code>Vehicle[]</code> sized by its constructor; <code>add(Vehicle)</code> uses the first empty slot and returns <code>true</code>, or <code>false</code> when full; <code>quote(int km)</code> prints every vehicle's price; <code>cheapestFor(int km)</code> returns the cheapest vehicle for that distance, or <code>null</code> if the fleet is empty."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Step 1: the abstract Vehicle"
+    },
+    {
+     "type": "blanks",
+     "id": "fleet-vehicle",
+     "title": "Write Vehicle",
+     "prompt": "Make <code>Vehicle</code> abstract, and declare the abstract method's return type. <code>Bike</code> is already written.",
+     "files": [
+      [
+       "Vehicle.java",
+       "public [[abs]] class Vehicle {\n    private String id;\n\n    public Vehicle(String id) {\n        this.id = id;\n    }\n\n    public String getId() {\n        return id;\n    }\n\n    public abstract [[rtype]] costFor(int km);\n\n    @Override\n    public String toString() {\n        return id;\n    }\n}\n"
+      ],
+      [
+       "Bike.java",
+       "public class Bike extends Vehicle {\n    public Bike(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 2 + 0.5 * km;\n    }\n}\n"
+      ],
+      [
+       "FleetTester.java",
+       "public class FleetTester {\n    public static void main(String[] args) {\n        Bike b = new Bike(\"B1\");\n        System.out.println(b + \" costs $\" + b.costFor(10) + \" for 10 km\");\n    }\n}\n"
+      ]
+     ],
+     "run": "FleetTester",
+     "blanks": {
+      "abs": {
+       "accept": [
+        "abstract"
+       ],
+       "solution": "abstract",
+       "hint": "A class with an abstract method must be marked too.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "",
+         "shown": "",
+         "why": "<code>Vehicle</code> has an abstract method, so the class itself has to be <code>abstract</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java FleetTester.java Vehicle.java",
+          "text": "Vehicle.java:1: error: Vehicle is not abstract and does not override abstract method costFor(int) in Vehicle\npublic  class Vehicle {\n        ^\n1 error"
+         }
+        }
+       ],
+       "width": 8
+      },
+      "rtype": {
+       "accept": [
+        "double"
+       ],
+       "solution": "double",
+       "hint": "Prices like 7.0 have a decimal point.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "int",
+         "shown": "int",
+         "why": "<code>Bike</code> overrides <code>costFor</code> with return type <code>double</code>. An override must return the same type as the method it replaces (or a subtype of it, for objects), so this doesn't compile.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java FleetTester.java Vehicle.java",
+          "text": "Bike.java:1: error: Bike is not abstract and does not override abstract method costFor(int) in Vehicle\npublic class Bike extends Vehicle {\n       ^\nBike.java:7: error: costFor(int) in Bike cannot override costFor(int) in Vehicle\n    public double costFor(int km) {\n                  ^\n  return type double is not compatible with int\nBike.java:6: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n3 errors"
+         }
+        },
+        {
+         "answer": "void",
+         "shown": "void",
+         "why": "The cost must be returned so the fleet can compare prices. <code>void</code> returns nothing, and <code>Bike</code>'s <code>double</code> version would no longer match.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java FleetTester.java Vehicle.java",
+          "text": "Bike.java:1: error: Bike is not abstract and does not override abstract method costFor(int) in Vehicle\npublic class Bike extends Vehicle {\n       ^\nBike.java:7: error: costFor(int) in Bike cannot override costFor(int) in Vehicle\n    public double costFor(int km) {\n                  ^\n  return type double is not compatible with void\nBike.java:6: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n3 errors"
+         }
+        }
+       ],
+       "width": 6
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java FleetTester",
+      "stdout": "B1 costs $7.0 for 10 km"
+     },
+     "explain": "<code>Vehicle</code> can't compute a cost by itself, but it guarantees that every vehicle can."
+    },
+    {
+     "type": "h",
+     "html": "Step 2: more kinds of vehicle"
+    },
+    {
+     "type": "blanks",
+     "id": "fleet-van",
+     "title": "Write Van",
+     "prompt": "Finish <code>Van</code>. <code>Drone</code> is written the same way. The tester stores all three kinds in one <code>Vehicle[]</code>.",
+     "files": [
+      [
+       "Vehicle.java",
+       "public abstract class Vehicle {\n    private String id;\n\n    public Vehicle(String id) {\n        this.id = id;\n    }\n\n    public String getId() {\n        return id;\n    }\n\n    public abstract double costFor(int km);\n\n    @Override\n    public String toString() {\n        return id;\n    }\n}\n"
+      ],
+      [
+       "Bike.java",
+       "public class Bike extends Vehicle {\n    public Bike(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 2 + 0.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Van.java",
+       "public class Van [[ext]] Vehicle {\n    public Van(String id) {\n        [[sup]];\n    }\n\n    @Override\n    public double [[meth]](int km) {\n        return 10 + 1.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Drone.java",
+       "public class Drone extends Vehicle {\n    public Drone(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 8 + 0.25 * km;\n    }\n}\n"
+      ],
+      [
+       "FleetTester.java",
+       "public class FleetTester {\n    public static void main(String[] args) {\n        Vehicle[] all = {new Bike(\"B1\"), new Van(\"V1\"), new Drone(\"D1\")};\n        for (Vehicle v : all) {\n            System.out.println(v + \": $\" + v.costFor(10));\n        }\n    }\n}\n"
+      ]
+     ],
+     "run": "FleetTester",
+     "blanks": {
+      "ext": {
+       "accept": [
+        "extends"
+       ],
+       "solution": "extends",
+       "hint": "A van is a vehicle.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "implements",
+         "shown": "implements",
+         "why": "<code>Vehicle</code> is a class (an abstract one), so a subclass <code>extends</code> it. <code>implements</code> is for interfaces.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java Drone.java FleetTester.java Van.java Vehicle.java",
+          "text": "Van.java:1: error: interface expected here\npublic class Van implements Vehicle {\n                            ^\nFleetTester.java:3: error: incompatible types: Van cannot be converted to Vehicle\n        Vehicle[] all = {new Bike(\"B1\"), new Van(\"V1\"), new Drone(\"D1\")};\n                                         ^\nVan.java:3: error: constructor Object in class Object cannot be applied to given types;\n        super(id);\n        ^\n  required: no arguments\n  found:    String\n  reason: actual and formal argument lists differ in length\nVan.java:6: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n4 errors"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "sup": {
+       "accept": [
+        "super(id)"
+       ],
+       "solution": "super(id)",
+       "hint": "<code>Vehicle</code> stores the id.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "this.id=id",
+         "shown": "this.id = id",
+         "why": "<code>id</code> is private in <code>Vehicle</code>, so <code>Van</code> can't assign it. Pass it to <code>Vehicle</code>'s constructor with <code>super(id)</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java Drone.java FleetTester.java Van.java Vehicle.java",
+          "text": "Van.java:2: error: constructor Vehicle in class Vehicle cannot be applied to given types;\n    public Van(String id) {\n                          ^\n  required: String\n  found:    no arguments\n  reason: actual and formal argument lists differ in length\nVan.java:3: error: id has private access in Vehicle\n        this.id = id;\n            ^\n2 errors"
+         }
+        }
+       ],
+       "width": 12
+      },
+      "meth": {
+       "accept": [
+        "costFor"
+       ],
+       "solution": "costFor",
+       "hint": "Implement the abstract method, with exactly its name.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "cost",
+         "shown": "cost",
+         "why": "A method named <code>cost</code> is a new method, so <code>costFor</code> is still unimplemented and <code>@Override</code> reports that <code>cost</code> doesn't override anything.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java Drone.java FleetTester.java Van.java Vehicle.java",
+          "text": "Van.java:1: error: Van is not abstract and does not override abstract method costFor(int) in Vehicle\npublic class Van extends Vehicle {\n       ^\nVan.java:6: error: method does not override or implement a method from a supertype\n    @Override\n    ^\n2 errors"
+         }
+        }
+       ],
+       "width": 7
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java FleetTester",
+      "stdout": "B1: $7.0\nV1: $25.0\nD1: $10.5"
+     },
+     "explain": "The loop in the tester calls <code>costFor(10)</code> on each <code>Vehicle</code>, and each object uses its own formula."
+    },
+    {
+     "type": "h",
+     "html": "Step 3: the fleet"
+    },
+    {
+     "type": "p",
+     "html": "<code>Fleet</code> holds any mix of vehicles in one <code>Vehicle[]</code>. Its <code>quote</code> loop doesn't check what kind each one is. It calls <code>costFor</code>, and polymorphism does the rest."
+    },
+    {
+     "type": "blanks",
+     "id": "fleet-quote",
+     "title": "Write Fleet",
+     "prompt": "Declare the array field and complete the price in <code>quote</code>.",
+     "files": [
+      [
+       "Vehicle.java",
+       "public abstract class Vehicle {\n    private String id;\n\n    public Vehicle(String id) {\n        this.id = id;\n    }\n\n    public String getId() {\n        return id;\n    }\n\n    public abstract double costFor(int km);\n\n    @Override\n    public String toString() {\n        return id;\n    }\n}\n"
+      ],
+      [
+       "Bike.java",
+       "public class Bike extends Vehicle {\n    public Bike(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 2 + 0.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Van.java",
+       "public class Van extends Vehicle {\n    public Van(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 10 + 1.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Drone.java",
+       "public class Drone extends Vehicle {\n    public Drone(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 8 + 0.25 * km;\n    }\n}\n"
+      ],
+      [
+       "Fleet.java",
+       "public class Fleet {\n    private [[arr]] vehicles;\n\n    public Fleet(int size) {\n        vehicles = new Vehicle[size];\n    }\n\n    public boolean add(Vehicle v) {\n        for (int i = 0; i < vehicles.length; i++) {\n            if (vehicles[i] == null) {\n                vehicles[i] = v;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public void quote(int km) {\n        for (Vehicle v : vehicles) {\n            if (v != null) {\n                System.out.println(v + \": $\" + [[call]]);\n            }\n        }\n    }\n}\n"
+      ],
+      [
+       "FleetTester.java",
+       "public class FleetTester {\n    public static void main(String[] args) {\n        Fleet fleet = new Fleet(3);\n        fleet.add(new Bike(\"B1\"));\n        fleet.add(new Van(\"V1\"));\n        fleet.add(new Drone(\"D1\"));\n        System.out.println(fleet.add(new Bike(\"B2\")));\n        fleet.quote(4);\n    }\n}\n"
+      ]
+     ],
+     "run": "FleetTester",
+     "blanks": {
+      "arr": {
+       "accept": [
+        "Vehicle[]"
+       ],
+       "solution": "Vehicle[]",
+       "hint": "One array type that can hold bikes, vans and drones.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "Bike[]",
+         "shown": "Bike[]",
+         "why": "A <code>Bike[]</code> can hold only bikes, so a <code>Vehicle[]</code> can't be stored in it. The superclass type is what lets one array hold every kind.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java Drone.java Fleet.java FleetTester.java Van.java Vehicle.java",
+          "text": "Fleet.java:5: error: incompatible types: Vehicle[] cannot be converted to Bike[]\n        vehicles = new Vehicle[size];\n                   ^\nFleet.java:11: error: incompatible types: Vehicle cannot be converted to Bike\n                vehicles[i] = v;\n                              ^\n2 errors"
+         }
+        },
+        {
+         "answer": "Object[]",
+         "shown": "Object[]",
+         "why": "An <code>Object[]</code> could hold anything, so the for-each loop can't promise that each item is a <code>Vehicle</code>. That's why the error is on the loop line. Use the most specific type that covers every kind: <code>Vehicle[]</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java Drone.java Fleet.java FleetTester.java Van.java Vehicle.java",
+          "text": "Fleet.java:19: error: incompatible types: Object cannot be converted to Vehicle\n        for (Vehicle v : vehicles) {\n                         ^\n1 error"
+         }
+        }
+       ],
+       "width": 9
+      },
+      "call": {
+       "accept": [
+        "v.costFor(km)"
+       ],
+       "solution": "v.costFor(km)",
+       "hint": "Ask the vehicle for its price for <code>km</code> kilometres.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "costFor(km)",
+         "shown": "costFor(km)",
+         "why": "<code>Fleet</code> has no <code>costFor</code> method of its own. Call it on the vehicle: <code>v.costFor(km)</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java Drone.java Fleet.java FleetTester.java Van.java Vehicle.java",
+          "text": "Fleet.java:21: error: cannot find symbol\n                System.out.println(v + \": $\" + costFor(km));\n                                               ^\n  symbol:   method costFor(int)\n  location: class Fleet\n1 error"
+         }
+        },
+        {
+         "answer": "v.costFor",
+         "shown": "v.costFor",
+         "why": "A method call needs parentheses and its argument: <code>v.costFor(km)</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Bike.java Drone.java Fleet.java FleetTester.java Van.java Vehicle.java",
+          "text": "Fleet.java:21: error: cannot find symbol\n                System.out.println(v + \": $\" + v.costFor);\n                                                ^\n  symbol:   variable costFor\n  location: variable v of type Vehicle\n1 error"
+         }
+        }
+       ],
+       "width": 13
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java FleetTester",
+      "stdout": "false\nB1: $4.0\nV1: $16.0\nD1: $9.0"
+     },
+     "explain": "The fleet has 3 slots, so the fourth <code>add</code> returns <code>false</code>."
+    },
+    {
+     "type": "h",
+     "html": "Step 4: the cheapest vehicle"
+    },
+    {
+     "type": "p",
+     "html": "<code>cheapestFor</code> uses the \"best so far\" pattern from the Classes workshop, comparing each vehicle's own price."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Fleet.java",
+       "public class Fleet {\n    private Vehicle[] vehicles;\n\n    public Fleet(int size) {\n        vehicles = new Vehicle[size];\n    }\n\n    public boolean add(Vehicle v) {\n        for (int i = 0; i < vehicles.length; i++) {\n            if (vehicles[i] == null) {\n                vehicles[i] = v;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public void quote(int km) {\n        for (Vehicle v : vehicles) {\n            if (v != null) {\n                System.out.println(v + \": $\" + v.costFor(km));\n            }\n        }\n    }\n\n    public Vehicle cheapestFor(int km) {\n        Vehicle best = null;\n        for (Vehicle v : vehicles) {\n            if (v != null && (best == null || v.costFor(km) < best.costFor(km))) {\n                best = v;\n            }\n        }\n        return best;\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": "<code>Fleet.java</code>, finished",
+     "after": null
+    },
+    {
+     "type": "predict",
+     "id": "fleet-final",
+     "prompt": "Which vehicle is cheapest for 2 km, and for 30 km?",
+     "files": [
+      [
+       "Vehicle.java",
+       "public abstract class Vehicle {\n    private String id;\n\n    public Vehicle(String id) {\n        this.id = id;\n    }\n\n    public String getId() {\n        return id;\n    }\n\n    public abstract double costFor(int km);\n\n    @Override\n    public String toString() {\n        return id;\n    }\n}\n"
+      ],
+      [
+       "Bike.java",
+       "public class Bike extends Vehicle {\n    public Bike(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 2 + 0.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Van.java",
+       "public class Van extends Vehicle {\n    public Van(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 10 + 1.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Drone.java",
+       "public class Drone extends Vehicle {\n    public Drone(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 8 + 0.25 * km;\n    }\n}\n"
+      ],
+      [
+       "Fleet.java",
+       "public class Fleet {\n    private Vehicle[] vehicles;\n\n    public Fleet(int size) {\n        vehicles = new Vehicle[size];\n    }\n\n    public boolean add(Vehicle v) {\n        for (int i = 0; i < vehicles.length; i++) {\n            if (vehicles[i] == null) {\n                vehicles[i] = v;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public void quote(int km) {\n        for (Vehicle v : vehicles) {\n            if (v != null) {\n                System.out.println(v + \": $\" + v.costFor(km));\n            }\n        }\n    }\n\n    public Vehicle cheapestFor(int km) {\n        Vehicle best = null;\n        for (Vehicle v : vehicles) {\n            if (v != null && (best == null || v.costFor(km) < best.costFor(km))) {\n                best = v;\n            }\n        }\n        return best;\n    }\n}\n"
+      ],
+      [
+       "FleetTester.java",
+       "public class FleetTester {\n    public static void main(String[] args) {\n        Fleet fleet = new Fleet(4);\n        fleet.add(new Bike(\"B1\"));\n        fleet.add(new Van(\"V1\"));\n        fleet.add(new Drone(\"D1\"));\n        System.out.println(\"2 km: \" + fleet.cheapestFor(2));\n        System.out.println(\"30 km: \" + fleet.cheapestFor(30));\n        System.out.println(\"Empty fleet: \" + new Fleet(2).cheapestFor(5));\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "2 km: B1\n30 km: B1\nEmpty fleet: null",
+      "2 km: B1\n30 km: D1\nEmpty fleet: null",
+      "2 km: D1\n30 km: D1\nEmpty fleet: null",
+      "2 km: B1\n30 km: D1\nEmpty fleet: B1"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java FleetTester",
+      "stdout": "2 km: B1\n30 km: D1\nEmpty fleet: null"
+     },
+     "explain": "For 2 km: bike $3.00, van $13.00, drone $8.50. For 30 km: bike $17.00, van $55.00, drone $15.50. The drone's low per-km rate wins on long trips. An empty fleet has no vehicles, so <code>best</code> stays <code>null</code>."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-fleet-rebuild",
+     "mode": "independent",
+     "title": "Rebuild the fleet from the spec",
+     "goal": "Without looking back, write the whole delivery-fleet project from its specification: abstract <code>Vehicle</code>, <code>Bike</code>, <code>Van</code>, <code>Drone</code> and <code>Fleet</code> (with <code>add</code>, <code>quote</code> and <code>cheapestFor</code>). Use this tester's output as your target.",
+     "requirements": [
+      "Six files; follow the specification at the top of this page"
+     ],
+     "files": [
+      "Vehicle.java",
+      "Bike.java",
+      "Van.java",
+      "Drone.java",
+      "Fleet.java",
+      "FleetTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckFleet.java",
+       "public class CheckFleet {\n    public static void main(String[] args) {\n        Fleet f = new Fleet(2);\n        System.out.println(f.cheapestFor(5));\n        System.out.println(f.add(new Van(\"V9\")));\n        System.out.println(f.add(new Van(\"V8\")));\n        System.out.println(f.add(new Bike(\"B9\")));\n        Vehicle d = new Drone(\"D9\");\n        System.out.println(d.costFor(4));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckFleet",
+     "hints": [
+      "Start with <code>Vehicle</code> and one subclass, and run the tester with only the lines that work so far."
+     ],
+     "checks": [],
+     "run": "FleetTester",
+     "output": "B1: $7.0\nV1: $25.0\nD1: $10.5\nCheapest for 2 km: B1\nCheapest for 30 km: D1",
+     "testsOutput": "null\ntrue\ntrue\nfalse\n9.0",
+     "solution": [
+      [
+       "Vehicle.java",
+       "public abstract class Vehicle {\n    private String id;\n\n    public Vehicle(String id) {\n        this.id = id;\n    }\n\n    public String getId() {\n        return id;\n    }\n\n    public abstract double costFor(int km);\n\n    @Override\n    public String toString() {\n        return id;\n    }\n}\n"
+      ],
+      [
+       "Bike.java",
+       "public class Bike extends Vehicle {\n    public Bike(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 2 + 0.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Van.java",
+       "public class Van extends Vehicle {\n    public Van(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 10 + 1.5 * km;\n    }\n}\n"
+      ],
+      [
+       "Drone.java",
+       "public class Drone extends Vehicle {\n    public Drone(String id) {\n        super(id);\n    }\n\n    @Override\n    public double costFor(int km) {\n        return 8 + 0.25 * km;\n    }\n}\n"
+      ],
+      [
+       "Fleet.java",
+       "public class Fleet {\n    private Vehicle[] vehicles;\n\n    public Fleet(int size) {\n        vehicles = new Vehicle[size];\n    }\n\n    public boolean add(Vehicle v) {\n        for (int i = 0; i < vehicles.length; i++) {\n            if (vehicles[i] == null) {\n                vehicles[i] = v;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public void quote(int km) {\n        for (Vehicle v : vehicles) {\n            if (v != null) {\n                System.out.println(v + \": $\" + v.costFor(km));\n            }\n        }\n    }\n\n    public Vehicle cheapestFor(int km) {\n        Vehicle best = null;\n        for (Vehicle v : vehicles) {\n            if (v != null && (best == null || v.costFor(km) < best.costFor(km))) {\n                best = v;\n            }\n        }\n        return best;\n    }\n}\n"
+      ],
+      [
+       "FleetTester.java",
+       "public class FleetTester {\n    public static void main(String[] args) {\n        Fleet fleet = new Fleet(3);\n        fleet.add(new Bike(\"B1\"));\n        fleet.add(new Van(\"V1\"));\n        fleet.add(new Drone(\"D1\"));\n        fleet.quote(10);\n        System.out.println(\"Cheapest for 2 km: \" + fleet.cheapestFor(2));\n        System.out.println(\"Cheapest for 30 km: \" + fleet.cheapestFor(30));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-tickets",
+     "mode": "independent",
+     "title": "Same design, new subject",
+     "goal": "Write an abstract <code>Ticket</code> (private <code>holder</code>, <code>getHolder()</code>, abstract <code>double price()</code>, and <code>toString</code> returning <code>&lt;holder&gt;: $&lt;price&gt;</code>). <code>AdultTicket</code> costs 12.0, <code>ChildTicket</code> 6.0 and <code>SeniorTicket</code> 8.0. <code>Order</code> keeps a private <code>Ticket[]</code> and has <code>add(Ticket)</code> (returns <code>false</code> when full) and <code>total()</code>.",
+     "requirements": [],
+     "files": [
+      "Ticket.java",
+      "AdultTicket.java",
+      "ChildTicket.java",
+      "SeniorTicket.java",
+      "Order.java",
+      "OrderTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckOrder.java",
+       "public class CheckOrder {\n    public static void main(String[] args) {\n        Order o = new Order(2);\n        System.out.println(o.total());\n        o.add(new SeniorTicket(\"Al\"));\n        System.out.println(o.total());\n        System.out.println(new ChildTicket(\"Mo\"));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckOrder",
+     "hints": [
+      "This is the fleet with different names: <code>Ticket</code> is <code>Vehicle</code>, <code>price()</code> is <code>costFor</code>, <code>Order</code> is <code>Fleet</code>."
+     ],
+     "checks": [],
+     "run": "OrderTester",
+     "output": "false\nMom: $12.0\nTotal: $26.0",
+     "testsOutput": "0.0\n8.0\nMo: $6.0",
+     "solution": [
+      [
+       "Ticket.java",
+       "public abstract class Ticket {\n    private String holder;\n\n    public Ticket(String holder) {\n        this.holder = holder;\n    }\n\n    public String getHolder() {\n        return holder;\n    }\n\n    public abstract double price();\n\n    @Override\n    public String toString() {\n        return holder + \": $\" + price();\n    }\n}\n"
+      ],
+      [
+       "AdultTicket.java",
+       "public class AdultTicket extends Ticket {\n    public AdultTicket(String holder) {\n        super(holder);\n    }\n\n    @Override\n    public double price() {\n        return 12.0;\n    }\n}\n"
+      ],
+      [
+       "ChildTicket.java",
+       "public class ChildTicket extends Ticket {\n    public ChildTicket(String holder) {\n        super(holder);\n    }\n\n    @Override\n    public double price() {\n        return 6.0;\n    }\n}\n"
+      ],
+      [
+       "SeniorTicket.java",
+       "public class SeniorTicket extends Ticket {\n    public SeniorTicket(String holder) {\n        super(holder);\n    }\n\n    @Override\n    public double price() {\n        return 8.0;\n    }\n}\n"
+      ],
+      [
+       "Order.java",
+       "public class Order {\n    private Ticket[] tickets;\n\n    public Order(int size) {\n        tickets = new Ticket[size];\n    }\n\n    public boolean add(Ticket t) {\n        for (int i = 0; i < tickets.length; i++) {\n            if (tickets[i] == null) {\n                tickets[i] = t;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public double total() {\n        double sum = 0;\n        for (Ticket t : tickets) {\n            if (t != null) {\n                sum = sum + t.price();\n            }\n        }\n        return sum;\n    }\n}\n"
+      ],
+      [
+       "OrderTester.java",
+       "public class OrderTester {\n    public static void main(String[] args) {\n        Order family = new Order(3);\n        Ticket mom = new AdultTicket(\"Mom\");\n        family.add(mom);\n        family.add(new ChildTicket(\"Leo\"));\n        family.add(new SeniorTicket(\"Gran\"));\n        System.out.println(family.add(new ChildTicket(\"Extra\")));\n        System.out.println(mom);\n        System.out.println(\"Total: $\" + family.total());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Abstract Methods and Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Using the Keyword super",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/super.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Polymorphism",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Inheritance",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Part 9.3: Object polymorphism",
+     "url": "https://java-programming.mooc.fi/part-9/3-object-polymorphism",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    }
+   ]
+  },
+  "inh-workshop": {
+   "id": "inh-workshop",
+   "section": "inheritance",
+   "title": "Workshop: inheritance",
+   "summary": "Design class hierarchies from scratch: two guided builds, then two you write on your own, one of them sized like an exam question.",
+   "goals": [
+    "Write abstract superclasses and subclasses with <code>super(...)</code> and <code>@Override</code> from an empty editor",
+    "Chain <code>toString</code> through three levels with <code>super.toString()</code>",
+    "Use polymorphism in a manager class, and <code>instanceof</code> to tell kinds apart"
+   ],
+   "cos225": "The exam guide asks you to know superclasses and subclasses \"and be ready to write them\", along with <code>@Override</code> and abstract methods. Independent 2 is exam-sized. Try it on paper first, then type it in.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Before you start"
+    },
+    {
+     "type": "p",
+     "html": "Each task spans several files, one per class. When a step adds a new class, create its file with <strong>New file</strong>. If the compiler says a class \"is not abstract and does not override abstract method\", it's telling you exactly which method is still missing."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: a payroll"
+    },
+    {
+     "type": "write",
+     "id": "ws-inh-payroll",
+     "mode": "guided",
+     "title": "A payroll",
+     "goal": "Build an abstract <code>Employee</code>, two ways of being paid, and a <code>Payroll</code> that totals everyone without caring how each person is paid.",
+     "requirements": [],
+     "files": [
+      "Employee.java",
+      "Hourly.java",
+      "PayrollTester.java",
+      "Salaried.java",
+      "Payroll.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Employee and Hourly",
+       "text": "Create an abstract <code>Employee</code> with a private <code>name</code>, a constructor, <code>getName()</code>, an abstract <code>double monthlyPay()</code>, and a <code>toString</code> that returns <code>&lt;name&gt;: $&lt;monthly pay&gt;</code>. Create <code>Hourly extends Employee</code> with a private rate and hours; it earns rate \u00d7 hours. In the tester, print an hourly worker, Ana, at 20.0 an hour for 80 hours.",
+       "hint": "<code>toString</code> in <code>Employee</code> can call <code>monthlyPay()</code> even though it's abstract. Each subclass supplies its own.",
+       "files": [
+        "Employee.java",
+        "Hourly.java",
+        "PayrollTester.java"
+       ],
+       "run": "PayrollTester",
+       "output": "Ana: $1600.0",
+       "checks": [
+        {
+         "pattern": "abstract\\s+class\\s+Employee",
+         "message": "Make <code>Employee</code> abstract."
+        },
+        {
+         "pattern": "abstract\\s+double\\s+monthlyPay\\s*\\(\\s*\\)\\s*;",
+         "message": "Declare <code>public abstract double monthlyPay();</code>"
+        }
+       ],
+       "solution": [
+        [
+         "Employee.java",
+         "public abstract class Employee {\n    private String name;\n\n    public Employee(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double monthlyPay();\n\n    @Override\n    public String toString() {\n        return name + \": $\" + monthlyPay();\n    }\n}\n"
+        ],
+        [
+         "Hourly.java",
+         "public class Hourly extends Employee {\n    private double rate;\n    private int hours;\n\n    public Hourly(String name, double rate, int hours) {\n        super(name);\n        this.rate = rate;\n        this.hours = hours;\n    }\n\n    @Override\n    public double monthlyPay() {\n        return rate * hours;\n    }\n}\n"
+        ],
+        [
+         "PayrollTester.java",
+         "public class PayrollTester {\n    public static void main(String[] args) {\n        Hourly ana = new Hourly(\"Ana\", 20.0, 80);\n        System.out.println(ana);\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "A salaried worker",
+       "text": "Create <code>Salaried extends Employee</code> with a yearly salary; its monthly pay is yearly \u00f7 12. Change the tester to put Ana and Raj (60000.0 a year) in an <code>Employee[]</code> and print each in a loop.",
+       "hint": null,
+       "files": [
+        "Employee.java",
+        "Hourly.java",
+        "PayrollTester.java",
+        "Salaried.java"
+       ],
+       "run": "PayrollTester",
+       "output": "Ana: $1600.0\nRaj: $5000.0",
+       "checks": [],
+       "solution": [
+        [
+         "Employee.java",
+         "public abstract class Employee {\n    private String name;\n\n    public Employee(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double monthlyPay();\n\n    @Override\n    public String toString() {\n        return name + \": $\" + monthlyPay();\n    }\n}\n"
+        ],
+        [
+         "Hourly.java",
+         "public class Hourly extends Employee {\n    private double rate;\n    private int hours;\n\n    public Hourly(String name, double rate, int hours) {\n        super(name);\n        this.rate = rate;\n        this.hours = hours;\n    }\n\n    @Override\n    public double monthlyPay() {\n        return rate * hours;\n    }\n}\n"
+        ],
+        [
+         "Salaried.java",
+         "public class Salaried extends Employee {\n    private double yearly;\n\n    public Salaried(String name, double yearly) {\n        super(name);\n        this.yearly = yearly;\n    }\n\n    @Override\n    public double monthlyPay() {\n        return yearly / 12;\n    }\n}\n"
+        ],
+        [
+         "PayrollTester.java",
+         "public class PayrollTester {\n    public static void main(String[] args) {\n        Employee[] people = {new Hourly(\"Ana\", 20.0, 80), new Salaried(\"Raj\", 60000.0)};\n        for (Employee e : people) {\n            System.out.println(e);\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "The Payroll",
+       "text": "Create <code>Payroll</code> with a private <code>Employee[]</code> sized by its constructor, <code>add(Employee)</code> (first empty slot, <code>false</code> when full) and <code>total()</code>, the sum of everyone's monthly pay. Add Ana, Raj and Sam (15.0 an hour, 40 hours) to a payroll of size 3, try to add a fourth person, and print the total.",
+       "hint": "<code>total()</code> calls <code>e.monthlyPay()</code> on each non-null slot. Polymorphism picks the right formula.",
+       "files": [
+        "Employee.java",
+        "Hourly.java",
+        "PayrollTester.java",
+        "Salaried.java",
+        "Payroll.java"
+       ],
+       "run": "PayrollTester",
+       "output": "false\nTotal: $7200.0",
+       "checks": [],
+       "solution": [
+        [
+         "Employee.java",
+         "public abstract class Employee {\n    private String name;\n\n    public Employee(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double monthlyPay();\n\n    @Override\n    public String toString() {\n        return name + \": $\" + monthlyPay();\n    }\n}\n"
+        ],
+        [
+         "Hourly.java",
+         "public class Hourly extends Employee {\n    private double rate;\n    private int hours;\n\n    public Hourly(String name, double rate, int hours) {\n        super(name);\n        this.rate = rate;\n        this.hours = hours;\n    }\n\n    @Override\n    public double monthlyPay() {\n        return rate * hours;\n    }\n}\n"
+        ],
+        [
+         "Salaried.java",
+         "public class Salaried extends Employee {\n    private double yearly;\n\n    public Salaried(String name, double yearly) {\n        super(name);\n        this.yearly = yearly;\n    }\n\n    @Override\n    public double monthlyPay() {\n        return yearly / 12;\n    }\n}\n"
+        ],
+        [
+         "PayrollTester.java",
+         "public class PayrollTester {\n    public static void main(String[] args) {\n        Payroll payroll = new Payroll(3);\n        payroll.add(new Hourly(\"Ana\", 20.0, 80));\n        payroll.add(new Salaried(\"Raj\", 60000.0));\n        payroll.add(new Hourly(\"Sam\", 15.0, 40));\n        System.out.println(payroll.add(new Hourly(\"Extra\", 10.0, 1)));\n        System.out.println(\"Total: $\" + payroll.total());\n    }\n}\n"
+        ],
+        [
+         "Payroll.java",
+         "public class Payroll {\n    private Employee[] staff;\n\n    public Payroll(int size) {\n        staff = new Employee[size];\n    }\n\n    public boolean add(Employee e) {\n        for (int i = 0; i < staff.length; i++) {\n            if (staff[i] == null) {\n                staff[i] = e;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public double total() {\n        double sum = 0;\n        for (Employee e : staff) {\n            if (e != null) {\n                sum = sum + e.monthlyPay();\n            }\n        }\n        return sum;\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "The highest paid",
+       "text": "Add <code>highestPaid()</code>, which returns the employee with the highest monthly pay, or <code>null</code> for an empty payroll. Update the tester to match the output.",
+       "hint": null,
+       "files": [
+        "Employee.java",
+        "Hourly.java",
+        "PayrollTester.java",
+        "Salaried.java",
+        "Payroll.java"
+       ],
+       "run": "PayrollTester",
+       "output": "Total: $7200.0\nHighest: Raj: $5000.0\nEmpty: null",
+       "checks": [],
+       "solution": [
+        [
+         "Employee.java",
+         "public abstract class Employee {\n    private String name;\n\n    public Employee(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract double monthlyPay();\n\n    @Override\n    public String toString() {\n        return name + \": $\" + monthlyPay();\n    }\n}\n"
+        ],
+        [
+         "Hourly.java",
+         "public class Hourly extends Employee {\n    private double rate;\n    private int hours;\n\n    public Hourly(String name, double rate, int hours) {\n        super(name);\n        this.rate = rate;\n        this.hours = hours;\n    }\n\n    @Override\n    public double monthlyPay() {\n        return rate * hours;\n    }\n}\n"
+        ],
+        [
+         "Salaried.java",
+         "public class Salaried extends Employee {\n    private double yearly;\n\n    public Salaried(String name, double yearly) {\n        super(name);\n        this.yearly = yearly;\n    }\n\n    @Override\n    public double monthlyPay() {\n        return yearly / 12;\n    }\n}\n"
+        ],
+        [
+         "PayrollTester.java",
+         "public class PayrollTester {\n    public static void main(String[] args) {\n        Payroll payroll = new Payroll(3);\n        payroll.add(new Hourly(\"Ana\", 20.0, 80));\n        payroll.add(new Salaried(\"Raj\", 60000.0));\n        payroll.add(new Hourly(\"Sam\", 15.0, 40));\n        System.out.println(\"Total: $\" + payroll.total());\n        System.out.println(\"Highest: \" + payroll.highestPaid());\n        System.out.println(\"Empty: \" + new Payroll(2).highestPaid());\n    }\n}\n"
+        ],
+        [
+         "Payroll.java",
+         "public class Payroll {\n    private Employee[] staff;\n\n    public Payroll(int size) {\n        staff = new Employee[size];\n    }\n\n    public boolean add(Employee e) {\n        for (int i = 0; i < staff.length; i++) {\n            if (staff[i] == null) {\n                staff[i] = e;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public double total() {\n        double sum = 0;\n        for (Employee e : staff) {\n            if (e != null) {\n                sum = sum + e.monthlyPay();\n            }\n        }\n        return sum;\n    }\n\n    public Employee highestPaid() {\n        Employee best = null;\n        for (Employee e : staff) {\n            if (e != null && (best == null || e.monthlyPay() > best.monthlyPay())) {\n                best = e;\n            }\n        }\n        return best;\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: a media library"
+    },
+    {
+     "type": "write",
+     "id": "ws-inh-library",
+     "mode": "guided",
+     "title": "A media library",
+     "goal": "Build a three-level hierarchy where every level adds to the description with <code>super.toString()</code>, then mix the kinds in one shelf.",
+     "requirements": [],
+     "files": [
+      "Item.java",
+      "Book.java",
+      "LibraryTester.java",
+      "Audiobook.java",
+      "Dvd.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Item and Book",
+       "text": "Create <code>Item</code> with a private <code>title</code> and a <code>toString</code> that returns it. Create <code>Book extends Item</code> with a private <code>author</code>; its <code>toString</code> adds <code> by &lt;author&gt;</code> to the item's text.",
+       "hint": "<code>return super.toString() + &quot; by &quot; + author;</code>",
+       "files": [
+        "Item.java",
+        "Book.java",
+        "LibraryTester.java"
+       ],
+       "run": "LibraryTester",
+       "output": "Old Map\nNight Trains by R. Vale",
+       "checks": [
+        {
+         "pattern": "super\\.toString\\s*\\(\\s*\\)",
+         "message": "Build <code>Book</code>'s text with <code>super.toString()</code>."
+        }
+       ],
+       "solution": [
+        [
+         "Item.java",
+         "public class Item {\n    private String title;\n\n    public Item(String title) {\n        this.title = title;\n    }\n\n    @Override\n    public String toString() {\n        return title;\n    }\n}\n"
+        ],
+        [
+         "Book.java",
+         "public class Book extends Item {\n    private String author;\n\n    public Book(String title, String author) {\n        super(title);\n        this.author = author;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" by \" + author;\n    }\n}\n"
+        ],
+        [
+         "LibraryTester.java",
+         "public class LibraryTester {\n    public static void main(String[] args) {\n        System.out.println(new Item(\"Old Map\"));\n        System.out.println(new Book(\"Night Trains\", \"R. Vale\"));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "A third level",
+       "text": "Create <code>Audiobook extends Book</code> with a private <code>minutes</code>. Its constructor takes title, author and minutes, and its <code>toString</code> adds <code> (&lt;minutes&gt; min audio)</code> to the book's text.",
+       "hint": "<code>super(title, author);</code> goes to <code>Book</code>'s constructor, which passes the title on to <code>Item</code>.",
+       "files": [
+        "Item.java",
+        "Book.java",
+        "LibraryTester.java",
+        "Audiobook.java"
+       ],
+       "run": "LibraryTester",
+       "output": "Night Trains by R. Vale\nNight Trains by R. Vale (410 min audio)",
+       "checks": [],
+       "solution": [
+        [
+         "Item.java",
+         "public class Item {\n    private String title;\n\n    public Item(String title) {\n        this.title = title;\n    }\n\n    @Override\n    public String toString() {\n        return title;\n    }\n}\n"
+        ],
+        [
+         "Book.java",
+         "public class Book extends Item {\n    private String author;\n\n    public Book(String title, String author) {\n        super(title);\n        this.author = author;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" by \" + author;\n    }\n}\n"
+        ],
+        [
+         "Audiobook.java",
+         "public class Audiobook extends Book {\n    private int minutes;\n\n    public Audiobook(String title, String author, int minutes) {\n        super(title, author);\n        this.minutes = minutes;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" (\" + minutes + \" min audio)\";\n    }\n}\n"
+        ],
+        [
+         "LibraryTester.java",
+         "public class LibraryTester {\n    public static void main(String[] args) {\n        System.out.println(new Book(\"Night Trains\", \"R. Vale\"));\n        System.out.println(new Audiobook(\"Night Trains\", \"R. Vale\", 410));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "A shelf of mixed items",
+       "text": "Create <code>Dvd extends Item</code>, whose <code>toString</code> adds <code> (DVD)</code>. In the tester, put a book, a DVD and an audiobook in one <code>Item[]</code> and print each in a loop.",
+       "hint": null,
+       "files": [
+        "Item.java",
+        "Book.java",
+        "LibraryTester.java",
+        "Audiobook.java",
+        "Dvd.java"
+       ],
+       "run": "LibraryTester",
+       "output": "Night Trains by R. Vale\nLow Tide (DVD)\nThe Long Road by M. Okafor (520 min audio)",
+       "checks": [],
+       "solution": [
+        [
+         "Item.java",
+         "public class Item {\n    private String title;\n\n    public Item(String title) {\n        this.title = title;\n    }\n\n    @Override\n    public String toString() {\n        return title;\n    }\n}\n"
+        ],
+        [
+         "Book.java",
+         "public class Book extends Item {\n    private String author;\n\n    public Book(String title, String author) {\n        super(title);\n        this.author = author;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" by \" + author;\n    }\n}\n"
+        ],
+        [
+         "Audiobook.java",
+         "public class Audiobook extends Book {\n    private int minutes;\n\n    public Audiobook(String title, String author, int minutes) {\n        super(title, author);\n        this.minutes = minutes;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" (\" + minutes + \" min audio)\";\n    }\n}\n"
+        ],
+        [
+         "Dvd.java",
+         "public class Dvd extends Item {\n    public Dvd(String title) {\n        super(title);\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" (DVD)\";\n    }\n}\n"
+        ],
+        [
+         "LibraryTester.java",
+         "public class LibraryTester {\n    public static void main(String[] args) {\n        Item[] shelf = {\n            new Book(\"Night Trains\", \"R. Vale\"),\n            new Dvd(\"Low Tide\"),\n            new Audiobook(\"The Long Road\", \"M. Okafor\", 520)\n        };\n        for (Item item : shelf) {\n            System.out.println(item);\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Count the books",
+       "text": "In the same loop, count the items that are books with <code>instanceof Book</code>, and print the count at the end. Before you run it, predict the number: is an audiobook a book?",
+       "hint": "<code>instanceof Book</code> is true for a <code>Book</code> and for any subclass of <code>Book</code>.",
+       "files": [
+        "Item.java",
+        "Book.java",
+        "LibraryTester.java",
+        "Audiobook.java",
+        "Dvd.java"
+       ],
+       "run": "LibraryTester",
+       "output": "Night Trains by R. Vale\nLow Tide (DVD)\nThe Long Road by M. Okafor (520 min audio)\nBooks: 2",
+       "checks": [
+        {
+         "pattern": "instanceof\\s+Book",
+         "message": "Count with <code>instanceof Book</code>."
+        }
+       ],
+       "solution": [
+        [
+         "Item.java",
+         "public class Item {\n    private String title;\n\n    public Item(String title) {\n        this.title = title;\n    }\n\n    @Override\n    public String toString() {\n        return title;\n    }\n}\n"
+        ],
+        [
+         "Book.java",
+         "public class Book extends Item {\n    private String author;\n\n    public Book(String title, String author) {\n        super(title);\n        this.author = author;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" by \" + author;\n    }\n}\n"
+        ],
+        [
+         "Audiobook.java",
+         "public class Audiobook extends Book {\n    private int minutes;\n\n    public Audiobook(String title, String author, int minutes) {\n        super(title, author);\n        this.minutes = minutes;\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" (\" + minutes + \" min audio)\";\n    }\n}\n"
+        ],
+        [
+         "Dvd.java",
+         "public class Dvd extends Item {\n    public Dvd(String title) {\n        super(title);\n    }\n\n    @Override\n    public String toString() {\n        return super.toString() + \" (DVD)\";\n    }\n}\n"
+        ],
+        [
+         "LibraryTester.java",
+         "public class LibraryTester {\n    public static void main(String[] args) {\n        Item[] shelf = {\n            new Book(\"Night Trains\", \"R. Vale\"),\n            new Dvd(\"Low Tide\"),\n            new Audiobook(\"The Long Road\", \"M. Okafor\", 520)\n        };\n        int books = 0;\n        for (Item item : shelf) {\n            System.out.println(item);\n            if (item instanceof Book) {\n                books++;\n            }\n        }\n        System.out.println(\"Books: \" + books);\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: a smart home"
+    },
+    {
+     "type": "write",
+     "id": "ws-inh-home",
+     "mode": "independent",
+     "title": "A smart home",
+     "goal": "Write an abstract <code>Device</code> (private <code>name</code>, abstract <code>int watts()</code>, <code>toString</code> returning <code>&lt;name&gt; (&lt;watts&gt; W)</code>). <code>Lamp</code> always uses 10 watts. <code>Heater</code> has a level from 1 to 3 and uses level \u00d7 500 watts. <code>House</code> keeps a private <code>Device[]</code> with <code>add(Device)</code> (returns <code>false</code> when full), <code>totalWatts()</code> and <code>mostPowerful()</code> (or <code>null</code> when empty).",
+     "requirements": [
+      "Five files",
+      "<code>House</code> never checks which kind of device it has; it calls <code>watts()</code>"
+     ],
+     "files": [
+      "Device.java",
+      "Lamp.java",
+      "Heater.java",
+      "House.java",
+      "HouseTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckHouse.java",
+       "public class CheckHouse {\n    public static void main(String[] args) {\n        House empty = new House(2);\n        System.out.println(empty.totalWatts());\n        System.out.println(empty.mostPowerful());\n        Device d = new Heater(\"Big\", 3);\n        System.out.println(d);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckHouse",
+     "hints": [
+      "Write <code>Device</code> and <code>Lamp</code> first, then run a two-line tester before moving on.",
+      "<code>House</code> is the fleet or payroll again, with <code>watts()</code> in place of the cost or pay method."
+     ],
+     "checks": [
+      {
+       "pattern": "abstract\\s+int\\s+watts\\s*\\(\\s*\\)\\s*;",
+       "message": "Declare <code>public abstract int watts();</code> in <code>Device</code>."
+      }
+     ],
+     "run": "HouseTester",
+     "output": "1020\nSpace heater (1000 W)\nfalse",
+     "testsOutput": "0\nnull\nBig (1500 W)",
+     "solution": [
+      [
+       "Device.java",
+       "public abstract class Device {\n    private String name;\n\n    public Device(String name) {\n        this.name = name;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public abstract int watts();\n\n    @Override\n    public String toString() {\n        return name + \" (\" + watts() + \" W)\";\n    }\n}\n"
+      ],
+      [
+       "Lamp.java",
+       "public class Lamp extends Device {\n    public Lamp(String name) {\n        super(name);\n    }\n\n    @Override\n    public int watts() {\n        return 10;\n    }\n}\n"
+      ],
+      [
+       "Heater.java",
+       "public class Heater extends Device {\n    private int level;\n\n    public Heater(String name, int level) {\n        super(name);\n        this.level = level;\n    }\n\n    @Override\n    public int watts() {\n        return level * 500;\n    }\n}\n"
+      ],
+      [
+       "House.java",
+       "public class House {\n    private Device[] devices;\n\n    public House(int size) {\n        devices = new Device[size];\n    }\n\n    public boolean add(Device d) {\n        for (int i = 0; i < devices.length; i++) {\n            if (devices[i] == null) {\n                devices[i] = d;\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public int totalWatts() {\n        int total = 0;\n        for (Device d : devices) {\n            if (d != null) {\n                total = total + d.watts();\n            }\n        }\n        return total;\n    }\n\n    public Device mostPowerful() {\n        Device best = null;\n        for (Device d : devices) {\n            if (d != null && (best == null || d.watts() > best.watts())) {\n                best = d;\n            }\n        }\n        return best;\n    }\n}\n"
+      ],
+      [
+       "HouseTester.java",
+       "public class HouseTester {\n    public static void main(String[] args) {\n        House home = new House(3);\n        home.add(new Lamp(\"Desk lamp\"));\n        home.add(new Heater(\"Space heater\", 2));\n        home.add(new Lamp(\"Porch light\"));\n        System.out.println(home.totalWatts());\n        System.out.println(home.mostPowerful());\n        System.out.println(home.add(new Lamp(\"Extra\")));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: a subclass that changes one rule (exam-sized)"
+    },
+    {
+     "type": "write",
+     "id": "ws-inh-checking",
+     "mode": "independent",
+     "title": "A checking account with a fee",
+     "goal": "Write <code>Account</code> (private <code>double balance</code>, constructor, <code>getBalance()</code>, and <code>boolean withdraw(double amount)</code>, which succeeds only for positive amounts no larger than the balance). Then write <code>CheckingAccount extends Account</code>, which charges a fixed fee on every withdrawal: it overrides <code>withdraw</code> to take out the amount plus the fee, reusing <code>Account</code>'s rule with <code>super.withdraw(...)</code>.",
+     "requirements": [
+      "<code>CheckingAccount</code>'s <code>withdraw</code> is one line",
+      "<code>balance</code> stays private in <code>Account</code>"
+     ],
+     "files": [
+      "Account.java",
+      "CheckingAccount.java",
+      "AccountTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckAccounts.java",
+       "public class CheckAccounts {\n    public static void main(String[] args) {\n        Account plain = new Account(10.0);\n        System.out.println(plain.withdraw(10.0));\n        System.out.println(plain.getBalance());\n        Account x = new CheckingAccount(50.0, 2.0);\n        x.withdraw(8.0);\n        System.out.println(x.getBalance());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckAccounts",
+     "hints": [
+      "Withdrawing 78.0 with a 1.5 fee needs 79.5, but only 78.5 is left, so it fails and nothing changes.",
+      "The test stores a <code>CheckingAccount</code> in an <code>Account</code> variable. Your override must still run (that's polymorphism)."
+     ],
+     "checks": [
+      {
+       "pattern": "super\\.withdraw\\s*\\(",
+       "message": "Reuse <code>Account</code>'s rule with <code>super.withdraw(...)</code>."
+      },
+      {
+       "pattern": "@Override",
+       "message": "Mark the overriding <code>withdraw</code> with <code>@Override</code>."
+      }
+     ],
+     "run": "AccountTester",
+     "output": "true\n78.5\nfalse\n78.5",
+     "testsOutput": "true\n0.0\n40.0",
+     "solution": [
+      [
+       "Account.java",
+       "public class Account {\n    private double balance;\n\n    public Account(double balance) {\n        this.balance = balance;\n    }\n\n    public double getBalance() {\n        return balance;\n    }\n\n    public boolean withdraw(double amount) {\n        if (amount > 0 && amount <= balance) {\n            balance = balance - amount;\n            return true;\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "CheckingAccount.java",
+       "public class CheckingAccount extends Account {\n    private double fee;\n\n    public CheckingAccount(double balance, double fee) {\n        super(balance);\n        this.fee = fee;\n    }\n\n    @Override\n    public boolean withdraw(double amount) {\n        return super.withdraw(amount + fee);\n    }\n}\n"
+      ],
+      [
+       "AccountTester.java",
+       "public class AccountTester {\n    public static void main(String[] args) {\n        CheckingAccount checking = new CheckingAccount(100.0, 1.5);\n        System.out.println(checking.withdraw(20.0));\n        System.out.println(checking.getBalance());\n        System.out.println(checking.withdraw(78.0));\n        System.out.println(checking.getBalance());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Inheritance",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Using the Keyword super",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/super.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Overriding and Hiding Methods",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/override.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Abstract Methods and Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Polymorphism",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Part 9.1: Class inheritance",
+     "url": "https://java-programming.mooc.fi/part-9/1-inheritance",
+     "org": "University of Helsinki, Java Programming MOOC",
+     "note": null
+    },
+    {
+     "title": "Part 9.3: Object polymorphism",
+     "url": "https://java-programming.mooc.fi/part-9/3-object-polymorphism",
      "org": "University of Helsinki, Java Programming MOOC",
      "note": null
     }

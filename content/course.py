@@ -23,9 +23,8 @@ SECTIONS = [
         "id": "inheritance",
         "title": "Inheritance",
         "blurb": "Build new classes on top of existing ones with extends and super.",
-        "planned": ["Subclasses with extends", "Calling the parent with super",
-                    "Overriding methods", "Abstract classes",
-                    "Polymorphism and the Object class", "Project: a clothing store"],
+        "lessons": ["inh-extends", "inh-super", "inh-override", "inh-abstract",
+                    "inh-polymorphism", "inh-project-fleet", "inh-workshop"],
     },
     {
         "id": "interfaces",
