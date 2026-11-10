@@ -215,6 +215,14 @@
       case "error": frag.appendChild(choiceExercise(b, "Read the error")); break;
       case "quiz": frag.appendChild(choiceExercise(b, "Check your understanding")); break;
       case "write": frag.appendChild(window.WriteTask.render(b)); break;
+      case "diagram":
+        var fig = el("figure", { "class": "diagram-figure" });
+        fig.appendChild(drawState(b.kind, b.state, b.label));
+        if (b.caption) fig.appendChild(el("figcaption", { "class": "caption" }, b.caption));
+        frag.appendChild(fig);
+        break;
+      case "trace": frag.appendChild(traceExercise(b)); break;
+      case "match": frag.appendChild(matchExercise(b)); break;
     }
     return frag;
   }
@@ -413,6 +421,179 @@
         changed.forEach(function (f) { b.appendChild(codeFile(f[0], f[1])); });
         b.appendChild(terminal(ex.fixedResult, names(ex.fixedFiles)));
       }
+      fb.appendChild(b);
+    });
+    return box;
+  }
+
+  // ---------- structure diagrams ----------
+  // The same text format build.py checks against real program output:
+  //   stack  "bottom [7, 3] top"      queue "front [7, 3] rear"
+  //   linked "head -> 7 -> 3 -> null" array "[7, 3, _, _] top=2"
+  function listItems(inner) { return inner ? inner.split(", ") : []; }
+
+  function cell(text, cls) {
+    var c = el("span", { "class": "dg-cell" + (cls ? " " + cls : "") });
+    c.textContent = text;
+    return c;
+  }
+
+  function drawState(kind, state, label) {
+    var box = el("div", { "class": "diagram dg-" + kind, role: "img",
+      "aria-label": (label ? label + ": " : "") + kind + " diagram, " + state });
+    var m, items;
+    if (kind === "stack") {
+      items = listItems(/^bottom \[(.*)\] top$/.exec(state)[1]);
+      var col = el("div", { "class": "dg-stack" });
+      if (!items.length) col.appendChild(cell("empty", "dg-empty"));
+      items.slice().reverse().forEach(function (v, i) {
+        var row = el("div", { "class": "dg-row" });
+        row.appendChild(cell(v));
+        row.appendChild(el("span", { "class": "dg-mark" }, i === 0 ? "&larr; top" : ""));
+        col.appendChild(row);
+      });
+      col.appendChild(el("div", { "class": "dg-base" }, "bottom"));
+      box.appendChild(col);
+    } else if (kind === "queue") {
+      items = listItems(/^front \[(.*)\] rear$/.exec(state)[1]);
+      var rowq = el("div", { "class": "dg-queue" });
+      if (!items.length) rowq.appendChild(cell("empty", "dg-empty"));
+      items.forEach(function (v, i) {
+        var slot = el("div", { "class": "dg-slot" });
+        var tags = [];
+        if (i === 0) tags.push("front");
+        if (i === items.length - 1) tags.push("rear");
+        slot.appendChild(el("span", { "class": "dg-tag" }, tags.join(" / ") || "&nbsp;"));
+        slot.appendChild(cell(v));
+        rowq.appendChild(slot);
+      });
+      box.appendChild(rowq);
+    } else if (kind === "linked") {
+      items = state.split(" -> ").slice(1, -1);
+      var chain = el("div", { "class": "dg-chain" });
+      chain.appendChild(el("span", { "class": "dg-ref" }, "head"));
+      items.forEach(function (v) {
+        chain.appendChild(el("span", { "class": "dg-arrow", "aria-hidden": "true" }, "&rarr;"));
+        var node = el("span", { "class": "dg-node" });
+        node.appendChild(cell(v, "dg-data"));
+        node.appendChild(el("span", { "class": "dg-next" }, "next"));
+        chain.appendChild(node);
+      });
+      chain.appendChild(el("span", { "class": "dg-arrow", "aria-hidden": "true" }, "&rarr;"));
+      chain.appendChild(el("span", { "class": "dg-null" }, "null"));
+      box.appendChild(chain);
+    } else if (kind === "array") {
+      m = /^\[(.*)\]((?: \w+=\d+)*)$/.exec(state);
+      items = listItems(m[1]);
+      var marks = {};
+      m[2].trim().split(" ").filter(Boolean).forEach(function (pair) {
+        var kv = pair.split("=");
+        (marks[kv[1]] = marks[kv[1]] || []).push(kv[0]);
+      });
+      var cols = items.length + (marks[items.length] ? 1 : 0);
+      var grid = el("div", { "class": "dg-array" });
+      for (var i = 0; i < cols; i++) {
+        var c = el("div", { "class": "dg-col" + (i >= items.length ? " dg-past" : "") });
+        c.appendChild(i < items.length ? cell(items[i] === "_" ? "" : items[i], items[i] === "_" ? "dg-blank" : "")
+                                       : cell("", "dg-ghost"));
+        c.appendChild(el("span", { "class": "dg-index" }, i < items.length ? String(i) : "&nbsp;"));
+        c.appendChild(el("span", { "class": "dg-pointer" },
+          marks[i] ? "&uarr;<br>" + marks[i].map(esc).join("<br>") : "&nbsp;"));
+        grid.appendChild(c);
+      }
+      box.appendChild(grid);
+    }
+    return box;
+  }
+
+  function traceExercise(ex) {
+    var box = exerciseShell("Trace the code", null, ex.prompt);
+    ex.files.forEach(function (f) { box.appendChild(codeFile(f[0], f[1])); });
+    var fs = el("fieldset", { "class": "diagram-choices" + (ex.kind === "linked" || ex.kind === "array" ? " dg-wide" : "") });
+    fs.appendChild(el("legend", null, ex.question));
+    var name = "q-" + ex.id;
+    ex.choices.forEach(function (c, i) {
+      var lab = el("label", { "class": "choice" });
+      lab.appendChild(el("input", { type: "radio", name: name, value: String(i) }));
+      lab.appendChild(drawState(ex.kind, c, "Choice " + String.fromCharCode(65 + i)));
+      fs.appendChild(lab);
+    });
+    box.appendChild(fs);
+    var actions = el("div", { "class": "actions" });
+    var checkBtn = el("button", { "class": "btn primary", type: "button" }, "Check");
+    actions.appendChild(checkBtn);
+    box.appendChild(actions);
+    var fb = el("div", { "class": "feedback", "aria-live": "polite" });
+    box.appendChild(fb);
+    checkBtn.addEventListener("click", function () {
+      var picked = box.querySelector('input[name="' + name + '"]:checked');
+      fb.innerHTML = "";
+      if (!picked) { fb.appendChild(el("p", null, "Pick a diagram first.")); return; }
+      var right = Number(picked.value) === ex.answer;
+      Array.prototype.forEach.call(fs.querySelectorAll(".choice"), function (lab, i) {
+        lab.classList.toggle("is-answer", i === ex.answer);
+      });
+      var b = el("div", { "class": "box " + (right ? "ok" : "bad") });
+      b.appendChild(el("p", { "class": "verdict " + (right ? "ok" : "bad") },
+        right ? "Correct." : "Not quite. The right diagram is outlined in green."));
+      b.appendChild(el("p", null, ex.explain));
+      b.appendChild(el("p", null, "The program prints the structure's final state, so you can check it:"));
+      b.appendChild(terminal(ex.result, names(ex.files)));
+      fb.appendChild(b);
+    });
+    return box;
+  }
+
+  function matchExercise(ex) {
+    var box = exerciseShell("Match", null, ex.prompt);
+    var list = el("ol", { "class": "match-list" });
+    var selects = [];
+    ex.items.forEach(function (it, i) {
+      var li = el("li", { "class": "match-item" });
+      var body = el("div", { "class": "match-body" });
+      if (it.code) body.appendChild(snippet(it.code));
+      else body.appendChild(el("span", null, it.html));
+      li.appendChild(body);
+      var id = "m-" + ex.id + "-" + i;
+      var pick = el("div", { "class": "match-pick" });
+      pick.appendChild(el("label", { "for": id, "class": "visually-hidden" }, "Answer for item " + (i + 1)));
+      var sel = el("select", { id: id });
+      sel.appendChild(el("option", { value: "" }, "Choose&hellip;"));
+      ex.options.forEach(function (o, j) { sel.appendChild(el("option", { value: String(j) }, esc(o))); });
+      pick.appendChild(sel);
+      li.appendChild(pick);
+      li.appendChild(el("div", { "class": "match-why" }));
+      list.appendChild(li);
+      selects.push(sel);
+    });
+    box.appendChild(list);
+    var actions = el("div", { "class": "actions" });
+    var checkBtn = el("button", { "class": "btn primary", type: "button" }, "Check");
+    actions.appendChild(checkBtn);
+    box.appendChild(actions);
+    var fb = el("div", { "class": "feedback", "aria-live": "polite" });
+    box.appendChild(fb);
+    checkBtn.addEventListener("click", function () {
+      fb.innerHTML = "";
+      if (selects.some(function (s) { return s.value === ""; })) {
+        fb.appendChild(el("p", null, "Choose an answer for every item first."));
+        return;
+      }
+      var right = 0;
+      ex.items.forEach(function (it, i) {
+        var ok = Number(selects[i].value) === it.answer;
+        if (ok) right += 1;
+        var li = list.children[i];
+        li.classList.toggle("is-right", ok);
+        li.classList.toggle("is-wrong", !ok);
+        var why = li.querySelector(".match-why");
+        why.innerHTML = ok ? "" : "<strong>Answer: " + esc(ex.options[it.answer]) + ".</strong> " + (it.why || "");
+      });
+      var all = right === ex.items.length;
+      var b = el("div", { "class": "box " + (all ? "ok" : "bad") });
+      b.appendChild(el("p", { "class": "verdict " + (all ? "ok" : "bad") },
+        all ? "All " + right + " correct." : right + " of " + ex.items.length + " correct. Each wrong one now shows its answer."));
+      if (ex.explain) b.appendChild(el("p", null, ex.explain));
       fb.appendChild(b);
     });
     return box;

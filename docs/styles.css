@@ -390,3 +390,60 @@ details.solution summary { cursor: pointer; font-weight: 600; color: var(--accen
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; transition: none !important; }
 }
+
+/* ---------- structure diagrams (stack, queue, linked list, array) ---------- */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.diagram-figure { margin: 1.25rem 0; }
+.diagram { display: inline-block; padding: .75rem 1rem; font-family: var(--font-code); font-size: .95rem; overflow-x: auto; max-width: 100%; }
+.dg-cell {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 2.6rem; height: 2.3rem; padding: 0 .5rem;
+  border: 2px solid var(--ink); background: var(--surface); color: var(--ink);
+}
+.dg-empty { border-style: dashed; color: var(--muted); font-family: var(--font-body); }
+.dg-stack { display: inline-flex; flex-direction: column; align-items: flex-start; }
+.dg-row { display: flex; align-items: center; gap: .5rem; }
+.dg-row + .dg-row .dg-cell { border-top-width: 0; }
+.dg-stack .dg-cell { min-width: 4.5rem; }
+.dg-mark { color: var(--accent); font-family: var(--font-body); font-size: var(--step--1); }
+.dg-base { width: 4.5rem; text-align: center; border-top: 4px solid var(--ink); color: var(--muted); font-family: var(--font-body); font-size: var(--step--1); padding-top: .15rem; }
+.dg-queue, .dg-chain, .dg-array { display: flex; align-items: flex-start; }
+.dg-slot { display: flex; flex-direction: column; align-items: stretch; }
+.dg-slot + .dg-slot .dg-cell { border-left-width: 0; }
+.dg-tag, .dg-pointer { color: var(--accent); font-family: var(--font-body); font-size: var(--step--1); text-align: center; line-height: 1.2; min-height: 1.2em; }
+.dg-chain { align-items: center; gap: .35rem; flex-wrap: nowrap; }
+.dg-ref { font-family: var(--font-body); color: var(--accent); font-weight: 700; }
+.dg-arrow { color: var(--muted); font-size: 1.2rem; }
+.dg-node { display: inline-flex; }
+.dg-node .dg-data { border-right-width: 1px; }
+.dg-next { display: inline-flex; align-items: center; height: 2.3rem; padding: 0 .4rem; border: 2px solid var(--ink); border-left-width: 1px; color: var(--muted); font-family: var(--font-body); font-size: .75rem; background: var(--surface); }
+.dg-null { color: var(--muted); }
+.dg-col { display: flex; flex-direction: column; align-items: stretch; }
+.dg-col + .dg-col .dg-cell { border-left-width: 0; }
+.dg-blank { background: repeating-linear-gradient(135deg, transparent 0 6px, var(--line) 6px 7px); }
+.dg-ghost { border-style: dashed; border-color: var(--line); background: transparent; }
+.dg-col.dg-past + .dg-col .dg-cell, .dg-col.dg-past .dg-cell { border-left-width: 2px; }
+.dg-index { text-align: center; color: var(--muted); font-size: .8rem; }
+.diagram-choices .diagram { padding: .25rem .5rem; }
+
+/* ---------- matching ---------- */
+.match-list { list-style: none; padding: 0; margin: 1rem 0; counter-reset: m; }
+.match-item {
+  counter-increment: m; display: grid; grid-template-columns: 1fr minmax(9rem, auto); gap: .5rem 1rem; align-items: center;
+  border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem .8rem; background: var(--surface);
+}
+.match-item + .match-item { margin-top: .5rem; }
+.match-body { min-width: 0; }
+.match-body::before { content: counter(m) ". "; color: var(--muted); }
+.match-body pre { margin: .25rem 0 0; }
+.match-pick select { font: inherit; padding: .35rem .5rem; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); width: 100%; }
+.match-why { grid-column: 1 / -1; }
+.match-why:empty { display: none; }
+.match-item.is-right { border-color: var(--ok); }
+.match-item.is-wrong { border-color: var(--bad); }
+@media (max-width: 560px) { .match-item { grid-template-columns: 1fr; } }
+.diagram-choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: .5rem; }
+.diagram-choices .choice { align-items: flex-end; }
+.diagram-choices .choice input { align-self: center; }
+.diagram-choices.dg-wide { grid-template-columns: 1fr; }
+.diagram-choices .choice + .choice { margin-top: 0; }

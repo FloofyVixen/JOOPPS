@@ -151,3 +151,27 @@ GENERICS_WHY = s("Why Use Generics?", "https://docs.oracle.com/javase/tutorial/j
 ARRAYLIST_API = s("ArrayList<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html", API)
 HEL_12_1 = s("Part 12.1: Type parameters", "https://java-programming.mooc.fi/part-12/1-type-parameters", HEL)
 HEL_12_2 = s("Part 12.2: ArrayList and hash table", "https://java-programming.mooc.fi/part-12/2-arraylist-and-hashtable", HEL)
+
+# ---- Stacks, queues, linked structures, big O, collections
+ALGS4_14 = s("1.4 Analysis of Algorithms", "https://algs4.cs.princeton.edu/14analysis/",
+             "Princeton University, Algorithms (Sedgewick & Wayne)")
+COLL_IFACES = s("Collections: Interfaces", "https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html", ORACLE)
+COLL_SUMMARY = s("Summary of Interfaces", "https://docs.oracle.com/javase/tutorial/collections/interfaces/summary.html", ORACLE)
+LIST_TUT = s("The List Interface", "https://docs.oracle.com/javase/tutorial/collections/interfaces/list.html", ORACLE)
+QUEUE_TUT = s("The Queue Interface", "https://docs.oracle.com/javase/tutorial/collections/interfaces/queue.html", ORACLE)
+DEV_LISTS = s("Lists (Collections Framework)", "https://dev.java/learn/api/collections-framework/lists/", DEVJAVA)
+ARRAYDEQUE_API = s("ArrayDeque<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayDeque.html", API)
+EMPTYSTACK_API = s("EmptyStackException", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/EmptyStackException.html", API)
+NOSUCH_API = s("NoSuchElementException", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/NoSuchElementException.html", API)
+LINKEDLIST_API = s("LinkedList<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html", API)
+LIST_API = s("List<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html", API)
+COLLECTION_API = s("Collection<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html", API)
+ABSTRACTLIST_API = s("AbstractList<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/AbstractList.html", API)
+DEQUE_API = s("Deque<E>", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Deque.html", API,
+              "Says a Deque should be used as a stack in preference to the legacy Stack class.")
+OPENDSA_STACK = s("Stacks", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+                  "Virginia Tech, OpenDSA")
+OPENDSA_QUEUE = s("Queues", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Queue.html",
+                  "Virginia Tech, OpenDSA")
+JLS_EVAL_ORDER = s("JLS §15.7: Evaluation Order", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.7", JLS,
+                   "The left operand of a binary operator is fully evaluated before the right one.")

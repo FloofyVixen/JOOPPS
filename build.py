@@ -12,6 +12,7 @@ Every piece of Java shown on the site goes through this script:
 If anything doesn't hold, the build stops with an error.
 Output: web/course-data.js
 """
+import glob
 import hashlib
 import html
 import importlib.util
@@ -170,6 +171,38 @@ def inline(text):
     return "".join(out)
 
 
+
+# ---------- structure diagrams (app.js draws them from the same text) ----------
+
+STATE_RE = {
+    "stack": re.compile(r"bottom \[(.*)\] top"),
+    "queue": re.compile(r"front \[(.*)\] rear"),
+    "linked": re.compile(r"head( -> [^ ]+)* -> null"),
+    "array": re.compile(r"\[(.*)\]((?: \w+=\d+)*)"),
+}
+
+
+def check_state(where, kind, state):
+    if kind not in STATE_RE:
+        fail(where, f"unknown diagram kind {kind}")
+    if not STATE_RE[kind].fullmatch(state):
+        fail(where, f"{state!r} is not a {kind} state")
+    if kind == "array":
+        m = STATE_RE["array"].fullmatch(state)
+        n = len(m.group(1).split(", ")) if m.group(1) else 0
+        for mark in m.group(2).split():
+            if int(mark.split("=")[1]) > n:
+                fail(where, f"marker {mark} is past the end of {state!r}")
+
+
+def state_line(where, stdout, line):
+    lines = stdout.split("\n")
+    try:
+        return lines[line].rstrip()
+    except IndexError:
+        fail(where, f"program printed {len(lines)} lines, no line {line}")
+
+
 # ---------- block processing ----------
 
 def process_block(lesson_id, i, b, verified_sources):
@@ -260,7 +293,7 @@ def process_block(lesson_id, i, b, verified_sources):
                              "exact": exact, "wrong": wrongs,
                              "width": max(len(a) for a in s["accept"] + [w["answer"] for w in s.get("wrong", [])])}
         return {"type": "blanks", "id": b["id"], "title": b.get("title"),
-                "prompt": inline(b["prompt"]), "files": [[n, s] for n, s in files.items()],
+                "prompt": inline(b["prompt"]), "files": [[n, s] for n, s in files.items() if n not in b.get("hide", [])],
                 "run": b["run"], "blanks": out_blanks, "result": base,
                 "explain": inline(b["explain"]) if b.get("explain") else None}
 
@@ -275,8 +308,9 @@ def process_block(lesson_id, i, b, verified_sources):
             if j != b["answer"] and c == res["stdout"]:
                 fail(where, f"choice {j} is also the real output")
         verified_sources.extend(b["files"].values())
+        hide = b.get("hide", [])
         return {"type": "predict", "id": b["id"], "prompt": inline(b["prompt"]),
-                "files": [[n, s] for n, s in b["files"].items()], "choices": choices,
+                "files": [[n, s] for n, s in b["files"].items() if n not in hide], "choices": choices,
                 "answer": b["answer"], "result": res, "explain": inline(b["explain"])}
 
     if t == "error":
@@ -303,6 +337,63 @@ def process_block(lesson_id, i, b, verified_sources):
 
     if t == "write":
         return process_write(where, b)
+
+    if t == "diagram":
+        check_state(where, b["kind"], b["state"])
+        if b.get("files"):
+            res = run_java(b["files"], b["run"])
+            if res["kind"] != "ok":
+                fail(where, f"diagram program must run: {res}")
+            got = state_line(where, res["stdout"], b.get("line", -1))
+            if got != b["state"]:
+                fail(where, f"diagram state {b['state']!r} != program output {got!r}")
+            verified_sources.extend(b["files"].values())
+        return {"type": "diagram", "kind": b["kind"], "state": b["state"],
+                "label": b.get("label"),
+                "caption": inline(b["caption"]) if b.get("caption") else None}
+
+    if t == "trace":
+        files = b["files"]
+        res = run_java(files, b["run"])
+        if res["kind"] != "ok":
+            fail(where, f"trace program must run: {res}")
+        got = state_line(where, res["stdout"], b.get("line", -1))
+        choices = b["choices"]
+        for c in choices:
+            check_state(where, b["kind"], c)
+        if len(set(choices)) != len(choices):
+            fail(where, "two choices are the same diagram")
+        if choices[b["answer"]] != got:
+            fail(where, f"marked diagram != real state.\nmarked: {choices[b['answer']]}\nreal:   {got}")
+        verified_sources.extend(files.values())
+        hide = b.get("hide", [])
+        return {"type": "trace", "id": b["id"], "kind": b["kind"], "prompt": inline(b["prompt"]),
+                "question": inline(b.get("question", "Which diagram shows the structure at the end?")),
+                "files": [[n, src] for n, src in files.items() if n not in hide],
+                "choices": choices, "answer": b["answer"], "result": res,
+                "explain": inline(b["explain"])}
+
+    if t == "match":
+        options = b["options"]
+        items = []
+        for j, it in enumerate(b["items"]):
+            if it["answer"] not in options:
+                fail(where, f"item {j} answer {it['answer']!r} is not an option")
+            if it.get("code"):
+                name = f"MatchItem{j}"
+                src = (it.get("imports", "") + f"public class {name} {{\n" +
+                       "\n".join("    " + line if line else "" for line in it["code"].split("\n")) + "\n}\n")
+                r = run_java({name + ".java": src}, None)
+                if r["kind"] != "ok":
+                    fail(where, f"item {j} code does not compile: {r['text']}")
+                verified_sources.append(it["code"])
+            items.append({"code": it.get("code"), "html": inline(it["text"]) if it.get("text") else None,
+                          "answer": options.index(it["answer"]),
+                          "why": inline(it["why"]) if it.get("why") else None})
+        return {"type": "match", "id": b["id"], "prompt": inline(b["prompt"]),
+                "options": options, "items": items,
+                "explain": inline(b["explain"]) if b.get("explain") else None}
+
 
     if t == "quiz":
         if not 0 <= b["answer"] < len(b["choices"]):
@@ -394,11 +485,11 @@ def load(path):
 def main():
     sys.path.insert(0, os.path.join(ROOT, "content"))
     course = load(os.path.join(ROOT, "content", "course.py"))
-    TASKS.update(load(os.path.join(ROOT, "content", "tasks_intro.py")).TASKS)
-    TASKS.update(load(os.path.join(ROOT, "content", "tasks_classes.py")).TASKS)
-    TASKS.update(load(os.path.join(ROOT, "content", "tasks_inheritance.py")).TASKS)
-    TASKS.update(load(os.path.join(ROOT, "content", "tasks_interfaces.py")).TASKS)
-    TASKS.update(load(os.path.join(ROOT, "content", "tasks_ds.py")).TASKS)
+    for path in sorted(glob.glob(os.path.join(ROOT, "content", "tasks_*.py"))):
+        for lid, tasks in load(path).TASKS.items():
+            if lid in TASKS:
+                raise BuildError(f"{os.path.basename(path)}: tasks for {lid} defined twice")
+            TASKS[lid] = tasks
     lessons = {}
     ex_ids = set()
     for section in course.SECTIONS:
