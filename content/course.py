@@ -60,7 +60,7 @@ SECTIONS = [
      "lessons": ["llist-class", "lstack", "lcompare", "ws-linked-lists"]},
     {"id": "queues", "title": "Introduction to Queues",
      "blurb": "First in, first out: enqueue, dequeue and getFront, and what queues are good for.",
-     "planned": ["The queue: first in, first out", "Tracing a queue on paper", "Using a queue", "Workshop"]},
+     "lessons": ["queue-fifo", "queue-trace", "queue-use", "ws-queues"]},
     {"id": "queue-impl", "title": "ArrayQueues vs Linked Queues",
      "blurb": "Where to put the front and the rear, in an array and in a linked list, and what each choice costs.",
      "planned": ["Array queues: shifting versus circular", "Linked queues: front and rear", "Workshop"]},

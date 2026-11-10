@@ -90,8 +90,11 @@ def run_java(files, main, stdin=""):
         elif not main:
             res = {"kind": "ok", "stdout": ""}
         else:
-            r = subprocess.run(["java", main], cwd=d, capture_output=True, text=True,
-                               env=ENV, timeout=20, input=stdin)
+            try:
+                r = subprocess.run(["java", main], cwd=d, capture_output=True, text=True,
+                                   env=ENV, timeout=20, input=stdin)
+            except subprocess.TimeoutExpired:
+                raise BuildError(f"java {main} was still running after 20 seconds (an infinite loop?)")
             if r.returncode != 0:
                 err = r.stderr.rstrip("\n").split("\n")
                 if len(err) > 14:  # e.g. StackOverflowError prints ~1000 identical lines

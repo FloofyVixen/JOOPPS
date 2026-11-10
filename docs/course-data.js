@@ -192,11 +192,11 @@ window.COURSE = {
    "id": "queues",
    "title": "Introduction to Queues",
    "blurb": "First in, first out: enqueue, dequeue and getFront, and what queues are good for.",
-   "planned": [
-    "The queue: first in, first out",
-    "Tracing a queue on paper",
-    "Using a queue",
-    "Workshop"
+   "lessons": [
+    "queue-fifo",
+    "queue-trace",
+    "queue-use",
+    "ws-queues"
    ]
   },
   {
@@ -24192,6 +24192,1348 @@ window.COURSE = {
      "title": "EmptyStackException",
      "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/EmptyStackException.html",
      "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "queue-fifo": {
+   "id": "queue-fifo",
+   "section": "queues",
+   "title": "The queue: first in, first out",
+   "summary": "A queue adds at one end, the rear, and removes from the other, the front. The first value in is the first one out, like a line at a shop.",
+   "goals": [
+    "Describe a queue as FIFO: first in, first out",
+    "Use the queue operations <code>enqueue</code>, <code>dequeue</code>, <code>getFront</code>, <code>isEmpty</code> and <code>size</code>",
+    "Draw a queue after a sequence of operations",
+    "Contrast a queue with a stack"
+   ],
+   "cos225": "The Exam 2 guide lists the queue as FIFO with enqueue, dequeue and getFront. This unit covers using a queue; the next builds one with an array and with linked nodes.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Two ends"
+    },
+    {
+     "type": "p",
+     "html": "A <strong>queue</strong> is a line. New values join at the back, called the <strong>rear</strong>, and values leave from the <strong>front</strong>. Whoever has waited longest is served first. This rule is <strong>FIFO</strong>: first in, first out."
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>enqueue(x)</code> adds <code>x</code> at the rear.",
+      "<code>dequeue()</code> removes the front value and returns it.",
+      "<code>getFront()</code> returns the front value without removing it.",
+      "<code>isEmpty()</code> and <code>size()</code> work as they do for stacks."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "As with stacks, the operations form an ADT, written as an interface:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "<code>LinkedQueue</code> implements it (you'll build it in the next unit). Its <code>toString</code> lists the values from front to rear."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "QueueDemo.java",
+       "public class QueueDemo {\n    public static void main(String[] args) {\n        QueueADT<String> line = new LinkedQueue<>();\n        line.enqueue(\"Ana\");\n        line.enqueue(\"Ben\");\n        line.enqueue(\"Cy\");\n        System.out.println(line);\n        System.out.println(\"front: \" + line.getFront());\n        System.out.println(\"served: \" + line.dequeue());\n        System.out.println(line + \" size \" + line.size());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java QueueDemo",
+      "stdout": "front [Ana, Ben, Cy] rear\nfront: Ana\nserved: Ana\nfront [Ben, Cy] rear size 2"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Drawing a queue"
+    },
+    {
+     "type": "p",
+     "html": "Draw a queue as a row, with the front on the left and the rear on the right. After the three enqueues:"
+    },
+    {
+     "type": "diagram",
+     "kind": "queue",
+     "state": "front [Ana, Ben, Cy] rear",
+     "label": null,
+     "caption": null
+    },
+    {
+     "type": "p",
+     "html": "<code>dequeue</code> takes <code>Ana</code> from the front, and <code>enqueue(&quot;Dee&quot;)</code> joins at the rear. The queue's contents slide along: both ends move."
+    },
+    {
+     "type": "diagram",
+     "kind": "queue",
+     "state": "front [Ben, Cy, Dee] rear",
+     "label": null,
+     "caption": null
+    },
+    {
+     "type": "h",
+     "html": "Stack or queue?"
+    },
+    {
+     "type": "p",
+     "html": "Put the same values into a stack and a queue and take them all out. The stack reverses them; the queue keeps their order:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Versus.java",
+       "public class Versus {\n    public static void main(String[] args) {\n        StackADT<Integer> stack = new ArrayStack<>();\n        QueueADT<Integer> queue = new LinkedQueue<>();\n        for (int i = 1; i <= 4; i++) {\n            stack.push(i);\n            queue.enqueue(i);\n        }\n        String fromStack = \"\";\n        String fromQueue = \"\";\n        while (!stack.isEmpty()) {\n            fromStack += stack.pop() + \" \";\n            fromQueue += queue.dequeue() + \" \";\n        }\n        System.out.println(\"stack: \" + fromStack);\n        System.out.println(\"queue: \" + fromQueue);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Versus",
+      "stdout": "stack: 4 3 2 1 \nqueue: 1 2 3 4 "
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>Stack</strong>: one end does everything. LIFO. Good for undo, matching brackets, reversing, backtracking.",
+      "<strong>Queue</strong>: in at one end, out at the other. FIFO. Good for anything that must be handled in arrival order: print jobs, customers, messages, tasks waiting for a turn."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "An empty queue"
+    },
+    {
+     "type": "p",
+     "html": "<code>dequeue</code> and <code>getFront</code> have nothing to return on an empty queue. Here they throw Java's <code>NoSuchElementException</code>:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "EmptyQueue.java",
+       "public class EmptyQueue {\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        q.enqueue(1);\n        q.dequeue();\n        q.dequeue();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java EmptyQueue",
+      "stdout": "",
+      "text": "Exception in thread \"main\" java.util.NoSuchElementException: queue is empty\n\tat LinkedQueue.dequeue(LinkedQueue.java:29)\n\tat EmptyQueue.main(EmptyQueue.java:6)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "fifo-trace",
+     "kind": "queue",
+     "prompt": "Follow the operations one at a time. Values join at the rear and leave from the front.",
+     "question": "Which diagram shows the queue at the end?",
+     "files": [
+      [
+       "QTrace.java",
+       "public class QTrace {\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        q.enqueue(4);\n        q.enqueue(9);\n        q.dequeue();\n        q.enqueue(2);\n        q.enqueue(7);\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "front [9, 2, 7] rear",
+      "front [4, 2, 7] rear",
+      "front [7, 2, 9] rear",
+      "front [4, 9, 2, 7] rear"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java QTrace",
+      "stdout": "front [9, 2, 7] rear"
+     },
+     "explain": "Enqueue 4 and 9. <code>dequeue</code> removes 4, the front. Then 2 and 7 join at the rear behind 9."
+    },
+    {
+     "type": "quiz",
+     "id": "fifo-order",
+     "question": "You enqueue 1, 2 and 3 into an empty queue, then dequeue three times. In what order do the values come out?",
+     "choices": [
+      "1, 2, 3",
+      "3, 2, 1",
+      "2, 3, 1",
+      "1, 3, 2"
+     ],
+     "answer": 0,
+     "explain": "First in, first out: the order they went in."
+    },
+    {
+     "type": "quiz",
+     "id": "fifo-which",
+     "question": "A printer handles documents in the order they were sent. Which structure fits?",
+     "choices": [
+      "A stack",
+      "A queue",
+      "An array sorted by size",
+      "Either; they behave the same"
+     ],
+     "answer": 1,
+     "explain": "Arrival order means FIFO: a queue. A stack would print the most recently sent document first."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-q-serve",
+     "mode": "independent",
+     "title": "Serve everyone",
+     "goal": "Write <code>Serve</code>. Its <code>main</code> enqueues <code>Ana</code>, <code>Ben</code>, <code>Cy</code> and <code>Dee</code> into a <code>LinkedQueue&lt;String&gt;</code>, then dequeues until the queue is empty, printing <code>Serving &lt;name&gt;</code> for each. <code>QueueADT</code> and <code>LinkedQueue</code> are already in the editor.",
+     "requirements": [],
+     "files": [
+      "QueueADT.java",
+      "LinearNode.java",
+      "LinkedQueue.java",
+      "Serve.java"
+     ],
+     "starter": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "isEmpty\\(\\)",
+       "message": "Loop until <code>isEmpty()</code> is true.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "runtime",
+      "command": "java Serve",
+      "stdout": "",
+      "text": "Error: Could not find or load main class Serve\nCaused by: java.lang.ClassNotFoundException: Serve"
+     },
+     "run": "Serve",
+     "output": "Serving Ana\nServing Ben\nServing Cy\nServing Dee",
+     "testsOutput": null,
+     "solution": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ],
+      [
+       "Serve.java",
+       "public class Serve {\n    public static void main(String[] args) {\n        QueueADT<String> line = new LinkedQueue<>();\n        line.enqueue(\"Ana\");\n        line.enqueue(\"Ben\");\n        line.enqueue(\"Cy\");\n        line.enqueue(\"Dee\");\n        while (!line.isEmpty()) {\n            System.out.println(\"Serving \" + line.dequeue());\n        }\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-q-frontornone",
+     "mode": "independent",
+     "title": "A safe getFront",
+     "goal": "Write <code>SafeFront</code> with <code>public static String frontOrNone(QueueADT&lt;String&gt; q)</code>: the front value, or <code>&quot;none&quot;</code> for an empty queue, without changing the queue. <code>main</code> prints it for an empty queue, then enqueues <code>x</code> and <code>y</code> and prints it again, then prints the size. <code>QueueADT</code> and <code>LinkedQueue</code> are already in the editor.",
+     "requirements": [],
+     "files": [
+      "QueueADT.java",
+      "LinearNode.java",
+      "LinkedQueue.java",
+      "SafeFront.java"
+     ],
+     "starter": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckSafeFront.java",
+       "public class CheckSafeFront {\n    public static void main(String[] args) {\n        QueueADT<String> q = new LinkedQueue<>();\n        q.enqueue(\"only\");\n        System.out.println(SafeFront.frontOrNone(q) + \" \" + q.size());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSafeFront",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckSafeFront.java LinearNode.java LinkedQueue.java QueueADT.java",
+      "text": "CheckSafeFront.java:5: error: cannot find symbol\n        System.out.println(SafeFront.frontOrNone(q) + \" \" + q.size());\n                           ^\n  symbol:   variable SafeFront\n  location: class CheckSafeFront\n1 error"
+     },
+     "run": "SafeFront",
+     "output": "none\nx\n2",
+     "testsOutput": "only 1",
+     "solution": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ],
+      [
+       "SafeFront.java",
+       "public class SafeFront {\n    public static String frontOrNone(QueueADT<String> q) {\n        if (q.isEmpty()) {\n            return \"none\";\n        }\n        return q.getFront();\n    }\n\n    public static void main(String[] args) {\n        QueueADT<String> q = new LinkedQueue<>();\n        System.out.println(frontOrNone(q));\n        q.enqueue(\"x\");\n        q.enqueue(\"y\");\n        System.out.println(frontOrNone(q));\n        System.out.println(q.size());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Queues",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Queue.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "NoSuchElementException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/NoSuchElementException.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "queue-trace": {
+   "id": "queue-trace",
+   "section": "queues",
+   "title": "Tracing a queue on paper",
+   "summary": "Queue questions on the exam give you operations to trace or a drawing to read. Keep the front on the left and the rear on the right, and redraw after every change.",
+   "goals": [
+    "Trace enqueue, dequeue and getFront one line at a time",
+    "Follow values that move from the front to the rear, or between a stack and a queue",
+    "Answer questions about a drawn queue"
+   ],
+   "cos225": "These are the Exam 2 guide's procedural problems for queues: interpret changes, draw the result, and answer questions about a drawing.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Front on the left, rear on the right"
+    },
+    {
+     "type": "p",
+     "html": "Draw the queue as a row: values leave from the left and join on the right. <code>enqueue</code> adds a box on the right; <code>dequeue</code> crosses out the box on the left (write its value down if the code uses it). Unlike a stack, both ends of the drawing change."
+    },
+    {
+     "type": "p",
+     "html": "A common move is <code>q.enqueue(q.dequeue())</code>: take the front value and send it to the back of the line. The values rotate:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Rotate.java",
+       "public class Rotate {\n    public static void main(String[] args) {\n        QueueADT<String> q = new LinkedQueue<>();\n        q.enqueue(\"A\");\n        q.enqueue(\"B\");\n        q.enqueue(\"C\");\n        q.enqueue(q.dequeue());\n        System.out.println(q);\n        q.enqueue(q.dequeue());\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Rotate",
+      "stdout": "front [B, C, A] rear\nfront [C, A, B] rear"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Doing this <code>size()</code> times brings the queue back to where it started, which is a handy way to visit every value without losing any."
+    },
+    {
+     "type": "h",
+     "html": "Questions about a picture"
+    },
+    {
+     "type": "p",
+     "html": "This queue was made by enqueueing 11, 22, 33, 44 and 55 in that order:"
+    },
+    {
+     "type": "diagram",
+     "kind": "queue",
+     "state": "front [11, 22, 33, 44, 55] rear",
+     "label": null,
+     "caption": null
+    },
+    {
+     "type": "quiz",
+     "id": "qtrace-pic1",
+     "question": "For the queue drawn above, what do two <code>dequeue()</code> calls return, in order?",
+     "choices": [
+      "55, then 44",
+      "11, then 22",
+      "11, then 11",
+      "22, then 33"
+     ],
+     "answer": 1,
+     "explain": "<code>dequeue</code> takes the front each time: 11, then 22. (<code>getFront</code> twice would give 11 both times.)"
+    },
+    {
+     "type": "quiz",
+     "id": "qtrace-pic2",
+     "question": "For the same queue, how many <code>dequeue</code> calls does it take before <code>getFront()</code> returns 44?",
+     "choices": [
+      "1",
+      "2",
+      "3",
+      "4"
+     ],
+     "answer": 2,
+     "explain": "11, 22 and 33 are in front of 44, so three values have to leave first."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "qtrace-sum",
+     "kind": "queue",
+     "prompt": "<code>q.dequeue() + q.dequeue()</code> removes the first two values. <code>getFront</code> only looks.",
+     "question": "Which diagram shows the queue at the end?",
+     "files": [
+      [
+       "SumQueue.java",
+       "public class SumQueue {\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        q.enqueue(3);\n        q.enqueue(5);\n        q.enqueue(2);\n        q.enqueue(q.dequeue() + q.dequeue());\n        q.enqueue(q.getFront());\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "front [2, 8, 2] rear",
+      "front [3, 5, 2, 8, 3] rear",
+      "front [2, 8] rear",
+      "front [8, 2, 8] rear"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java SumQueue",
+      "stdout": "front [2, 8, 2] rear"
+     },
+     "explain": "The queue is 3, 5, 2. The two dequeues remove 3 and 5, and their sum, 8, joins at the rear: 2, 8. <code>getFront()</code> returns 2 without removing it, and that 2 is enqueued too: 2, 8, 2."
+    },
+    {
+     "type": "trace",
+     "id": "qtrace-mix",
+     "kind": "queue",
+     "prompt": "A stack and a queue together. The stack's <code>pop</code> takes from its top.",
+     "question": "Which diagram shows the queue <code>q</code> at the end?",
+     "files": [
+      [
+       "StackToQueue.java",
+       "public class StackToQueue {\n    public static void main(String[] args) {\n        StackADT<Character> s = new ArrayStack<>();\n        QueueADT<Character> q = new LinkedQueue<>();\n        for (char c : new char[] {'x', 'y', 'z'}) {\n            s.push(c);\n        }\n        q.enqueue(s.pop());\n        q.enqueue('w');\n        q.enqueue(s.pop());\n        q.dequeue();\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "front [w, y] rear",
+      "front [z, w, y] rear",
+      "front [w, x] rear",
+      "front [y, w] rear"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java StackToQueue",
+      "stdout": "front [w, y] rear"
+     },
+     "explain": "The stack holds x, y, z with z on top. The first pop gives z, then <code>w</code> is enqueued, then the second pop gives y: the queue is z, w, y. Dequeueing removes z, the front."
+    },
+    {
+     "type": "predict",
+     "id": "qtrace-mixed",
+     "prompt": "The loop enqueues 1, 4, 9 and 16. What does the program print?",
+     "files": [
+      [
+       "Mixed.java",
+       "public class Mixed {\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        for (int i = 1; i <= 4; i++) {\n            q.enqueue(i * i);\n        }\n        System.out.println(q.dequeue() - q.dequeue());\n        System.out.println(q.getFront() + \" \" + q.size());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "-3\n9 2",
+      "3\n9 2",
+      "-3\n4 3",
+      "7\n1 2"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java Mixed",
+      "stdout": "-3\n9 2"
+     },
+     "explain": "The left <code>dequeue</code> runs first and returns 1; the right one returns 4. 1 \u2212 4 = \u22123. Then 9 is at the front, with 2 values left. (Compare the stack version in unit 13, where the same code gave 16 \u2212 9.)"
+    },
+    {
+     "type": "blanks",
+     "id": "qtrace-build",
+     "title": "Make the queue",
+     "prompt": "Fill in the two blanks so the program ends with <code>front [3, 1, 4] rear</code>. Each blank is one queue method call.",
+     "files": [
+      [
+       "MakeIt.java",
+       "public class MakeIt {\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        q.enqueue(1);\n        q.enqueue(2);\n        q.enqueue(3);\n        q.enqueue(q.[[a]]);\n        q.[[b]];\n        q.enqueue(4);\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ],
+     "run": "MakeIt",
+     "blanks": {
+      "a": {
+       "accept": [
+        "dequeue()"
+       ],
+       "solution": "dequeue()",
+       "hint": "The 1 has to move from the front to the rear.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "getFront()",
+         "shown": "getFront()",
+         "why": "<code>getFront</code> copies the 1 to the rear but leaves the original at the front, so the queue becomes 1, 2, 3, 1.",
+         "result": {
+          "kind": "ok",
+          "command": "java MakeIt",
+          "stdout": "front [2, 3, 1, 4] rear"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "b": {
+       "accept": [
+        "dequeue()"
+       ],
+       "solution": "dequeue()",
+       "hint": "Now the 2 is at the front, and it must go.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "getFront()",
+         "shown": "getFront()",
+         "why": "<code>getFront</code> only looks. The 2 stays in the queue.",
+         "result": {
+          "kind": "ok",
+          "command": "java MakeIt",
+          "stdout": "front [2, 3, 1, 4] rear"
+         }
+        }
+       ],
+       "width": 10
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java MakeIt",
+      "stdout": "front [3, 1, 4] rear"
+     },
+     "explain": "<code>q.enqueue(q.dequeue())</code> rotates 1 to the rear (2, 3, 1); <code>dequeue()</code> removes 2 (3, 1); then 4 joins at the rear."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-q-rotate",
+     "mode": "independent",
+     "title": "Rotate a queue",
+     "goal": "Write <code>Rotate</code> with <code>public static void rotate(QueueADT&lt;Integer&gt; q, int k)</code>, which moves the front value to the rear <code>k</code> times. <code>main</code> enqueues 1 to 5, rotates by 2 and prints the queue. <code>QueueADT</code> and <code>LinkedQueue</code> are already in the editor.",
+     "requirements": [],
+     "files": [
+      "QueueADT.java",
+      "LinearNode.java",
+      "LinkedQueue.java",
+      "Rotate.java"
+     ],
+     "starter": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckRotate.java",
+       "public class CheckRotate {\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        q.enqueue(7);\n        q.enqueue(8);\n        Rotate.rotate(q, 0);\n        System.out.println(q);\n        Rotate.rotate(q, 3);\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRotate",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckRotate.java LinearNode.java LinkedQueue.java QueueADT.java",
+      "text": "CheckRotate.java:6: error: cannot find symbol\n        Rotate.rotate(q, 0);\n        ^\n  symbol:   variable Rotate\n  location: class CheckRotate\nCheckRotate.java:8: error: cannot find symbol\n        Rotate.rotate(q, 3);\n        ^\n  symbol:   variable Rotate\n  location: class CheckRotate\n2 errors"
+     },
+     "run": "Rotate",
+     "output": "front [3, 4, 5, 1, 2] rear",
+     "testsOutput": "front [7, 8] rear\nfront [8, 7] rear",
+     "solution": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ],
+      [
+       "Rotate.java",
+       "public class Rotate {\n    public static void rotate(QueueADT<Integer> q, int k) {\n        for (int i = 0; i < k; i++) {\n            q.enqueue(q.dequeue());\n        }\n    }\n\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        for (int i = 1; i <= 5; i++) {\n            q.enqueue(i);\n        }\n        rotate(q, 2);\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-q-sum-keep",
+     "mode": "independent",
+     "title": "Add up a queue and keep it",
+     "goal": "Write <code>QueueSum</code> with <code>public static int sum(QueueADT&lt;Integer&gt; q)</code>, which returns the total of the values <strong>and leaves the queue exactly as it was</strong>. Rotate each value through once: dequeue it, add it, enqueue it again, <code>size()</code> times. <code>main</code> enqueues 4, 6 and 10, prints the sum, then prints the queue. <code>QueueADT</code> and <code>LinkedQueue</code> are already in the editor.",
+     "requirements": [],
+     "files": [
+      "QueueADT.java",
+      "LinearNode.java",
+      "LinkedQueue.java",
+      "QueueSum.java"
+     ],
+     "starter": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckQueueSum.java",
+       "public class CheckQueueSum {\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        System.out.println(QueueSum.sum(q));\n        q.enqueue(-3);\n        System.out.println(QueueSum.sum(q) + \" \" + q);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckQueueSum",
+     "hints": [
+      "Save <code>q.size()</code> before the loop. It doesn't change here, but it's a good habit when a loop adds and removes."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckQueueSum.java LinearNode.java LinkedQueue.java QueueADT.java",
+      "text": "CheckQueueSum.java:4: error: cannot find symbol\n        System.out.println(QueueSum.sum(q));\n                           ^\n  symbol:   variable QueueSum\n  location: class CheckQueueSum\nCheckQueueSum.java:6: error: cannot find symbol\n        System.out.println(QueueSum.sum(q) + \" \" + q);\n                           ^\n  symbol:   variable QueueSum\n  location: class CheckQueueSum\n2 errors"
+     },
+     "run": "QueueSum",
+     "output": "20\nfront [4, 6, 10] rear",
+     "testsOutput": "0\n-3 front [-3] rear",
+     "solution": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n}\n"
+      ],
+      [
+       "QueueSum.java",
+       "public class QueueSum {\n    public static int sum(QueueADT<Integer> q) {\n        int total = 0;\n        int n = q.size();\n        for (int i = 0; i < n; i++) {\n            int value = q.dequeue();\n            total += value;\n            q.enqueue(value);\n        }\n        return total;\n    }\n\n    public static void main(String[] args) {\n        QueueADT<Integer> q = new LinkedQueue<>();\n        q.enqueue(4);\n        q.enqueue(6);\n        q.enqueue(10);\n        System.out.println(sum(q));\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Queues",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Queue.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "JLS \u00a715.7: Evaluation Order",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.7",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": "The left operand of a binary operator is fully evaluated before the right one."
+    }
+   ]
+  },
+  "queue-use": {
+   "id": "queue-use",
+   "section": "queues",
+   "title": "Using a queue",
+   "summary": "Java's <code>Queue</code> interface gives you a ready-made queue. Queues handle anything that must happen in arrival order, and rotating one models taking turns.",
+   "goals": [
+    "Use Java's <code>Queue</code> with <code>ArrayDeque</code>, and tell <code>add</code>/<code>remove</code>/<code>element</code> from <code>offer</code>/<code>poll</code>/<code>peek</code>",
+    "Process jobs in arrival order",
+    "Model taking turns by rotating a queue"
+   ],
+   "cos225": "The Exam 2 guide asks where queues are used and how they differ from stacks. Code questions give you the imports and scaffolding; these are the patterns to fill in.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Java's Queue"
+    },
+    {
+     "type": "p",
+     "html": "Java has a <code>Queue</code> interface in <code>java.util</code>, implemented by <code>ArrayDeque</code> and <code>LinkedList</code>. Its methods have different names from our <code>QueueADT</code>, and they come in pairs: one throws an exception when it can't do its job, the other returns a special value (<code>null</code> or <code>false</code>) instead."
+    },
+    {
+     "type": "list",
+     "items": [
+      "Enqueue: <code>add(x)</code> (throws if it can't) or <code>offer(x)</code> (returns <code>false</code>).",
+      "Dequeue: <code>remove()</code> (throws on an empty queue) or <code>poll()</code> (returns <code>null</code>).",
+      "Get front: <code>element()</code> (throws) or <code>peek()</code> (returns <code>null</code>)."
+     ]
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "JavaQueue.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class JavaQueue {\n    public static void main(String[] args) {\n        Queue<String> q = new ArrayDeque<>();\n        q.add(\"first\");\n        q.add(\"second\");\n        q.offer(\"third\");\n        System.out.println(q);\n        System.out.println(q.peek());\n        System.out.println(q.remove());\n        System.out.println(q.poll());\n        System.out.println(q + \" \" + q.size());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java JavaQueue",
+      "stdout": "[first, second, third]\nfirst\nfirst\nsecond\n[third] 1"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "An <code>ArrayDeque</code> used as a queue prints from front to rear."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "EmptyJavaQueue.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class EmptyJavaQueue {\n    public static void main(String[] args) {\n        Queue<Integer> q = new ArrayDeque<>();\n        System.out.println(q.peek());\n        System.out.println(q.poll());\n        System.out.println(q.remove());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java EmptyJavaQueue",
+      "stdout": "null\nnull",
+      "text": "Exception in thread \"main\" java.util.NoSuchElementException\n\tat java.base/java.util.ArrayDeque.removeFirst(ArrayDeque.java:361)\n\tat java.base/java.util.ArrayDeque.remove(ArrayDeque.java:522)\n\tat EmptyJavaQueue.main(EmptyJavaQueue.java:9)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "<code>peek</code> and <code>poll</code> return <code>null</code> on an empty queue; <code>remove</code> throws. Pick the one whose behaviour you want, and check <code>isEmpty()</code> when you're not sure."
+    },
+    {
+     "type": "h",
+     "html": "Serving in arrival order"
+    },
+    {
+     "type": "p",
+     "html": "A printer prints jobs in the order they were sent. Each job here is a string <code>name:pages</code>, and each page takes a minute:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "PrintQueue.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class PrintQueue {\n    public static void main(String[] args) {\n        Queue<String> jobs = new ArrayDeque<>();\n        int[] pages = {3, 1, 4};\n        String[] names = {\"essay.pdf\", \"ticket.pdf\", \"notes.pdf\"};\n        for (int i = 0; i < names.length; i++) {\n            jobs.add(names[i] + \":\" + pages[i]);\n        }\n        int minute = 0;\n        while (!jobs.isEmpty()) {\n            String job = jobs.remove();\n            String[] parts = job.split(\":\");\n            minute += Integer.parseInt(parts[1]);\n            System.out.println(parts[0] + \" done at minute \" + minute);\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java PrintQueue",
+      "stdout": "essay.pdf done at minute 3\nticket.pdf done at minute 4\nnotes.pdf done at minute 8"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Taking turns"
+    },
+    {
+     "type": "p",
+     "html": "Rotating a queue (<code>remove</code> from the front, <code>add</code> at the rear) passes the turn to the next value, and the value that just had its turn waits at the back. In the game hot potato, players pass the potato a set number of times, and whoever holds it then is out:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "HotPotato.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class HotPotato {\n    public static String play(String[] names, int passes) {\n        Queue<String> circle = new ArrayDeque<>();\n        for (String name : names) {\n            circle.add(name);\n        }\n        while (circle.size() > 1) {\n            for (int i = 0; i < passes; i++) {\n                circle.add(circle.remove());\n            }\n            System.out.println(circle.remove() + \" is out\");\n        }\n        return circle.remove();\n    }\n\n    public static void main(String[] args) {\n        String[] names = {\"Ana\", \"Ben\", \"Cy\", \"Dee\", \"Eli\"};\n        System.out.println(\"Winner: \" + play(names, 2));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java HotPotato",
+      "stdout": "Cy is out\nAna is out\nEli is out\nBen is out\nWinner: Dee"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Operating systems use the same idea to share a processor between programs: each gets a short turn, then goes to the back of the queue. This is called round-robin scheduling."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "use-potato",
+     "title": "Pass the potato",
+     "prompt": "Fill in the two blanks in <code>play</code>.",
+     "files": [
+      [
+       "HotPotato.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class HotPotato {\n    public static String play(String[] names, int passes) {\n        Queue<String> circle = new ArrayDeque<>();\n        for (String name : names) {\n            circle.add(name);\n        }\n        while (circle.size() > 1) {\n            for (int i = 0; i < passes; i++) {\n                [[pass]];\n            }\n            System.out.println([[out]] + \" is out\");\n        }\n        return circle.remove();\n    }\n\n    public static void main(String[] args) {\n        String[] names = {\"Ana\", \"Ben\", \"Cy\", \"Dee\", \"Eli\"};\n        System.out.println(\"Winner: \" + play(names, 2));\n    }\n}\n"
+      ]
+     ],
+     "run": "HotPotato",
+     "blanks": {
+      "pass": {
+       "accept": [
+        "circle.add(circle.remove())",
+        "circle.offer(circle.poll())",
+        "circle.add(circle.poll())",
+        "circle.offer(circle.remove())"
+       ],
+       "solution": "circle.add(circle.remove())",
+       "hint": "The front player passes and goes to the back of the line: remove them from the front, add them at the rear. (<code>peek</code> would leave them at the front too, and the circle would grow forever.)",
+       "exact": false,
+       "wrong": [],
+       "width": 29
+      },
+      "out": {
+       "accept": [
+        "circle.remove()",
+        "circle.poll()"
+       ],
+       "solution": "circle.remove()",
+       "hint": "Whoever is at the front now is out, so they must leave the queue. <code>peek</code> would name them but leave them in, and the game would never end.",
+       "exact": false,
+       "wrong": [],
+       "width": 15
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java HotPotato",
+      "stdout": "Cy is out\nAna is out\nEli is out\nBen is out\nWinner: Dee"
+     },
+     "explain": "Rotate with <code>add(remove())</code> for each pass, then <code>remove()</code> the player at the front."
+    },
+    {
+     "type": "quiz",
+     "id": "use-poll",
+     "question": "On an empty <code>Queue&lt;String&gt;</code>, what does <code>poll()</code> do?",
+     "choices": [
+      "Throws a <code>NoSuchElementException</code>",
+      "Returns <code>null</code>",
+      "Returns an empty string",
+      "Waits until something is added"
+     ],
+     "answer": 1,
+     "explain": "<code>poll</code> and <code>peek</code> return <code>null</code> for an empty queue; <code>remove</code> and <code>element</code> throw <code>NoSuchElementException</code>."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-q-reverse",
+     "mode": "independent",
+     "title": "Reverse a queue with a stack",
+     "goal": "Write <code>ReverseQueue</code> with <code>public static void reverse(Queue&lt;Integer&gt; q)</code> that reverses a <code>java.util.Queue</code> using a <code>Deque&lt;Integer&gt;</code> as a stack: dequeue everything onto the stack, then pop everything back into the queue. <code>main</code> puts 1 to 4 into an <code>ArrayDeque</code> queue, reverses it and prints it.",
+     "requirements": [],
+     "files": [
+      "ReverseQueue.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckReverseQueue.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class CheckReverseQueue {\n    public static void main(String[] args) {\n        Queue<Integer> q = new ArrayDeque<>();\n        ReverseQueue.reverse(q);\n        q.add(5);\n        ReverseQueue.reverse(q);\n        q.add(6);\n        ReverseQueue.reverse(q);\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckReverseQueue",
+     "hints": [],
+     "checks": [],
+     "run": "ReverseQueue",
+     "output": "[4, 3, 2, 1]",
+     "testsOutput": "[6, 5]",
+     "solution": [
+      [
+       "ReverseQueue.java",
+       "import java.util.ArrayDeque;\nimport java.util.Deque;\nimport java.util.Queue;\n\npublic class ReverseQueue {\n    public static void reverse(Queue<Integer> q) {\n        Deque<Integer> stack = new ArrayDeque<>();\n        while (!q.isEmpty()) {\n            stack.push(q.remove());\n        }\n        while (!stack.isEmpty()) {\n            q.add(stack.pop());\n        }\n    }\n\n    public static void main(String[] args) {\n        Queue<Integer> q = new ArrayDeque<>();\n        for (int i = 1; i <= 4; i++) {\n            q.add(i);\n        }\n        reverse(q);\n        System.out.println(q);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-q-interleave",
+     "mode": "independent",
+     "title": "Merge two lines",
+     "goal": "Write <code>Merge</code> with <code>public static Queue&lt;String&gt; interleave(Queue&lt;String&gt; a, Queue&lt;String&gt; b)</code>, which returns a new queue taking one value from <code>a</code>, then one from <code>b</code>, and so on; when one runs out, the rest of the other follows. Use <code>poll</code> and <code>isEmpty</code>. <code>main</code> interleaves <code>[a1, a2, a3]</code> with <code>[b1]</code> and prints the result.",
+     "requirements": [],
+     "files": [
+      "Merge.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckMerge.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class CheckMerge {\n    public static void main(String[] args) {\n        Queue<String> a = new ArrayDeque<>();\n        Queue<String> b = new ArrayDeque<>();\n        b.add(\"x\");\n        b.add(\"y\");\n        System.out.println(Merge.interleave(a, b) + \" \" + Merge.interleave(new ArrayDeque<>(), new ArrayDeque<>()));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckMerge",
+     "hints": [],
+     "checks": [],
+     "run": "Merge",
+     "output": "[a1, b1, a2, a3]",
+     "testsOutput": "[x, y] []",
+     "solution": [
+      [
+       "Merge.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Merge {\n    public static Queue<String> interleave(Queue<String> a, Queue<String> b) {\n        Queue<String> result = new ArrayDeque<>();\n        while (!a.isEmpty() || !b.isEmpty()) {\n            if (!a.isEmpty()) {\n                result.add(a.poll());\n            }\n            if (!b.isEmpty()) {\n                result.add(b.poll());\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Queue<String> a = new ArrayDeque<>();\n        Queue<String> b = new ArrayDeque<>();\n        a.add(\"a1\");\n        a.add(\"a2\");\n        a.add(\"a3\");\n        b.add(\"b1\");\n        System.out.println(interleave(a, b));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "The Queue Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/queue.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "ArrayDeque<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayDeque.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "LinkedList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    }
+   ]
+  },
+  "ws-queues": {
+   "id": "ws-queues",
+   "section": "queues",
+   "title": "Workshop: queues",
+   "summary": "Simulate a bank line and a processor sharing its time, then use queues for a counting-out game and, together with a stack, for palindromes.",
+   "goals": [
+    "Process objects in arrival order with Java's <code>Queue</code>",
+    "Re-enqueue unfinished work to share turns fairly",
+    "Combine a queue and a stack to compare an order with its reverse"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: A bank line"
+    },
+    {
+     "type": "write",
+     "id": "ws-u18-bank",
+     "mode": "guided",
+     "title": "A bank line",
+     "goal": "Simulate customers waiting for one teller. Each <code>Customer</code> has a name, an arrival minute and how many minutes they need.",
+     "requirements": [],
+     "files": [
+      "Customer.java",
+      "Bank.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Serve in order",
+       "text": "Create <code>Customer</code> (private <code>name</code>, <code>arrival</code>, <code>service</code>, a constructor and getters). In <code>Bank</code>, add three customers to a <code>Queue&lt;Customer&gt;</code> (an <code>ArrayDeque</code>) and remove them one by one, printing <code>&lt;name&gt; served</code>.",
+       "hint": null,
+       "files": [
+        "Customer.java",
+        "Bank.java"
+       ],
+       "run": "Bank",
+       "output": "Ana served\nBen served\nCy served",
+       "checks": [],
+       "solution": [
+        [
+         "Customer.java",
+         "public class Customer {\n    private String name;\n    private int arrival;\n    private int service;\n\n    public Customer(String name, int arrival, int service) {\n        this.name = name;\n        this.arrival = arrival;\n        this.service = service;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getArrival() {\n        return arrival;\n    }\n\n    public int getService() {\n        return service;\n    }\n}\n"
+        ],
+        [
+         "Bank.java",
+         "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Bank {\n    public static void main(String[] args) {\n        Queue<Customer> line = new ArrayDeque<>();\n        line.add(new Customer(\"Ana\", 0, 5));\n        line.add(new Customer(\"Ben\", 1, 3));\n        line.add(new Customer(\"Cy\", 9, 2));\n        while (!line.isEmpty()) {\n            Customer c = line.remove();\n            System.out.println(c.getName() + \" served\");\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Keep the clock",
+       "text": "Track a <code>clock</code>. Each customer starts at whichever is later, the clock or their arrival, waits <code>start - arrival</code> minutes, and leaves at <code>start + service</code>, which becomes the new clock. Print <code>&lt;name&gt;: waited &lt;w&gt;, done at &lt;clock&gt;</code>.",
+       "hint": "Cy arrives at minute 9, after the teller is free at 8, so the teller waits for Cy, not the other way round: <code>Math.max</code>.",
+       "files": [
+        "Customer.java",
+        "Bank.java"
+       ],
+       "run": "Bank",
+       "output": "Ana: waited 0, done at 5\nBen: waited 4, done at 8\nCy: waited 0, done at 11",
+       "checks": [],
+       "solution": [
+        [
+         "Customer.java",
+         "public class Customer {\n    private String name;\n    private int arrival;\n    private int service;\n\n    public Customer(String name, int arrival, int service) {\n        this.name = name;\n        this.arrival = arrival;\n        this.service = service;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getArrival() {\n        return arrival;\n    }\n\n    public int getService() {\n        return service;\n    }\n}\n"
+        ],
+        [
+         "Bank.java",
+         "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Bank {\n    public static void main(String[] args) {\n        Queue<Customer> line = new ArrayDeque<>();\n        line.add(new Customer(\"Ana\", 0, 5));\n        line.add(new Customer(\"Ben\", 1, 3));\n        line.add(new Customer(\"Cy\", 9, 2));\n        int clock = 0;\n        while (!line.isEmpty()) {\n            Customer c = line.remove();\n            int start = Math.max(clock, c.getArrival());\n            int wait = start - c.getArrival();\n            clock = start + c.getService();\n            System.out.println(c.getName() + \": waited \" + wait + \", done at \" + clock);\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Average wait",
+       "text": "Add up the waits and count the customers, then print <code>average wait &lt;value&gt;</code> as a <code>double</code>.",
+       "hint": null,
+       "files": [
+        "Customer.java",
+        "Bank.java"
+       ],
+       "run": "Bank",
+       "output": "Ana: waited 0, done at 5\nBen: waited 4, done at 8\nCy: waited 0, done at 11\naverage wait 1.3333333333333333",
+       "checks": [],
+       "solution": [
+        [
+         "Customer.java",
+         "public class Customer {\n    private String name;\n    private int arrival;\n    private int service;\n\n    public Customer(String name, int arrival, int service) {\n        this.name = name;\n        this.arrival = arrival;\n        this.service = service;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getArrival() {\n        return arrival;\n    }\n\n    public int getService() {\n        return service;\n    }\n}\n"
+        ],
+        [
+         "Bank.java",
+         "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Bank {\n    public static void main(String[] args) {\n        Queue<Customer> line = new ArrayDeque<>();\n        line.add(new Customer(\"Ana\", 0, 5));\n        line.add(new Customer(\"Ben\", 1, 3));\n        line.add(new Customer(\"Cy\", 9, 2));\n        int clock = 0;\n        int totalWait = 0;\n        int served = 0;\n        while (!line.isEmpty()) {\n            Customer c = line.remove();\n            int start = Math.max(clock, c.getArrival());\n            int wait = start - c.getArrival();\n            clock = start + c.getService();\n            totalWait += wait;\n            served++;\n            System.out.println(c.getName() + \": waited \" + wait + \", done at \" + clock);\n        }\n        System.out.println(\"average wait \" + (double) totalWait / served);\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: Round-robin scheduling"
+    },
+    {
+     "type": "write",
+     "id": "ws-u18-roundrobin",
+     "mode": "guided",
+     "title": "Round-robin scheduling",
+     "goal": "A processor runs several jobs by giving each a short time slice in turn. Unfinished jobs go to the back of the queue.",
+     "requirements": [],
+     "files": [
+      "Job.java",
+      "Scheduler.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "One round",
+       "text": "Create <code>Job</code> (name, remaining time, and <code>run(int slice)</code>, which runs for up to <code>slice</code> units and returns how long it ran). In <code>Scheduler</code>, give each of three jobs one turn of 2 units, printing <code>&lt;name&gt; ran &lt;used&gt;, &lt;remaining&gt; left</code>.",
+       "hint": null,
+       "files": [
+        "Job.java",
+        "Scheduler.java"
+       ],
+       "run": "Scheduler",
+       "output": "A ran 2, 3 left\nB ran 2, 0 left\nC ran 2, 1 left",
+       "checks": [],
+       "solution": [
+        [
+         "Job.java",
+         "public class Job {\n    private String name;\n    private int remaining;\n\n    public Job(String name, int time) {\n        this.name = name;\n        this.remaining = time;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getRemaining() {\n        return remaining;\n    }\n\n    // Runs for up to `slice` units and returns how long it actually ran.\n    public int run(int slice) {\n        int used = Math.min(slice, remaining);\n        remaining -= used;\n        return used;\n    }\n}\n"
+        ],
+        [
+         "Scheduler.java",
+         "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Scheduler {\n    public static void main(String[] args) {\n        Queue<Job> ready = new ArrayDeque<>();\n        ready.add(new Job(\"A\", 5));\n        ready.add(new Job(\"B\", 2));\n        ready.add(new Job(\"C\", 3));\n        int size = ready.size();\n        for (int i = 0; i < size; i++) {\n            Job job = ready.remove();\n            int used = job.run(2);\n            System.out.println(job.getName() + \" ran \" + used + \", \" + job.getRemaining() + \" left\");\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Back of the line",
+       "text": "Keep going until the queue is empty: after its turn, a job with time left is added back at the rear.",
+       "hint": null,
+       "files": [
+        "Job.java",
+        "Scheduler.java"
+       ],
+       "run": "Scheduler",
+       "output": "A ran 2, 3 left\nB ran 2, 0 left\nC ran 2, 1 left\nA ran 2, 1 left\nC ran 1, 0 left\nA ran 1, 0 left",
+       "checks": [],
+       "solution": [
+        [
+         "Job.java",
+         "public class Job {\n    private String name;\n    private int remaining;\n\n    public Job(String name, int time) {\n        this.name = name;\n        this.remaining = time;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getRemaining() {\n        return remaining;\n    }\n\n    // Runs for up to `slice` units and returns how long it actually ran.\n    public int run(int slice) {\n        int used = Math.min(slice, remaining);\n        remaining -= used;\n        return used;\n    }\n}\n"
+        ],
+        [
+         "Scheduler.java",
+         "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Scheduler {\n    public static void main(String[] args) {\n        Queue<Job> ready = new ArrayDeque<>();\n        ready.add(new Job(\"A\", 5));\n        ready.add(new Job(\"B\", 2));\n        ready.add(new Job(\"C\", 3));\n        while (!ready.isEmpty()) {\n            Job job = ready.remove();\n            int used = job.run(2);\n            System.out.println(job.getName() + \" ran \" + used + \", \" + job.getRemaining() + \" left\");\n            if (job.getRemaining() > 0) {\n                ready.add(job);\n            }\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Finishing times",
+       "text": "Track a clock (add the time each turn used) and print only <code>&lt;name&gt; finished at &lt;clock&gt;</code> when a job completes.",
+       "hint": null,
+       "files": [
+        "Job.java",
+        "Scheduler.java"
+       ],
+       "run": "Scheduler",
+       "output": "B finished at 4\nC finished at 9\nA finished at 10",
+       "checks": [],
+       "solution": [
+        [
+         "Job.java",
+         "public class Job {\n    private String name;\n    private int remaining;\n\n    public Job(String name, int time) {\n        this.name = name;\n        this.remaining = time;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public int getRemaining() {\n        return remaining;\n    }\n\n    // Runs for up to `slice` units and returns how long it actually ran.\n    public int run(int slice) {\n        int used = Math.min(slice, remaining);\n        remaining -= used;\n        return used;\n    }\n}\n"
+        ],
+        [
+         "Scheduler.java",
+         "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Scheduler {\n    public static void main(String[] args) {\n        Queue<Job> ready = new ArrayDeque<>();\n        ready.add(new Job(\"A\", 5));\n        ready.add(new Job(\"B\", 2));\n        ready.add(new Job(\"C\", 3));\n        int clock = 0;\n        while (!ready.isEmpty()) {\n            Job job = ready.remove();\n            clock += job.run(2);\n            if (job.getRemaining() > 0) {\n                ready.add(job);\n            } else {\n                System.out.println(job.getName() + \" finished at \" + clock);\n            }\n        }\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: Last one standing"
+    },
+    {
+     "type": "write",
+     "id": "ws-u18-survivor",
+     "mode": "independent",
+     "title": "Last one standing",
+     "goal": "<code>n</code> people stand in a circle, numbered 1 to <code>n</code>. Counting starts at person 1; every <code>k</code>-th person is out, and counting continues from the next person. Write <code>Circle</code> with <code>public static int survivor(int n, int k)</code> using a <code>Queue&lt;Integer&gt;</code>: rotate <code>k - 1</code> people to the rear, then remove the next one. Return the last person left. <code>main</code> prints <code>survivor(7, 3)</code> and <code>survivor(5, 2)</code>.",
+     "requirements": [],
+     "files": [
+      "Circle.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCircle.java",
+       "public class CheckCircle {\n    public static void main(String[] args) {\n        System.out.println(Circle.survivor(1, 5) + \" \" + Circle.survivor(6, 1) + \" \" + Circle.survivor(10, 2));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCircle",
+     "hints": [],
+     "checks": [],
+     "run": "Circle",
+     "output": "4\n3",
+     "testsOutput": "1 6 5",
+     "solution": [
+      [
+       "Circle.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Circle {\n    public static int survivor(int n, int k) {\n        Queue<Integer> circle = new ArrayDeque<>();\n        for (int i = 1; i <= n; i++) {\n            circle.add(i);\n        }\n        while (circle.size() > 1) {\n            for (int i = 0; i < k - 1; i++) {\n                circle.add(circle.remove());\n            }\n            circle.remove();\n        }\n        return circle.remove();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(survivor(7, 3));\n        System.out.println(survivor(5, 2));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: Palindromes with a stack and a queue"
+    },
+    {
+     "type": "write",
+     "id": "ws-u18-palindrome",
+     "mode": "independent",
+     "title": "Palindromes with a stack and a queue",
+     "goal": "A queue gives the letters back in order; a stack gives them back reversed. Write <code>Mirror</code> with <code>public static boolean isPalindrome(String text)</code>: put every <strong>letter</strong> of the text (skip other characters with <code>Character.isLetter</code>, and compare in lower case) into both a <code>Queue&lt;Character&gt;</code> and a <code>Deque&lt;Character&gt;</code> stack, then remove from both and compare. <code>main</code> prints the result for <code>Never odd or even</code>, <code>Java</code> and <code>A</code>.",
+     "requirements": [],
+     "files": [
+      "Mirror.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckMirror.java",
+       "public class CheckMirror {\n    public static void main(String[] args) {\n        System.out.println(Mirror.isPalindrome(\"\") + \" \" + Mirror.isPalindrome(\"Was it a car or a cat I saw?\") + \" \" + Mirror.isPalindrome(\"ab\"));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckMirror",
+     "hints": [
+      "<code>queue.remove()</code> and <code>stack.pop()</code> return <code>Character</code> objects: compare them with <code>equals</code>."
+     ],
+     "checks": [],
+     "run": "Mirror",
+     "output": "true\nfalse\ntrue",
+     "testsOutput": "true true false",
+     "solution": [
+      [
+       "Mirror.java",
+       "import java.util.ArrayDeque;\nimport java.util.Deque;\nimport java.util.Queue;\n\npublic class Mirror {\n    public static boolean isPalindrome(String text) {\n        Queue<Character> queue = new ArrayDeque<>();\n        Deque<Character> stack = new ArrayDeque<>();\n        for (int i = 0; i < text.length(); i++) {\n            char c = Character.toLowerCase(text.charAt(i));\n            if (Character.isLetter(c)) {\n                queue.add(c);\n                stack.push(c);\n            }\n        }\n        while (!queue.isEmpty()) {\n            if (!queue.remove().equals(stack.pop())) {\n                return false;\n            }\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(isPalindrome(\"Never odd or even\"));\n        System.out.println(isPalindrome(\"Java\"));\n        System.out.println(isPalindrome(\"A\"));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "The Queue Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/queue.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "ArrayDeque<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayDeque.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Queues",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Queue.html",
+     "org": "Virginia Tech, OpenDSA",
      "note": null
     }
    ]
