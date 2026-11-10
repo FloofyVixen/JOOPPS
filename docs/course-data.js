@@ -223,10 +223,10 @@ window.COURSE = {
    "id": "collections",
    "title": "Introduction to Collections (Java)",
    "blurb": "Java's Collection \u2192 List \u2192 ArrayList/LinkedList hierarchy, and interfaces versus abstract and concrete classes.",
-   "planned": [
-    "The Collection hierarchy",
-    "Programming to the List interface",
-    "Workshop"
+   "lessons": [
+    "coll-hierarchy",
+    "coll-list",
+    "ws-collections"
    ]
   },
   {
@@ -27890,6 +27890,1080 @@ window.COURSE = {
      "title": "LinkedList<E>",
      "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
      "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "coll-hierarchy": {
+   "id": "coll-hierarchy",
+   "section": "collections",
+   "title": "The Collection hierarchy",
+   "summary": "Java's collection classes fit into a hierarchy of interfaces and classes. At the top is the <code>Collection</code> interface; <code>List</code> extends it; <code>ArrayList</code> and <code>LinkedList</code> are the concrete classes you actually create.",
+   "goals": [
+    "Draw the hierarchy Collection \u2192 List \u2192 ArrayList and LinkedList",
+    "Tell an interface, an abstract class and a concrete class apart, and say which can be instantiated",
+    "Place <code>AbstractList</code> in the hierarchy and say what it's for"
+   ],
+   "cos225": "The Exam 2 guide keeps collections to general questions: the hierarchy Collection \u2192 List \u2192 ArrayList/LinkedList, and the difference between an interface (Collection, List), an abstract class and a concrete class (ArrayList). Sets and Maps aren't on it, so they aren't here either.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "One family of types"
+    },
+    {
+     "type": "p",
+     "html": "Everything you've built in this half of the course (lists, stacks, queues) holds a group of values. Java's own versions are organised as the <strong>Collections Framework</strong>: a set of interfaces that say what each kind of collection can do, and classes that implement them."
+    },
+    {
+     "type": "list",
+     "items": [
+      "**<code>Collection&lt;E&gt;</code>** (interface): any group of elements. Methods such as <code>add</code>, <code>remove</code>, <code>contains</code>, <code>size</code>, <code>isEmpty</code>, and looping with for-each.",
+      "**<code>List&lt;E&gt;</code>** (interface, extends <code>Collection</code>): an ordered collection with positions. Adds <code>get(i)</code>, <code>set(i, x)</code>, <code>add(i, x)</code>, <code>remove(i)</code>, <code>indexOf</code>.",
+      "**<code>ArrayList&lt;E&gt;</code><strong> and </strong><code>LinkedList&lt;E&gt;</code>** (concrete classes): two implementations of <code>List</code>, one on a resizable array, one on linked nodes."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "Between <code>List</code> and <code>ArrayList</code> sits **<code>AbstractList&lt;E&gt;</code>**, an abstract class. It implements most of <code>List</code> on top of a few methods it leaves abstract (<code>get</code> and <code>size</code>), so a concrete list class only has to fill those in. <code>ArrayList</code> extends it."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Kinds.java",
+       "import java.util.AbstractList;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.LinkedList;\nimport java.util.List;\n\npublic class Kinds {\n    public static void main(String[] args) {\n        ArrayList<String> array = new ArrayList<>();\n        LinkedList<String> linked = new LinkedList<>();\n\n        System.out.println(array instanceof List);\n        System.out.println(array instanceof Collection);\n        System.out.println(linked instanceof List);\n        System.out.println(array instanceof AbstractList);\n        System.out.println(array.getClass().getSuperclass());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Kinds",
+      "stdout": "true\ntrue\ntrue\ntrue\nclass java.util.AbstractList"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "An <code>ArrayList</code> <strong>is a</strong> <code>List</code> and <strong>is a</strong> <code>Collection</code>, because <code>List</code> extends <code>Collection</code>. Its superclass is <code>AbstractList</code>."
+    },
+    {
+     "type": "h",
+     "html": "Interface, abstract class, concrete class"
+    },
+    {
+     "type": "p",
+     "html": "These are the three kinds of type you met in the inheritance units, and the collections use all three:"
+    },
+    {
+     "type": "list",
+     "items": [
+      "An <strong>interface</strong> (<code>Collection</code>, <code>List</code>) lists methods a type must have. It can't be instantiated with <code>new</code>.",
+      "An <strong>abstract class</strong> (<code>AbstractList</code>) is a partly written class: it can have fields and finished methods, but some methods are abstract. It can't be instantiated either; it exists to be extended.",
+      "A <strong>concrete class</strong> (<code>ArrayList</code>, <code>LinkedList</code>) has every method written. It's the only kind you can create with <code>new</code>."
+     ]
+    },
+    {
+     "type": "error",
+     "id": "coll-new-list",
+     "prompt": "This tries to create a <code>List</code> directly.",
+     "files": [
+      [
+       "NewList.java",
+       "import java.util.List;\n\npublic class NewList {\n    public static void main(String[] args) {\n        List<String> names = new List<>();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac NewList.java",
+      "text": "NewList.java:5: error: List is abstract; cannot be instantiated\n        List<String> names = new List<>();\n                             ^\n1 error"
+     },
+     "question": "Why won't it compile?",
+     "choices": [
+      "<code>List</code> needs a size, like <code>new List&lt;&gt;(10)</code>",
+      "<code>List</code> is an interface, so it can't be instantiated; create a concrete class such as <code>ArrayList</code>",
+      "The variable should be called <code>list</code>",
+      "<code>List</code> must be imported as <code>java.util.List.*</code>"
+     ],
+     "answer": 1,
+     "explain": "Interfaces describe a type but have no constructor. The compiler calls <code>List</code> abstract because every interface is implicitly abstract. Keep the variable's type as <code>List&lt;String&gt;</code> and create an <code>ArrayList</code> (or <code>LinkedList</code>).",
+     "fixedFiles": [
+      [
+       "NewList.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class NewList {\n    public static void main(String[] args) {\n        List<String> names = new ArrayList<>();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "stdout": ""
+     }
+    },
+    {
+     "type": "error",
+     "id": "coll-new-abstract",
+     "prompt": "And this tries to create an <code>AbstractList</code>.",
+     "files": [
+      [
+       "NewAbstract.java",
+       "import java.util.AbstractList;\n\npublic class NewAbstract {\n    public static void main(String[] args) {\n        AbstractList<String> names = new AbstractList<>();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac NewAbstract.java",
+      "text": "NewAbstract.java:5: error: AbstractList is abstract; cannot be instantiated\n        AbstractList<String> names = new AbstractList<>();\n                                     ^\n1 error"
+     },
+     "question": "What does the compiler say?",
+     "choices": [
+      "Nothing; abstract classes can be instantiated",
+      "That <code>AbstractList</code> is abstract and cannot be instantiated",
+      "That <code>AbstractList</code> is a final class",
+      "That generics aren't allowed with abstract classes"
+     ],
+     "answer": 1,
+     "explain": "An abstract class can't be created with <code>new</code>. A variable of type <code>AbstractList</code> can still refer to an <code>ArrayList</code>, because <code>ArrayList</code> extends it. (In this unit's tasks, you'll extend <code>AbstractList</code> yourself.)",
+     "fixedFiles": [
+      [
+       "NewAbstract.java",
+       "import java.util.AbstractList;\nimport java.util.ArrayList;\n\npublic class NewAbstract {\n    public static void main(String[] args) {\n        AbstractList<String> names = new ArrayList<>();\n    }\n}\n"
+      ]
+     ],
+     "fixedResult": {
+      "kind": "ok",
+      "stdout": ""
+     }
+    },
+    {
+     "type": "h",
+     "html": "Code that takes any collection"
+    },
+    {
+     "type": "p",
+     "html": "A method whose parameter is <code>Collection&lt;String&gt;</code> accepts an <code>ArrayList</code>, a <code>LinkedList</code>, or any other collection of strings, because it only uses methods every <code>Collection</code> has:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "AnyCollection.java",
+       "import java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.LinkedList;\n\npublic class AnyCollection {\n    public static int countLonger(Collection<String> words, int length) {\n        int count = 0;\n        for (String w : words) {\n            if (w.length() > length) {\n                count++;\n            }\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        Collection<String> a = new ArrayList<>();\n        Collection<String> b = new LinkedList<>();\n        for (String w : new String[] {\"queue\", \"list\", \"stack\", \"node\"}) {\n            a.add(w);\n            b.add(w);\n        }\n        System.out.println(countLonger(a, 4) + \" \" + countLonger(b, 4));\n        System.out.println(a.contains(\"node\") + \" \" + a.size() + \" \" + a.isEmpty());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java AnyCollection",
+      "stdout": "2 2\ntrue 4 false"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "The <code>Queue</code> and <code>Deque</code> you used in units 13 to 20 are also interfaces that extend <code>Collection</code>, and <code>ArrayDeque</code> and <code>LinkedList</code> implement them. That's why a <code>Queue</code> has <code>size()</code> and <code>isEmpty()</code> too."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "match",
+     "id": "coll-kinds",
+     "prompt": "Is each type an interface, an abstract class or a concrete class?",
+     "options": [
+      "Interface",
+      "Abstract class",
+      "Concrete class"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "<code>Collection</code>",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>List</code>",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>ArrayList</code>",
+       "answer": 2,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>LinkedList</code>",
+       "answer": 2,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>AbstractList</code>",
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>QueueADT</code>, from this course",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>ArrayStack</code>, from this course",
+       "answer": 2,
+       "why": null
+      }
+     ],
+     "explain": "Only concrete classes can be instantiated. Interfaces and abstract classes are used as variable and parameter types, and as things to implement or extend."
+    },
+    {
+     "type": "quiz",
+     "id": "coll-order",
+     "question": "Which line shows the hierarchy from most general to most specific?",
+     "choices": [
+      "ArrayList \u2192 List \u2192 Collection",
+      "Collection \u2192 List \u2192 ArrayList",
+      "List \u2192 Collection \u2192 ArrayList",
+      "Collection \u2192 ArrayList \u2192 List"
+     ],
+     "answer": 1,
+     "explain": "<code>Collection</code> is the most general; <code>List</code> extends it; <code>ArrayList</code> implements <code>List</code> (by way of <code>AbstractList</code>)."
+    },
+    {
+     "type": "quiz",
+     "id": "coll-which-new",
+     "question": "Which of these compiles?",
+     "choices": [
+      "<code>Collection&lt;Integer&gt; c = new Collection&lt;&gt;();</code>",
+      "<code>List&lt;Integer&gt; c = new List&lt;&gt;();</code>",
+      "<code>List&lt;Integer&gt; c = new LinkedList&lt;&gt;();</code>",
+      "<code>AbstractList&lt;Integer&gt; c = new AbstractList&lt;&gt;();</code>"
+     ],
+     "answer": 2,
+     "explain": "Only <code>LinkedList</code> is a concrete class. The variable can still have an interface type."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-coll-count",
+     "mode": "independent",
+     "title": "Works with any collection",
+     "goal": "Write <code>Counter</code> with <code>public static int countMatches(Collection&lt;String&gt; items, String target)</code>, which counts the elements equal to <code>target</code>, using only <code>Collection</code> methods (a for-each loop). <code>CounterTester</code> builds the same three words, <code>yes</code>, <code>no</code>, <code>yes</code>, in an <code>ArrayList</code> and in a <code>LinkedList</code>, both declared as <code>Collection&lt;String&gt;</code>, and prints <code>countMatches(..., &quot;yes&quot;)</code> for each on one line.",
+     "requirements": [],
+     "files": [
+      "Counter.java",
+      "CounterTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCounter.java",
+       "import java.util.ArrayDeque;\nimport java.util.Collection;\n\npublic class CheckCounter {\n    public static void main(String[] args) {\n        Collection<String> q = new ArrayDeque<>();\n        q.add(\"a\");\n        q.add(\"a\");\n        System.out.println(Counter.countMatches(q, \"a\") + \" \" + Counter.countMatches(q, \"b\"));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCounter",
+     "hints": [
+      "The tests pass an <code>ArrayDeque</code>, which is a <code>Collection</code> but not a <code>List</code>. A <code>Collection</code> parameter accepts it."
+     ],
+     "checks": [
+      {
+       "pattern": "Collection<String>\\s+items",
+       "message": "The parameter's type is <code>Collection&lt;String&gt;</code>.",
+       "file": null
+      }
+     ],
+     "run": "CounterTester",
+     "output": "2 2",
+     "testsOutput": "2 0",
+     "solution": [
+      [
+       "Counter.java",
+       "import java.util.Collection;\n\npublic class Counter {\n    public static int countMatches(Collection<String> items, String target) {\n        int count = 0;\n        for (String item : items) {\n            if (item.equals(target)) {\n                count++;\n            }\n        }\n        return count;\n    }\n}\n"
+      ],
+      [
+       "CounterTester.java",
+       "import java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.LinkedList;\n\npublic class CounterTester {\n    public static void main(String[] args) {\n        Collection<String> a = new ArrayList<>();\n        Collection<String> b = new LinkedList<>();\n        for (String w : new String[] {\"yes\", \"no\", \"yes\"}) {\n            a.add(w);\n            b.add(w);\n        }\n        System.out.println(Counter.countMatches(a, \"yes\") + \" \" + Counter.countMatches(b, \"yes\"));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-coll-range",
+     "mode": "independent",
+     "title": "Extend AbstractList",
+     "goal": "<code>AbstractList</code> does most of a list's work if you supply <code>get(int)</code> and <code>size()</code>. Write <code>Range</code>, which <code>extends AbstractList&lt;Integer&gt;</code> and represents the numbers from <code>start</code> up to, but not including, <code>end</code> (both from the constructor), <strong>without storing them</strong>: <code>get(i)</code> returns <code>start + i</code> (throw <code>IndexOutOfBoundsException</code> for a bad index) and <code>size()</code> returns <code>end - start</code>. You get <code>toString</code>, <code>contains</code>, <code>indexOf</code> and for-each for free. <code>RangeTester</code> makes <code>new Range(3, 7)</code> and prints it, <code>contains(5)</code>, <code>indexOf(6)</code> and the sum from a for-each loop.",
+     "requirements": [],
+     "files": [
+      "Range.java",
+      "RangeTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckRange.java",
+       "import java.util.List;\n\npublic class CheckRange {\n    public static void main(String[] args) {\n        List<Integer> empty = new Range(5, 5);\n        System.out.println(empty + \" \" + empty.isEmpty());\n        try {\n            new Range(0, 2).get(2);\n        } catch (IndexOutOfBoundsException e) {\n            System.out.println(\"bad index\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRange",
+     "hints": [
+      "<code>get</code> must return <code>Integer</code> (the type parameter), not <code>int</code>, to override <code>AbstractList</code>'s <code>get</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "extends\\s+AbstractList<Integer>",
+       "message": "<code>Range</code> extends <code>AbstractList&lt;Integer&gt;</code>.",
+       "file": null
+      }
+     ],
+     "run": "RangeTester",
+     "output": "[3, 4, 5, 6]\ntrue 3\n18",
+     "testsOutput": "[] true\nbad index",
+     "solution": [
+      [
+       "Range.java",
+       "import java.util.AbstractList;\n\npublic class Range extends AbstractList<Integer> {\n    private int start;\n    private int end;\n\n    public Range(int start, int end) {\n        this.start = start;\n        this.end = end;\n    }\n\n    @Override\n    public Integer get(int index) {\n        if (index < 0 || index >= size()) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size());\n        }\n        return start + index;\n    }\n\n    @Override\n    public int size() {\n        return end - start;\n    }\n}\n"
+      ],
+      [
+       "RangeTester.java",
+       "public class RangeTester {\n    public static void main(String[] args) {\n        Range r = new Range(3, 7);\n        System.out.println(r);\n        System.out.println(r.contains(5) + \" \" + r.indexOf(6));\n        int sum = 0;\n        for (int x : r) {\n            sum += x;\n        }\n        System.out.println(sum);\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Collections: Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Summary of Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/summary.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Collection<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "List<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "AbstractList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/AbstractList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "LinkedList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Abstract Methods and Classes",
+     "url": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Chapter 9: Interfaces",
+     "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html",
+     "org": "Oracle, Java Language Specification (Java SE 21)",
+     "note": null
+    }
+   ]
+  },
+  "coll-list": {
+   "id": "coll-list",
+   "section": "collections",
+   "title": "Programming to the List interface",
+   "summary": "Declare variables and parameters as <code>List</code>, create an <code>ArrayList</code> or <code>LinkedList</code>, and your code works with either. The declared type decides which methods you can call; the object decides how they run.",
+   "goals": [
+    "Declare collections with interface types and create them with concrete classes",
+    "Use the <code>Collection</code> methods and the extra position-based <code>List</code> methods",
+    "Explain why a <code>Collection</code> variable has no <code>get</code>",
+    "Choose between <code>ArrayList</code> and <code>LinkedList</code> from how a list is used"
+   ],
+   "cos225": "Exam 2 asks general questions about collections. Knowing which methods belong to <code>Collection</code> and which to <code>List</code>, and why you'd write <code>List&lt;String&gt; x = new ArrayList&lt;&gt;()</code>, covers most of them.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Interface on the left, class on the right"
+    },
+    {
+     "type": "p",
+     "html": "The usual way to create a list is <code>List&lt;String&gt; names = new ArrayList&lt;&gt;();</code>. The variable's type is the interface; only the <code>new</code> names a concrete class. Methods that take a <code>List</code> parameter accept either implementation, and switching from <code>ArrayList</code> to <code>LinkedList</code> changes one word:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Swap.java",
+       "import java.util.ArrayList;\nimport java.util.LinkedList;\nimport java.util.List;\n\npublic class Swap {\n    public static void fill(List<String> list) {\n        list.add(\"b\");\n        list.add(\"c\");\n        list.add(0, \"a\");\n        list.set(2, \"C\");\n    }\n\n    public static void main(String[] args) {\n        List<String> first = new ArrayList<>();\n        List<String> second = new LinkedList<>();\n        fill(first);\n        fill(second);\n        System.out.println(first + \" \" + second);\n        System.out.println(first.equals(second));\n        System.out.println(first.get(1) + \" \" + second.indexOf(\"C\"));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Swap",
+      "stdout": "[a, b, C] [a, b, C]\ntrue\nb 2"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "Both lists hold the same elements in the same order, so <code>equals</code> says they're equal, even though they're different classes."
+    },
+    {
+     "type": "h",
+     "html": "The declared type decides the methods"
+    },
+    {
+     "type": "p",
+     "html": "You can only call methods that the <strong>variable's type</strong> has. <code>Collection</code> has no positions, so it has no <code>get</code>, even when the object is an <code>ArrayList</code>:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "NoGet.java",
+       "import java.util.ArrayList;\nimport java.util.Collection;\n\npublic class NoGet {\n    public static void main(String[] args) {\n        Collection<String> words = new ArrayList<>();\n        words.add(\"only\");\n        System.out.println(words.get(0));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "compile",
+      "command": "javac NoGet.java",
+      "text": "NoGet.java:8: error: cannot find symbol\n        System.out.println(words.get(0));\n                                ^\n  symbol:   method get(int)\n  location: variable words of type Collection<String>\n1 error"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "This is polymorphism, as in the inheritance units: the type of the variable says what you're allowed to ask for, and the object's class decides how it's done. Use the most general type that has the methods you need: <code>Collection</code> if you only add, check and loop; <code>List</code> if you need positions."
+    },
+    {
+     "type": "h",
+     "html": "Collection methods and List methods"
+    },
+    {
+     "type": "list",
+     "items": [
+      "Every <code>Collection</code>: <code>add(x)</code>, <code>remove(x)</code>, <code>contains(x)</code>, <code>size()</code>, <code>isEmpty()</code>, <code>clear()</code>, and the for-each loop.",
+      "Added by <code>List</code>: <code>get(i)</code>, <code>set(i, x)</code>, <code>add(i, x)</code>, <code>remove(i)</code>, <code>indexOf(x)</code>."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "Watch out for <code>remove</code> on a list of <code>Integer</code>s: <code>remove(1)</code> matches <code>remove(int index)</code>, while <code>remove(Integer.valueOf(10))</code> matches <code>remove(Object)</code> and removes the value 10:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "RemoveCalls.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class RemoveCalls {\n    public static void main(String[] args) {\n        List<Integer> nums = new ArrayList<>();\n        nums.add(10);\n        nums.add(20);\n        nums.add(30);\n        nums.remove(1);\n        System.out.println(nums);\n        nums.remove(Integer.valueOf(10));\n        System.out.println(nums);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java RemoveCalls",
+      "stdout": "[10, 30]\n[30]"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Looping, and which list to choose"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Loops.java",
+       "import java.util.LinkedList;\nimport java.util.List;\n\npublic class Loops {\n    public static void main(String[] args) {\n        List<String> list = new LinkedList<>();\n        list.add(\"x\");\n        list.add(\"y\");\n        list.add(\"z\");\n        for (String s : list) {\n            System.out.print(s + \" \");\n        }\n        System.out.println();\n        for (int i = 0; i < list.size(); i++) {\n            System.out.print(list.get(i) + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Loops",
+      "stdout": "x y z \nx y z "
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "Both loops print the same thing. On a <code>LinkedList</code>, the for-each loop walks the nodes once (O(n)), while each <code>get(i)</code> walks from an end, so the index loop is O(n\u00b2), as you measured in unit 17. Prefer for-each when you don't need the index."
+    },
+    {
+     "type": "list",
+     "items": [
+      "**<code>ArrayList</code>**: fast <code>get</code> and <code>set</code> by index, fast adds at the end. The usual default.",
+      "**<code>LinkedList</code>**: fast adds and removes at either end, and it also implements <code>Deque</code>, so it can serve as a stack or queue. Slow <code>get(i)</code>."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "list-types",
+     "title": "Choose the types",
+     "prompt": "Fill in the three types so <code>total</code> accepts any list of <code>Integer</code>s.",
+     "files": [
+      [
+       "Totals.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Totals {\n    public static int total([[ptype]] scores) {\n        int sum = 0;\n        for ([[elem]] s : scores) {\n            sum += s;\n        }\n        return sum;\n    }\n\n    public static void main(String[] args) {\n        [[vtype]] scores = new ArrayList<>();\n        scores.add(7);\n        scores.add(9);\n        System.out.println(total(scores));\n    }\n}\n"
+      ]
+     ],
+     "run": "Totals",
+     "blanks": {
+      "ptype": {
+       "accept": [
+        "List<Integer>"
+       ],
+       "solution": "List<Integer>",
+       "hint": "The interface type, with the element type in <code>&lt; &gt;</code>.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "ArrayList<Integer>",
+         "shown": "ArrayList<Integer>",
+         "why": "The variable passed in is declared as a <code>List&lt;Integer&gt;</code>, and the compiler only knows it's a <code>List</code>, so it won't pass it where an <code>ArrayList</code> is required. Use the interface for the parameter too.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Totals.java",
+          "text": "Totals.java:17: error: incompatible types: List<Integer> cannot be converted to ArrayList<Integer>\n        System.out.println(total(scores));\n                                 ^\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n1 error"
+         }
+        }
+       ],
+       "width": 18
+      },
+      "elem": {
+       "accept": [
+        "int",
+        "Integer"
+       ],
+       "solution": "int",
+       "hint": "Each element is an <code>Integer</code>; unboxing lets you use <code>int</code> too.",
+       "exact": false,
+       "wrong": [],
+       "width": 7
+      },
+      "vtype": {
+       "accept": [
+        "List<Integer>",
+        "ArrayList<Integer>"
+       ],
+       "solution": "List<Integer>",
+       "hint": "Interface on the left, class on the right.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "List<int>",
+         "shown": "List<int>",
+         "why": "Generic types need object types, so it's <code>List&lt;Integer&gt;</code>, not <code>List&lt;int&gt;</code>.",
+         "result": {
+          "kind": "compile",
+          "command": "javac Totals.java",
+          "text": "Totals.java:14: error: unexpected type\n        List<int> scores = new ArrayList<>();\n             ^\n  required: reference\n  found:    int\n1 error"
+         }
+        }
+       ],
+       "width": 18
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java Totals",
+      "stdout": "16"
+     },
+     "explain": "<code>List&lt;Integer&gt;</code> as the parameter and variable type lets <code>total</code> work with any list of integers."
+    },
+    {
+     "type": "quiz",
+     "id": "list-which-methods",
+     "question": "A variable is declared <code>Collection&lt;String&gt; c = new LinkedList&lt;&gt;();</code>. Which call does <strong>not</strong> compile?",
+     "choices": [
+      "<code>c.add(&quot;x&quot;)</code>",
+      "<code>c.size()</code>",
+      "<code>c.contains(&quot;x&quot;)</code>",
+      "<code>c.get(0)</code>"
+     ],
+     "answer": 3,
+     "explain": "<code>get</code> belongs to <code>List</code>, not <code>Collection</code>. The object is a <code>LinkedList</code>, but the compiler only knows it as a <code>Collection</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "list-why",
+     "question": "Why write <code>List&lt;String&gt; names = new ArrayList&lt;&gt;();</code> rather than <code>ArrayList&lt;String&gt; names = new ArrayList&lt;&gt;();</code>?",
+     "choices": [
+      "It runs faster",
+      "The rest of the code only depends on <code>List</code>, so you can switch to another <code>List</code> implementation by changing one line",
+      "<code>ArrayList</code> variables can't hold strings",
+      "It uses less memory"
+     ],
+     "answer": 1,
+     "explain": "Programming to the interface keeps the choice of implementation in one place."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-list-removeevens",
+     "mode": "independent",
+     "title": "Remove from any list",
+     "goal": "Write <code>Evens</code> with <code>public static void removeEvens(List&lt;Integer&gt; list)</code>, which removes every even number. Loop over the indexes <strong>from the end down to 0</strong>, so removing an element doesn't shift the ones you haven't checked yet. <code>EvensTester</code> runs it on an <code>ArrayList</code> and a <code>LinkedList</code> holding 1 to 8 and prints both.",
+     "requirements": [],
+     "files": [
+      "Evens.java",
+      "EvensTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckEvens.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class CheckEvens {\n    public static void main(String[] args) {\n        List<Integer> l = new ArrayList<>();\n        l.add(2);\n        l.add(4);\n        l.add(-6);\n        l.add(9);\n        Evens.removeEvens(l);\n        System.out.println(l);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckEvens",
+     "hints": [
+      "Counting up and removing at <code>i</code> skips the element that slides into slot <code>i</code>. Counting down avoids that.",
+      "<code>remove(i)</code> with an <code>int</code> removes by index, which is what you want here."
+     ],
+     "checks": [],
+     "run": "EvensTester",
+     "output": "[1, 3, 5, 7] [1, 3, 5, 7]",
+     "testsOutput": "[9]",
+     "solution": [
+      [
+       "Evens.java",
+       "import java.util.List;\n\npublic class Evens {\n    public static void removeEvens(List<Integer> list) {\n        for (int i = list.size() - 1; i >= 0; i--) {\n            if (list.get(i) % 2 == 0) {\n                list.remove(i);\n            }\n        }\n    }\n}\n"
+      ],
+      [
+       "EvensTester.java",
+       "import java.util.ArrayList;\nimport java.util.LinkedList;\nimport java.util.List;\n\npublic class EvensTester {\n    public static void main(String[] args) {\n        List<Integer> a = new ArrayList<>();\n        List<Integer> b = new LinkedList<>();\n        for (int i = 1; i <= 8; i++) {\n            a.add(i);\n            b.add(i);\n        }\n        Evens.removeEvens(a);\n        Evens.removeEvens(b);\n        System.out.println(a + \" \" + b);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-list-zip",
+     "mode": "independent",
+     "title": "Zip two lists together",
+     "goal": "Write <code>Zip</code> with <code>public static List&lt;String&gt; zip(List&lt;String&gt; a, List&lt;String&gt; b)</code>, returning a new <code>ArrayList</code> with elements taken alternately from <code>a</code> and <code>b</code>: <code>a[0]</code>, <code>b[0]</code>, <code>a[1]</code>, <code>b[1]</code>, \u2026 When one list runs out, the rest of the other follows. <code>ZipTester</code> zips <code>[1, 2, 3]</code> with <code>[x]</code> and prints the result.",
+     "requirements": [],
+     "files": [
+      "Zip.java",
+      "ZipTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckZip.java",
+       "import java.util.ArrayList;\nimport java.util.LinkedList;\nimport java.util.List;\n\npublic class CheckZip {\n    public static void main(String[] args) {\n        List<String> a = new LinkedList<>();\n        List<String> b = new ArrayList<>();\n        b.add(\"p\");\n        b.add(\"q\");\n        System.out.println(Zip.zip(a, b) + \" \" + Zip.zip(b, b));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckZip",
+     "hints": [],
+     "checks": [],
+     "run": "ZipTester",
+     "output": "[1, x, 2, 3]",
+     "testsOutput": "[p, q] [p, p, q, q]",
+     "solution": [
+      [
+       "Zip.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Zip {\n    public static List<String> zip(List<String> a, List<String> b) {\n        List<String> result = new ArrayList<>();\n        int longest = Math.max(a.size(), b.size());\n        for (int i = 0; i < longest; i++) {\n            if (i < a.size()) {\n                result.add(a.get(i));\n            }\n            if (i < b.size()) {\n                result.add(b.get(i));\n            }\n        }\n        return result;\n    }\n}\n"
+      ],
+      [
+       "ZipTester.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class ZipTester {\n    public static void main(String[] args) {\n        List<String> a = new ArrayList<>();\n        a.add(\"1\");\n        a.add(\"2\");\n        a.add(\"3\");\n        List<String> b = new ArrayList<>();\n        b.add(\"x\");\n        System.out.println(Zip.zip(a, b));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "The List Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/list.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "List<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Collection<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "LinkedList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Lists (Collections Framework)",
+     "url": "https://dev.java/learn/api/collections-framework/lists/",
+     "org": "Oracle, dev.java",
+     "note": null
+    }
+   ]
+  },
+  "ws-collections": {
+   "id": "ws-collections",
+   "section": "collections",
+   "title": "Workshop: collections",
+   "summary": "Write code against the <code>List</code> interface and switch implementations in one line, then build your own list class on <code>AbstractList</code> and see how much Java gives you for free.",
+   "goals": [
+    "Declare and pass collections by their interface types",
+    "Extend <code>AbstractList</code> by supplying the few methods it leaves abstract",
+    "Explain what interfaces, abstract classes and concrete classes each contribute"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: A gradebook on the List interface"
+    },
+    {
+     "type": "write",
+     "id": "ws-u21-gradebook",
+     "mode": "guided",
+     "title": "A gradebook on the List interface",
+     "goal": "Every method takes a <code>List&lt;Integer&gt;</code>, so the implementation can change without touching them.",
+     "requirements": [],
+     "files": [
+      "Gradebook.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Average",
+       "text": "In <code>Gradebook</code>, write <code>average(List&lt;Integer&gt; scores)</code> with a for-each loop. In <code>main</code>, put five marks into a <code>List&lt;Integer&gt;</code> created as an <code>ArrayList</code>, and print the list and its average.",
+       "hint": null,
+       "files": [
+        "Gradebook.java"
+       ],
+       "run": "Gradebook",
+       "output": "[88, 42, 95, 67, 30] average 64.4",
+       "checks": [],
+       "solution": [
+        [
+         "Gradebook.java",
+         "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Gradebook {\n    public static double average(List<Integer> scores) {\n        int sum = 0;\n        for (int s : scores) {\n            sum += s;\n        }\n        return (double) sum / scores.size();\n    }\n\n    public static void main(String[] args) {\n        List<Integer> scores = new ArrayList<>();\n        int[] marks = {88, 42, 95, 67, 30};\n        for (int m : marks) {\n            scores.add(m);\n        }\n        System.out.println(scores + \" average \" + average(scores));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Removing low marks",
+       "text": "Add <code>removeBelow(List&lt;Integer&gt; scores, int limit)</code>, which removes every mark below <code>limit</code> (loop from the end) and returns how many it removed. Remove those below 50.",
+       "hint": null,
+       "files": [
+        "Gradebook.java"
+       ],
+       "run": "Gradebook",
+       "output": "[88, 42, 95, 67, 30] average 64.4\n2 removed: [88, 95, 67] average 83.33333333333333",
+       "checks": [],
+       "solution": [
+        [
+         "Gradebook.java",
+         "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Gradebook {\n    public static double average(List<Integer> scores) {\n        int sum = 0;\n        for (int s : scores) {\n            sum += s;\n        }\n        return (double) sum / scores.size();\n    }\n\n    public static int removeBelow(List<Integer> scores, int limit) {\n        int removed = 0;\n        for (int i = scores.size() - 1; i >= 0; i--) {\n            if (scores.get(i) < limit) {\n                scores.remove(i);\n                removed++;\n            }\n        }\n        return removed;\n    }\n\n    public static void main(String[] args) {\n        List<Integer> scores = new ArrayList<>();\n        int[] marks = {88, 42, 95, 67, 30};\n        for (int m : marks) {\n            scores.add(m);\n        }\n        System.out.println(scores + \" average \" + average(scores));\n        int removed = removeBelow(scores, 50);\n        System.out.println(removed + \" removed: \" + scores + \" average \" + average(scores));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Switch to LinkedList",
+       "text": "Change the one <code>new ArrayList&lt;&gt;()</code> to <code>new LinkedList&lt;&gt;()</code> (and the import). Nothing else needs to change. Add <code>highest(List&lt;Integer&gt;)</code>, and print it with <code>scores.getClass().getSimpleName()</code> to prove which class you're using.",
+       "hint": null,
+       "files": [
+        "Gradebook.java"
+       ],
+       "run": "Gradebook",
+       "output": "[88, 42, 95, 67, 30] average 64.4\n2 removed: [88, 95, 67] average 83.33333333333333\nhighest 95, stored in a LinkedList",
+       "checks": [
+        {
+         "pattern": "new\\s+LinkedList<>\\(\\)",
+         "message": "The list is created as a <code>LinkedList</code>.",
+         "file": null
+        }
+       ],
+       "solution": [
+        [
+         "Gradebook.java",
+         "import java.util.LinkedList;\nimport java.util.List;\n\npublic class Gradebook {\n    public static double average(List<Integer> scores) {\n        int sum = 0;\n        for (int s : scores) {\n            sum += s;\n        }\n        return (double) sum / scores.size();\n    }\n\n    public static int removeBelow(List<Integer> scores, int limit) {\n        int removed = 0;\n        for (int i = scores.size() - 1; i >= 0; i--) {\n            if (scores.get(i) < limit) {\n                scores.remove(i);\n                removed++;\n            }\n        }\n        return removed;\n    }\n\n    public static int highest(List<Integer> scores) {\n        int best = scores.get(0);\n        for (int s : scores) {\n            if (s > best) {\n                best = s;\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        List<Integer> scores = new LinkedList<>();\n        int[] marks = {88, 42, 95, 67, 30};\n        for (int m : marks) {\n            scores.add(m);\n        }\n        System.out.println(scores + \" average \" + average(scores));\n        int removed = removeBelow(scores, 50);\n        System.out.println(removed + \" removed: \" + scores + \" average \" + average(scores));\n        System.out.println(\"highest \" + highest(scores) + \", stored in a \" + scores.getClass().getSimpleName());\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: Your own list on AbstractList"
+    },
+    {
+     "type": "write",
+     "id": "ws-u21-abstractlist",
+     "mode": "guided",
+     "title": "Your own list on AbstractList",
+     "goal": "Write <code>FixedList&lt;T&gt;</code> by extending <code>AbstractList&lt;T&gt;</code>: supply storage and a few methods, and inherit the rest of <code>List</code>.",
+     "requirements": [],
+     "files": [
+      "FixedList.java",
+      "FixedTester.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "get, size and add",
+       "text": "Extend <code>AbstractList&lt;T&gt;</code> with an <code>Object[]</code> of 4 and a <code>size</code>. Override <code>get(int)</code>, <code>size()</code> and <code>add(int index, T element)</code> (shift right, growing when full). <code>AbstractList</code>'s <code>add(T)</code> calls your <code>add(size(), element)</code>, and <code>toString</code>, <code>contains</code> and <code>indexOf</code> work through your <code>get</code>.",
+       "hint": null,
+       "files": [
+        "FixedList.java",
+        "FixedTester.java"
+       ],
+       "run": "FixedTester",
+       "output": "[a, b, c, d, e] 5\ntrue 4",
+       "checks": [],
+       "solution": [
+        [
+         "FixedList.java",
+         "import java.util.AbstractList;\n\npublic class FixedList<T> extends AbstractList<T> {\n    private Object[] data = new Object[4];\n    private int size = 0;\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return (T) data[index];\n    }\n\n    @Override\n    public int size() {\n        return size;\n    }\n\n    @Override\n    public void add(int index, T element) {\n        if (index < 0 || index > size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        if (size == data.length) {\n            Object[] bigger = new Object[data.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = data[i];\n            }\n            data = bigger;\n        }\n        for (int i = size; i > index; i--) {\n            data[i] = data[i - 1];\n        }\n        data[index] = element;\n        size++;\n    }\n}\n"
+        ],
+        [
+         "FixedTester.java",
+         "import java.util.List;\n\npublic class FixedTester {\n    public static void main(String[] args) {\n        List<String> list = new FixedList<>();\n        list.add(\"b\");\n        list.add(\"d\");\n        list.add(0, \"a\");\n        list.add(2, \"c\");\n        list.add(\"e\");\n        System.out.println(list + \" \" + list.size());\n        System.out.println(list.contains(\"c\") + \" \" + list.indexOf(\"e\"));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "set and remove",
+       "text": "Override <code>set(int, T)</code> (return the old element) and <code>remove(int)</code> (shift left, clear the last slot). <code>AbstractList</code>'s <code>remove(Object)</code> now works too, because it finds the index and calls yours.",
+       "hint": null,
+       "files": [
+        "FixedList.java",
+        "FixedTester.java"
+       ],
+       "run": "FixedTester",
+       "output": "b a [B, c, d]\n[B, c]",
+       "checks": [],
+       "solution": [
+        [
+         "FixedList.java",
+         "import java.util.AbstractList;\n\npublic class FixedList<T> extends AbstractList<T> {\n    private Object[] data = new Object[4];\n    private int size = 0;\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return (T) data[index];\n    }\n\n    @Override\n    public int size() {\n        return size;\n    }\n\n    @Override\n    public T set(int index, T element) {\n        T old = get(index);\n        data[index] = element;\n        return old;\n    }\n\n    @Override\n    public T remove(int index) {\n        T old = get(index);\n        for (int i = index; i < size - 1; i++) {\n            data[i] = data[i + 1];\n        }\n        size--;\n        data[size] = null;\n        return old;\n    }\n\n    @Override\n    public void add(int index, T element) {\n        if (index < 0 || index > size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        if (size == data.length) {\n            Object[] bigger = new Object[data.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = data[i];\n            }\n            data = bigger;\n        }\n        for (int i = size; i > index; i--) {\n            data[i] = data[i - 1];\n        }\n        data[index] = element;\n        size++;\n    }\n}\n"
+        ],
+        [
+         "FixedTester.java",
+         "import java.util.List;\n\npublic class FixedTester {\n    public static void main(String[] args) {\n        List<String> list = new FixedList<>();\n        for (String s : new String[] {\"a\", \"b\", \"c\", \"d\"}) {\n            list.add(s);\n        }\n        System.out.println(list.set(1, \"B\") + \" \" + list.remove(0) + \" \" + list);\n        list.remove(\"d\");\n        System.out.println(list);\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "All of List, for free",
+       "text": "Without changing <code>FixedList</code>, try more <code>List</code> methods: <code>equals</code> against an <code>ArrayList</code>, <code>lastIndexOf</code>, <code>removeIf</code> and <code>clear</code>. Every one comes from <code>AbstractList</code> and <code>AbstractCollection</code>, built on your overrides.",
+       "hint": "<code>x -&gt; x % 2 == 0</code> is a lambda: a small function that returns <code>true</code> for even numbers. <code>removeIf</code> removes each element it returns <code>true</code> for.",
+       "files": [
+        "FixedList.java",
+        "FixedTester.java"
+       ],
+       "run": "FixedTester",
+       "output": "true 3\n[1, 9, 25] false\n[] true",
+       "checks": [],
+       "solution": [
+        [
+         "FixedList.java",
+         "import java.util.AbstractList;\n\npublic class FixedList<T> extends AbstractList<T> {\n    private Object[] data = new Object[4];\n    private int size = 0;\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T get(int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        return (T) data[index];\n    }\n\n    @Override\n    public int size() {\n        return size;\n    }\n\n    @Override\n    public T set(int index, T element) {\n        T old = get(index);\n        data[index] = element;\n        return old;\n    }\n\n    @Override\n    public T remove(int index) {\n        T old = get(index);\n        for (int i = index; i < size - 1; i++) {\n            data[i] = data[i + 1];\n        }\n        size--;\n        data[size] = null;\n        return old;\n    }\n\n    @Override\n    public void add(int index, T element) {\n        if (index < 0 || index > size) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + size);\n        }\n        if (size == data.length) {\n            Object[] bigger = new Object[data.length * 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = data[i];\n            }\n            data = bigger;\n        }\n        for (int i = size; i > index; i--) {\n            data[i] = data[i - 1];\n        }\n        data[index] = element;\n        size++;\n    }\n}\n"
+        ],
+        [
+         "FixedTester.java",
+         "import java.util.ArrayList;\nimport java.util.List;\n\npublic class FixedTester {\n    public static void main(String[] args) {\n        List<Integer> mine = new FixedList<>();\n        List<Integer> javas = new ArrayList<>();\n        for (int i = 1; i <= 5; i++) {\n            mine.add(i * i);\n            javas.add(i * i);\n        }\n        System.out.println(mine.equals(javas) + \" \" + mine.lastIndexOf(16));\n        mine.removeIf(x -> x % 2 == 0);\n        System.out.println(mine + \" \" + mine.isEmpty());\n        mine.clear();\n        System.out.println(mine + \" \" + mine.isEmpty());\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: Remove duplicates, keep the order"
+    },
+    {
+     "type": "write",
+     "id": "ws-u21-dedupe",
+     "mode": "independent",
+     "title": "Remove duplicates, keep the order",
+     "goal": "Write <code>Dedupe</code> with <code>public static List&lt;String&gt; unique(List&lt;String&gt; words)</code>, returning a new <code>ArrayList</code> with each word once, in the order it first appeared. Use <code>contains</code> on the result list to check. (This is O(n\u00b2), since <code>contains</code> searches; a <code>Set</code> would be faster, but sets aren't covered here.) <code>DedupeTester</code> prints <code>unique</code> of <code>to be or not to be</code>, split on spaces.",
+     "requirements": [],
+     "files": [
+      "Dedupe.java",
+      "DedupeTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDedupe.java",
+       "import java.util.LinkedList;\nimport java.util.List;\n\npublic class CheckDedupe {\n    public static void main(String[] args) {\n        List<String> words = new LinkedList<>();\n        words.add(\"a\");\n        words.add(\"a\");\n        System.out.println(Dedupe.unique(words) + \" \" + words + \" \" + Dedupe.unique(new LinkedList<>()));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDedupe",
+     "hints": [],
+     "checks": [],
+     "run": "DedupeTester",
+     "output": "[to, be, or, not]",
+     "testsOutput": "[a] [a, a] []",
+     "solution": [
+      [
+       "Dedupe.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Dedupe {\n    public static List<String> unique(List<String> words) {\n        List<String> result = new ArrayList<>();\n        for (String w : words) {\n            if (!result.contains(w)) {\n                result.add(w);\n            }\n        }\n        return result;\n    }\n}\n"
+      ],
+      [
+       "DedupeTester.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class DedupeTester {\n    public static void main(String[] args) {\n        List<String> words = new ArrayList<>();\n        for (String w : \"to be or not to be\".split(\" \")) {\n            words.add(w);\n        }\n        System.out.println(Dedupe.unique(words));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: A generic rotate"
+    },
+    {
+     "type": "write",
+     "id": "ws-u21-rotate",
+     "mode": "independent",
+     "title": "A generic rotate",
+     "goal": "Write <code>Rotate</code> with a <strong>generic</strong> method <code>public static &lt;T&gt; void rotateRight(List&lt;T&gt; list, int k)</code> that moves the last element to the front, <code>k</code> times, using <code>list.add(0, list.remove(list.size() - 1))</code>. Do nothing for an empty list. <code>RotateTester</code> rotates a <code>List&lt;String&gt;</code> of <code>a</code> to <code>e</code> by 2 and a <code>List&lt;Integer&gt;</code> of 1 to 3 by 4, and prints both.",
+     "requirements": [],
+     "files": [
+      "Rotate.java",
+      "RotateTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckRotate.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class CheckRotate {\n    public static void main(String[] args) {\n        List<Double> empty = new ArrayList<>();\n        Rotate.rotateRight(empty, 3);\n        System.out.println(empty);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRotate",
+     "hints": [
+      "<code>&lt;T&gt;</code> before the return type declares the method's type parameter, so the same method works for a <code>List&lt;String&gt;</code> and a <code>List&lt;Integer&gt;</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "static\\s+<T>",
+       "message": "<code>rotateRight</code> is a generic method: <code>public static &lt;T&gt; void ...</code>.",
+       "file": null
+      }
+     ],
+     "run": "RotateTester",
+     "output": "[d, e, a, b, c] [3, 1, 2]",
+     "testsOutput": "[]",
+     "solution": [
+      [
+       "Rotate.java",
+       "import java.util.List;\n\npublic class Rotate {\n    public static <T> void rotateRight(List<T> list, int k) {\n        if (list.isEmpty()) {\n            return;\n        }\n        for (int i = 0; i < k; i++) {\n            list.add(0, list.remove(list.size() - 1));\n        }\n    }\n}\n"
+      ],
+      [
+       "RotateTester.java",
+       "import java.util.ArrayList;\nimport java.util.LinkedList;\nimport java.util.List;\n\npublic class RotateTester {\n    public static void main(String[] args) {\n        List<String> letters = new ArrayList<>();\n        for (String s : new String[] {\"a\", \"b\", \"c\", \"d\", \"e\"}) {\n            letters.add(s);\n        }\n        List<Integer> nums = new LinkedList<>();\n        for (int i = 1; i <= 3; i++) {\n            nums.add(i);\n        }\n        Rotate.rotateRight(letters, 2);\n        Rotate.rotateRight(nums, 4);\n        System.out.println(letters + \" \" + nums);\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "Collections: Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "List<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "AbstractList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/AbstractList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "LinkedList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Generic Types",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
+     "org": "Oracle, The Java Tutorials",
      "note": null
     }
    ]

@@ -69,7 +69,7 @@ SECTIONS = [
      "lessons": ["ds-choose", "ds-project", "ws-ds-use-cases"]},
     {"id": "collections", "title": "Introduction to Collections (Java)",
      "blurb": "Java's Collection → List → ArrayList/LinkedList hierarchy, and interfaces versus abstract and concrete classes.",
-     "planned": ["The Collection hierarchy", "Programming to the List interface", "Workshop"]},
+     "lessons": ["coll-hierarchy", "coll-list", "ws-collections"]},
     {"id": "exam-2", "kind": "exam", "title": "Exam practice 2",
      "blurb": "Units 13 to 21, in the Exam 2 format: diagram problems on arrays, linked lists, stacks and queues; short answers and matching on algorithms; and code writing with scaffolding provided.",
      "planned": ["Procedural problems: diagrams", "Short answers and matching", "Code writing: a few lines each"]},
