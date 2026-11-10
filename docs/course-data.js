@@ -213,10 +213,10 @@ window.COURSE = {
    "id": "ds-use-cases",
    "title": "Queues/Stacks/Linked List use cases",
    "blurb": "Choosing the right structure for a problem, and building with it.",
-   "planned": [
-    "Choosing a structure",
-    "Project: an undo history and a print queue",
-    "Workshop"
+   "lessons": [
+    "ds-choose",
+    "ds-project",
+    "ws-ds-use-cases"
    ]
   },
   {
@@ -26919,6 +26919,978 @@ window.COURSE = {
      "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Deque.html",
      "org": "Oracle, Java SE 21 API docs",
      "note": "Says a Deque should be used as a stack in preference to the legacy Stack class."
+    }
+   ]
+  },
+  "ds-choose": {
+   "id": "ds-choose",
+   "section": "ds-use-cases",
+   "title": "Choosing a structure",
+   "summary": "Stacks, queues, array lists and linked lists can all hold the same values. What decides between them is the order you need things back in and which operations you'll do most.",
+   "goals": [
+    "Pick a stack, queue, array list or linked list for a described problem",
+    "See how swapping a queue for a stack changes the order of an exploration",
+    "Justify a choice with the big O of the operations it needs"
+   ],
+   "cos225": "The Exam 2 guide asks what each structure is for and how array and linked versions compare. Short-answer questions often describe a situation and ask which structure fits.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Three questions"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>What order do you need values back in?</strong> Most recent first: a stack. Oldest first: a queue. Any position, by index: a list.",
+      "<strong>Where do you add and remove?</strong> Only at one end: a stack. One end in, the other out: a queue. Anywhere: a list.",
+      "<strong>Which operation happens most?</strong> Reading by index favours an array-based list (O(1)). Adding and removing at the front, or next to a node you already have, favours a linked list (O(1))."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Same code, different order"
+    },
+    {
+     "type": "p",
+     "html": "Here's a building where each room has doors to other rooms. Both methods explore from room 0 the same way: take a room from the to-visit collection, then add the rooms it leads to. The only difference is whether that collection is a queue or a stack:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Explore.java",
+       "import java.util.ArrayDeque;\nimport java.util.Deque;\nimport java.util.Queue;\n\npublic class Explore {\n    // Room i has doors to the rooms listed in doors[i].\n    static int[][] doors = {\n        {1, 2},     // room 0\n        {3, 4},     // room 1\n        {5},        // room 2\n        {},         // room 3\n        {},         // room 4\n        {}          // room 5\n    };\n\n    public static void withQueue() {\n        boolean[] seen = new boolean[doors.length];\n        Queue<Integer> toVisit = new ArrayDeque<>();\n        toVisit.add(0);\n        seen[0] = true;\n        String order = \"\";\n        while (!toVisit.isEmpty()) {\n            int room = toVisit.remove();\n            order += room + \" \";\n            for (int next : doors[room]) {\n                if (!seen[next]) {\n                    seen[next] = true;\n                    toVisit.add(next);\n                }\n            }\n        }\n        System.out.println(\"queue: \" + order);\n    }\n\n    public static void withStack() {\n        boolean[] seen = new boolean[doors.length];\n        Deque<Integer> toVisit = new ArrayDeque<>();\n        toVisit.push(0);\n        seen[0] = true;\n        String order = \"\";\n        while (!toVisit.isEmpty()) {\n            int room = toVisit.pop();\n            order += room + \" \";\n            for (int next : doors[room]) {\n                if (!seen[next]) {\n                    seen[next] = true;\n                    toVisit.push(next);\n                }\n            }\n        }\n        System.out.println(\"stack: \" + order);\n    }\n\n    public static void main(String[] args) {\n        withQueue();\n        withStack();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Explore",
+      "stdout": "queue: 0 1 2 3 4 5 \nstack: 0 2 5 1 4 3 "
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>With a queue</strong>, rooms are visited in the order they were discovered: first everything one door from room 0 (1 and 2), then everything two doors away (3, 4 and 5). This is <strong>breadth-first search</strong>, and it finds the shortest route to every room.",
+      "<strong>With a stack</strong>, the most recently discovered room is explored next, so the search runs as deep as it can down one branch before backing up. This is <strong>depth-first search</strong>."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "Princeton's *Algorithms* (section 4.1) covers both searches; its breadth-first search uses a queue just like this one. You'll meet the same ideas again with trees."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "match",
+     "id": "choose-match",
+     "prompt": "Match each situation with the structure that fits it best.",
+     "options": [
+      "Stack",
+      "Queue",
+      "Array-based list",
+      "Linked list"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "A browser's back button",
+       "answer": 0,
+       "why": "The most recent page is the one you go back to: LIFO."
+      },
+      {
+       "code": null,
+       "html": "Customers waiting for the next available agent",
+       "answer": 1,
+       "why": "First come, first served: FIFO."
+      },
+      {
+       "code": null,
+       "html": "Reading the 500th of a million stored values, often",
+       "answer": 2,
+       "why": "Direct access by index is O(1)."
+      },
+      {
+       "code": null,
+       "html": "A playlist where songs are often inserted and removed right after the one playing",
+       "answer": 3,
+       "why": "With a reference to the current node, linking in or out after it is O(1)."
+      },
+      {
+       "code": null,
+       "html": "Checking that every <code>{</code> in a file has a matching <code>}</code>",
+       "answer": 0,
+       "why": "The most recently opened brace must close first."
+      },
+      {
+       "code": null,
+       "html": "Jobs sent to a shared printer",
+       "answer": 1,
+       "why": "Printed in the order they arrived."
+      },
+      {
+       "code": null,
+       "html": "Undoing edits in a text editor",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "Taking turns in a game, round after round",
+       "answer": 1,
+       "why": "Rotate: the player who just went goes to the back."
+      }
+     ],
+     "explain": null
+    },
+    {
+     "type": "quiz",
+     "id": "choose-bfs",
+     "question": "In the exploration above, what would change if <code>withQueue</code> used a stack instead?",
+     "choices": [
+      "Nothing; both visit rooms in the same order",
+      "It would visit rooms deep down one branch before rooms closer to the start",
+      "It would visit fewer rooms",
+      "It would crash on the empty rooms"
+     ],
+     "answer": 1,
+     "explain": "Swapping the queue for a stack turns breadth-first into depth-first: same rooms, different order."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-choose-distance",
+     "mode": "independent",
+     "title": "How many doors away?",
+     "goal": "Using the same <code>doors</code> layout idea as the lesson, write <code>Distance</code> with <code>public static int[] distances(int[][] doors, int start)</code>: a breadth-first search with a <code>Queue&lt;Integer&gt;</code> that records, for every room, how many doors it is from <code>start</code> (-1 if it can't be reached). Set a room's distance when you first add it to the queue: one more than the room you reached it from. <code>main</code> uses the layout below and prints <code>Arrays.toString(distances(doors, 0))</code> for the layout <code>{{1, 2}, {3}, {3, 4}, {5}, {}, {}, {0}}</code> (room 6 has a door to room 0, but nothing leads to room 6).",
+     "requirements": [],
+     "files": [
+      "Distance.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDistance.java",
+       "import java.util.Arrays;\n\npublic class CheckDistance {\n    public static void main(String[] args) {\n        int[][] ring = {{1}, {2}, {0}};\n        System.out.println(Arrays.toString(Distance.distances(ring, 1)));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDistance",
+     "hints": [
+      "Using -1 for \"not reached yet\" means you don't need a separate <code>seen</code> array."
+     ],
+     "checks": [],
+     "run": "Distance",
+     "output": "[0, 1, 1, 2, 2, 3, -1]",
+     "testsOutput": "[2, 0, 1]",
+     "solution": [
+      [
+       "Distance.java",
+       "import java.util.ArrayDeque;\nimport java.util.Arrays;\nimport java.util.Queue;\n\npublic class Distance {\n    public static int[] distances(int[][] doors, int start) {\n        int[] dist = new int[doors.length];\n        Arrays.fill(dist, -1);\n        Queue<Integer> toVisit = new ArrayDeque<>();\n        dist[start] = 0;\n        toVisit.add(start);\n        while (!toVisit.isEmpty()) {\n            int room = toVisit.remove();\n            for (int next : doors[room]) {\n                if (dist[next] == -1) {\n                    dist[next] = dist[room] + 1;\n                    toVisit.add(next);\n                }\n            }\n        }\n        return dist;\n    }\n\n    public static void main(String[] args) {\n        int[][] doors = {{1, 2}, {3}, {3, 4}, {5}, {}, {}, {0}};\n        System.out.println(Arrays.toString(distances(doors, 0)));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-choose-reachable",
+     "mode": "independent",
+     "title": "Count reachable rooms with a stack",
+     "goal": "Write <code>Reach</code> with <code>public static int countReachable(int[][] doors, int start)</code>, a depth-first search with a <code>Deque&lt;Integer&gt;</code> stack and a <code>boolean[] seen</code>, returning how many rooms (including <code>start</code>) can be reached. <code>main</code> prints the count from room 0 and from room 4 for <code>{{1}, {2}, {0}, {0}, {3}}</code>.",
+     "requirements": [],
+     "files": [
+      "Reach.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckReach.java",
+       "public class CheckReach {\n    public static void main(String[] args) {\n        int[][] alone = {{}, {0}};\n        System.out.println(Reach.countReachable(alone, 0) + \" \" + Reach.countReachable(alone, 1));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckReach",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "\\.push\\(",
+       "message": "Use the <code>Deque</code> as a stack with <code>push</code> and <code>pop</code>.",
+       "file": null
+      }
+     ],
+     "run": "Reach",
+     "output": "3\n5",
+     "testsOutput": "1 2",
+     "solution": [
+      [
+       "Reach.java",
+       "import java.util.ArrayDeque;\nimport java.util.Deque;\n\npublic class Reach {\n    public static int countReachable(int[][] doors, int start) {\n        boolean[] seen = new boolean[doors.length];\n        Deque<Integer> toVisit = new ArrayDeque<>();\n        toVisit.push(start);\n        seen[start] = true;\n        int count = 0;\n        while (!toVisit.isEmpty()) {\n            int room = toVisit.pop();\n            count++;\n            for (int next : doors[room]) {\n                if (!seen[next]) {\n                    seen[next] = true;\n                    toVisit.push(next);\n                }\n            }\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        int[][] doors = {{1}, {2}, {0}, {0}, {3}};\n        System.out.println(countReachable(doors, 0));\n        System.out.println(countReachable(doors, 4));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "4.1 Undirected Graphs",
+     "url": "https://algs4.cs.princeton.edu/41graph/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "The Queue Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/queue.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Deque<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Deque.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": "Says a Deque should be used as a stack in preference to the legacy Stack class."
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "LinkedList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "ds-project": {
+   "id": "ds-project",
+   "section": "ds-use-cases",
+   "title": "Project: an undo history and a print queue",
+   "summary": "Put a stack and a queue to work in one small program: documents that remember their edits so they can be undone, and a printer that prints jobs in the order they were sent.",
+   "goals": [
+    "Use a stack field to give a class an undo history",
+    "Use a queue field to process requests in arrival order",
+    "Program to the <code>StackADT</code> and <code>QueueADT</code> interfaces, not to one implementation"
+   ],
+   "cos225": "Exam 2's code-writing questions give you classes like these with the scaffolding in place and ask for a few lines of a method. This project shows the kind of class a stack or queue usually lives inside.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "The design"
+    },
+    {
+     "type": "list",
+     "items": [
+      "A <code>Document</code> has a name and some text. Before every change, it pushes the old text onto a <strong>stack</strong>. <code>undo</code> pops it back. The most recent change is undone first: LIFO.",
+      "A <code>Spooler</code> holds print jobs in a <strong>queue</strong>. <code>submit</code> enqueues a copy of the document's text; <code>printNext</code> dequeues and prints the oldest job: FIFO.",
+      "Both store their structure in a field whose type is the ADT interface (<code>StackADT&lt;String&gt;</code>, <code>QueueADT&lt;String&gt;</code>). Only the constructor names <code>LinkedStack</code> or <code>LinkedQueue</code>, so switching to an array version would change one line."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "The classes"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Document.java",
+       "public class Document {\n    private String name;\n    private String text;\n    private StackADT<String> history;\n\n    public Document(String name) {\n        this.name = name;\n        this.text = \"\";\n        this.history = new LinkedStack<>();\n    }\n\n    public void append(String more) {\n        history.push(text);\n        text = text + more;\n    }\n\n    public void replace(String target, String replacement) {\n        history.push(text);\n        text = text.replace(target, replacement);\n    }\n\n    public boolean undo() {\n        if (history.isEmpty()) {\n            return false;\n        }\n        text = history.pop();\n        return true;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public String getText() {\n        return text;\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Spooler.java",
+       "public class Spooler {\n    private QueueADT<String> jobs;\n\n    public Spooler() {\n        jobs = new LinkedQueue<>();\n    }\n\n    public void submit(Document doc) {\n        jobs.enqueue(doc.getName() + \": \" + doc.getText());\n    }\n\n    public void printNext() {\n        if (jobs.isEmpty()) {\n            System.out.println(\"nothing to print\");\n        } else {\n            System.out.println(\"printing \" + jobs.dequeue());\n        }\n    }\n\n    public int waiting() {\n        return jobs.size();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Now an office that writes a memo, prints it, changes its mind, and prints again:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Office.java",
+       "public class Office {\n    public static void main(String[] args) {\n        Document memo = new Document(\"memo\");\n        Spooler printer = new Spooler();\n\n        memo.append(\"Lunch at 12.\");\n        memo.append(\" Bring snacks.\");\n        printer.submit(memo);\n\n        memo.replace(\"12\", \"1\");\n        System.out.println(memo.getText());\n        memo.undo();\n        memo.undo();\n        System.out.println(memo.getText());\n        printer.submit(memo);\n\n        System.out.println(printer.waiting() + \" jobs waiting\");\n        printer.printNext();\n        printer.printNext();\n        printer.printNext();\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Office",
+      "stdout": "Lunch at 1. Bring snacks.\nLunch at 12.\n2 jobs waiting\nprinting memo: Lunch at 12. Bring snacks.\nprinting memo: Lunch at 12.\nnothing to print"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "The first job holds the memo's text <strong>as it was when submitted</strong>. Java <code>String</code>s can't change, so later edits make a new string and the queued one stays the same.",
+      "Two <code>undo</code> calls step back through two changes: the <code>replace</code>, then the second <code>append</code>.",
+      "The third <code>printNext</code> finds the queue empty and says so instead of crashing."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "proj-undo",
+     "title": "Saving and restoring",
+     "prompt": "Fill in the blanks in <code>Document</code>'s <code>append</code> and <code>undo</code>.",
+     "files": [
+      [
+       "Document.java",
+       "public class Document {\n    private String name;\n    private String text;\n    private StackADT<String> history;\n\n    public Document(String name) {\n        this.name = name;\n        this.text = \"\";\n        this.history = new LinkedStack<>();\n    }\n\n    public void append(String more) {\n        [[save]];\n        text = text + more;\n    }\n\n    public void replace(String target, String replacement) {\n        history.push(text);\n        text = text.replace(target, replacement);\n    }\n\n    public boolean undo() {\n        if ([[check]]) {\n            return false;\n        }\n        text = [[restore]];\n        return true;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public String getText() {\n        return text;\n    }\n}\n"
+      ],
+      [
+       "Office.java",
+       "public class Office {\n    public static void main(String[] args) {\n        Document memo = new Document(\"memo\");\n        Spooler printer = new Spooler();\n\n        memo.append(\"Lunch at 12.\");\n        memo.append(\" Bring snacks.\");\n        printer.submit(memo);\n\n        memo.replace(\"12\", \"1\");\n        System.out.println(memo.getText());\n        memo.undo();\n        memo.undo();\n        System.out.println(memo.getText());\n        printer.submit(memo);\n\n        System.out.println(printer.waiting() + \" jobs waiting\");\n        printer.printNext();\n        printer.printNext();\n        printer.printNext();\n    }\n}\n"
+      ]
+     ],
+     "run": "Office",
+     "blanks": {
+      "save": {
+       "accept": [
+        "history.push(text)"
+       ],
+       "solution": "history.push(text)",
+       "hint": "Save the text as it is before the change.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "history.push(more)",
+         "shown": "history.push(more)",
+         "why": "That saves the added part, not the old text, so <code>undo</code> sets the text to <code>&quot; Bring snacks.&quot;</code>.",
+         "result": {
+          "kind": "ok",
+          "command": "java Office",
+          "stdout": "Lunch at 1. Bring snacks.\n Bring snacks.\n2 jobs waiting\nprinting memo: Lunch at 12. Bring snacks.\nprinting memo:  Bring snacks.\nnothing to print"
+         }
+        }
+       ],
+       "width": 18
+      },
+      "check": {
+       "accept": [
+        "history.isEmpty()",
+        "history.size()==0"
+       ],
+       "solution": "history.isEmpty()",
+       "hint": "Nothing to undo when there's no saved version.",
+       "exact": false,
+       "wrong": [],
+       "width": 19
+      },
+      "restore": {
+       "accept": [
+        "history.pop()"
+       ],
+       "solution": "history.pop()",
+       "hint": "Take the most recent saved version off the stack.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "history.peek()",
+         "shown": "history.peek()",
+         "why": "<code>peek</code> leaves that version on the stack, so the second <code>undo</code> restores the same text again instead of going one step further back.",
+         "result": {
+          "kind": "ok",
+          "command": "java Office",
+          "stdout": "Lunch at 1. Bring snacks.\nLunch at 12. Bring snacks.\n2 jobs waiting\nprinting memo: Lunch at 12. Bring snacks.\nprinting memo: Lunch at 12. Bring snacks.\nnothing to print"
+         }
+        }
+       ],
+       "width": 14
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java Office",
+      "stdout": "Lunch at 1. Bring snacks.\nLunch at 12.\n2 jobs waiting\nprinting memo: Lunch at 12. Bring snacks.\nprinting memo: Lunch at 12.\nnothing to print"
+     },
+     "explain": "Push the old text before each change; <code>undo</code> pops the most recent one."
+    },
+    {
+     "type": "predict",
+     "id": "proj-edits",
+     "prompt": "Each successful <code>undo</code> returns <code>true</code>. What does this print?",
+     "files": [
+      [
+       "Edits.java",
+       "public class Edits {\n    public static void main(String[] args) {\n        Document d = new Document(\"list\");\n        d.append(\"eggs\");\n        d.append(\", milk\");\n        d.replace(\"milk\", \"tea\");\n        d.undo();\n        d.append(\", jam\");\n        System.out.println(d.getText());\n        System.out.println(d.undo() + \" \" + d.undo() + \" \" + d.undo() + \" \" + d.undo());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "eggs, milk, jam\ntrue true true false",
+      "eggs, tea, jam\ntrue true true false",
+      "eggs, milk, jam\ntrue true true true",
+      "eggs, jam\ntrue true false false"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java Edits",
+      "stdout": "eggs, milk, jam\ntrue true true false"
+     },
+     "explain": "The <code>replace</code> is undone straight away, so <code>, jam</code> is added to <code>eggs, milk</code>. The stack then holds three saved versions: the empty text from before <code>eggs</code>, the text before <code>, milk</code>, and the text before <code>, jam</code>. (The version the <code>replace</code> saved was popped by the undo.) So three undos succeed and the fourth finds the stack empty."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-proj-redo",
+     "mode": "independent",
+     "title": "Add redo",
+     "goal": "Give <code>Document</code> a second stack, <code>future</code>, and a method <code>public boolean redo()</code>. <code>undo</code> now pushes the current text onto <code>future</code> before restoring the old text; <code>redo</code> does the reverse (push the current text onto <code>history</code>, pop <code>future</code>), returning <code>false</code> if there's nothing to redo. Any new edit (<code>append</code> or <code>replace</code>) makes redo impossible: set <code>future</code> to a new empty <code>LinkedStack</code>. <code>RedoTester</code> appends <code>a</code>, <code>b</code>, <code>c</code>, undoes twice, redoes once, prints the text, then appends <code>z</code>, prints <code>redo()</code> and the text. The project's classes are already in the editor.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "LinearNode.java",
+      "LinkedStack.java",
+      "QueueADT.java",
+      "LinkedQueue.java",
+      "Document.java",
+      "Spooler.java",
+      "RedoTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n\n    // The chain of nodes, for drawing it: the front is the head of the chain.\n    public String chainString() {\n        String result = \"head\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Document.java",
+       "public class Document {\n    private String name;\n    private String text;\n    private StackADT<String> history;\n\n    public Document(String name) {\n        this.name = name;\n        this.text = \"\";\n        this.history = new LinkedStack<>();\n    }\n\n    public void append(String more) {\n        history.push(text);\n        text = text + more;\n    }\n\n    public void replace(String target, String replacement) {\n        history.push(text);\n        text = text.replace(target, replacement);\n    }\n\n    public boolean undo() {\n        if (history.isEmpty()) {\n            return false;\n        }\n        text = history.pop();\n        return true;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public String getText() {\n        return text;\n    }\n}\n"
+      ],
+      [
+       "Spooler.java",
+       "public class Spooler {\n    private QueueADT<String> jobs;\n\n    public Spooler() {\n        jobs = new LinkedQueue<>();\n    }\n\n    public void submit(Document doc) {\n        jobs.enqueue(doc.getName() + \": \" + doc.getText());\n    }\n\n    public void printNext() {\n        if (jobs.isEmpty()) {\n            System.out.println(\"nothing to print\");\n        } else {\n            System.out.println(\"printing \" + jobs.dequeue());\n        }\n    }\n\n    public int waiting() {\n        return jobs.size();\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckRedo.java",
+       "public class CheckRedo {\n    public static void main(String[] args) {\n        Document d = new Document(\"d\");\n        System.out.println(d.redo() + \" \" + d.undo());\n        d.append(\"x\");\n        d.undo();\n        d.redo();\n        d.undo();\n        System.out.println(\"[\" + d.getText() + \"] \" + d.redo() + \" \" + d.getText());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRedo",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckRedo.java Document.java LinearNode.java LinkedQueue.java LinkedStack.java QueueADT.java Spooler.java StackADT.java",
+      "text": "CheckRedo.java:4: error: cannot find symbol\n        System.out.println(d.redo() + \" \" + d.undo());\n                            ^\n  symbol:   method redo()\n  location: variable d of type Document\nCheckRedo.java:7: error: cannot find symbol\n        d.redo();\n         ^\n  symbol:   method redo()\n  location: variable d of type Document\nCheckRedo.java:9: error: cannot find symbol\n        System.out.println(\"[\" + d.getText() + \"] \" + d.redo() + \" \" + d.getText());\n                                                       ^\n  symbol:   method redo()\n  location: variable d of type Document\n3 errors"
+     },
+     "run": "RedoTester",
+     "output": "ab\nfalse abz",
+     "testsOutput": "false false\n[] true x",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n\n    // The chain of nodes, for drawing it: the front is the head of the chain.\n    public String chainString() {\n        String result = \"head\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Document.java",
+       "public class Document {\n    private String name;\n    private String text;\n    private StackADT<String> history;\n    private StackADT<String> future;\n\n    public Document(String name) {\n        this.name = name;\n        this.text = \"\";\n        this.history = new LinkedStack<>();\n        this.future = new LinkedStack<>();\n    }\n\n    public void append(String more) {\n        history.push(text);\n        future = new LinkedStack<>();\n        text = text + more;\n    }\n\n    public void replace(String target, String replacement) {\n        history.push(text);\n        future = new LinkedStack<>();\n        text = text.replace(target, replacement);\n    }\n\n    public boolean undo() {\n        if (history.isEmpty()) {\n            return false;\n        }\n        future.push(text);\n        text = history.pop();\n        return true;\n    }\n\n    public boolean redo() {\n        if (future.isEmpty()) {\n            return false;\n        }\n        history.push(text);\n        text = future.pop();\n        return true;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public String getText() {\n        return text;\n    }\n}\n"
+      ],
+      [
+       "Spooler.java",
+       "public class Spooler {\n    private QueueADT<String> jobs;\n\n    public Spooler() {\n        jobs = new LinkedQueue<>();\n    }\n\n    public void submit(Document doc) {\n        jobs.enqueue(doc.getName() + \": \" + doc.getText());\n    }\n\n    public void printNext() {\n        if (jobs.isEmpty()) {\n            System.out.println(\"nothing to print\");\n        } else {\n            System.out.println(\"printing \" + jobs.dequeue());\n        }\n    }\n\n    public int waiting() {\n        return jobs.size();\n    }\n}\n"
+      ],
+      [
+       "RedoTester.java",
+       "public class RedoTester {\n    public static void main(String[] args) {\n        Document d = new Document(\"d\");\n        d.append(\"a\");\n        d.append(\"b\");\n        d.append(\"c\");\n        d.undo();\n        d.undo();\n        d.redo();\n        System.out.println(d.getText());\n        d.append(\"z\");\n        System.out.println(d.redo() + \" \" + d.getText());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-proj-cancel",
+     "mode": "independent",
+     "title": "Cancel a document's jobs",
+     "goal": "Add <code>public int cancel(String docName)</code> to <code>Spooler</code>: remove every waiting job for that document (a job's text starts with <code>docName + &quot;: &quot;</code>) and return how many were removed, keeping the other jobs in their order. Rotate through the queue once: dequeue each of the <code>size()</code> jobs, and enqueue it again only if it should stay. <code>CancelTester</code> submits <code>memo</code>, <code>plan</code>, <code>memo</code> again (after an edit), then cancels <code>memo</code>, prints the count and <code>waiting()</code>, and prints the next job. The project's classes are already in the editor.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "LinearNode.java",
+      "LinkedStack.java",
+      "QueueADT.java",
+      "LinkedQueue.java",
+      "Document.java",
+      "Spooler.java",
+      "CancelTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n\n    // The chain of nodes, for drawing it: the front is the head of the chain.\n    public String chainString() {\n        String result = \"head\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Document.java",
+       "public class Document {\n    private String name;\n    private String text;\n    private StackADT<String> history;\n\n    public Document(String name) {\n        this.name = name;\n        this.text = \"\";\n        this.history = new LinkedStack<>();\n    }\n\n    public void append(String more) {\n        history.push(text);\n        text = text + more;\n    }\n\n    public void replace(String target, String replacement) {\n        history.push(text);\n        text = text.replace(target, replacement);\n    }\n\n    public boolean undo() {\n        if (history.isEmpty()) {\n            return false;\n        }\n        text = history.pop();\n        return true;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public String getText() {\n        return text;\n    }\n}\n"
+      ],
+      [
+       "Spooler.java",
+       "public class Spooler {\n    private QueueADT<String> jobs;\n\n    public Spooler() {\n        jobs = new LinkedQueue<>();\n    }\n\n    public void submit(Document doc) {\n        jobs.enqueue(doc.getName() + \": \" + doc.getText());\n    }\n\n    public void printNext() {\n        if (jobs.isEmpty()) {\n            System.out.println(\"nothing to print\");\n        } else {\n            System.out.println(\"printing \" + jobs.dequeue());\n        }\n    }\n\n    public int waiting() {\n        return jobs.size();\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckCancel.java",
+       "public class CheckCancel {\n    public static void main(String[] args) {\n        Spooler s = new Spooler();\n        Document a = new Document(\"a\");\n        Document ab = new Document(\"ab\");\n        s.submit(ab);\n        s.submit(a);\n        s.submit(ab);\n        System.out.println(s.cancel(\"a\") + \" \" + s.cancel(\"zzz\") + \" \" + s.waiting());\n        s.printNext();\n        s.printNext();\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCancel",
+     "hints": [
+      "Save <code>jobs.size()</code> before the loop: re-enqueued jobs would otherwise keep the loop going.",
+      "Checking <code>docName + &quot;: &quot;</code> stops <code>cancel(&quot;a&quot;)</code> from also removing jobs for <code>ab</code>."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckCancel.java Document.java LinearNode.java LinkedQueue.java LinkedStack.java QueueADT.java Spooler.java StackADT.java",
+      "text": "CheckCancel.java:9: error: cannot find symbol\n        System.out.println(s.cancel(\"a\") + \" \" + s.cancel(\"zzz\") + \" \" + s.waiting());\n                            ^\n  symbol:   method cancel(String)\n  location: variable s of type Spooler\nCheckCancel.java:9: error: cannot find symbol\n        System.out.println(s.cancel(\"a\") + \" \" + s.cancel(\"zzz\") + \" \" + s.waiting());\n                                                  ^\n  symbol:   method cancel(String)\n  location: variable s of type Spooler\n2 errors"
+     },
+     "run": "CancelTester",
+     "output": "2 1\nprinting plan: steps",
+     "testsOutput": "1 0 2\nprinting ab: \nprinting ab: ",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinkedQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class LinkedQueue<T> implements QueueADT<T> {\n    private LinearNode<T> front;\n    private LinearNode<T> rear;\n    private int count;\n\n    public LinkedQueue() {\n        front = null;\n        rear = null;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (isEmpty()) {\n            front = node;\n        } else {\n            rear.setNext(node);\n        }\n        rear = node;\n        count++;\n    }\n\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = front.getElement();\n        front = front.getNext();\n        count--;\n        if (isEmpty()) {\n            rear = null;\n        }\n        return result;\n    }\n\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return front.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += current.getElement();\n            if (current.getNext() != null) {\n                result += \", \";\n            }\n            current = current.getNext();\n        }\n        return result + \"] rear\";\n    }\n\n    // The chain of nodes, for drawing it: the front is the head of the chain.\n    public String chainString() {\n        String result = \"head\";\n        LinearNode<T> current = front;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Document.java",
+       "public class Document {\n    private String name;\n    private String text;\n    private StackADT<String> history;\n\n    public Document(String name) {\n        this.name = name;\n        this.text = \"\";\n        this.history = new LinkedStack<>();\n    }\n\n    public void append(String more) {\n        history.push(text);\n        text = text + more;\n    }\n\n    public void replace(String target, String replacement) {\n        history.push(text);\n        text = text.replace(target, replacement);\n    }\n\n    public boolean undo() {\n        if (history.isEmpty()) {\n            return false;\n        }\n        text = history.pop();\n        return true;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public String getText() {\n        return text;\n    }\n}\n"
+      ],
+      [
+       "Spooler.java",
+       "public class Spooler {\n    private QueueADT<String> jobs;\n\n    public Spooler() {\n        jobs = new LinkedQueue<>();\n    }\n\n    public void submit(Document doc) {\n        jobs.enqueue(doc.getName() + \": \" + doc.getText());\n    }\n\n    public void printNext() {\n        if (jobs.isEmpty()) {\n            System.out.println(\"nothing to print\");\n        } else {\n            System.out.println(\"printing \" + jobs.dequeue());\n        }\n    }\n\n    public int cancel(String docName) {\n        int removed = 0;\n        int n = jobs.size();\n        for (int i = 0; i < n; i++) {\n            String job = jobs.dequeue();\n            if (job.startsWith(docName + \": \")) {\n                removed++;\n            } else {\n                jobs.enqueue(job);\n            }\n        }\n        return removed;\n    }\n\n    public int waiting() {\n        return jobs.size();\n    }\n}\n"
+      ],
+      [
+       "CancelTester.java",
+       "public class CancelTester {\n    public static void main(String[] args) {\n        Spooler s = new Spooler();\n        Document memo = new Document(\"memo\");\n        Document plan = new Document(\"plan\");\n        memo.append(\"v1\");\n        plan.append(\"steps\");\n        s.submit(memo);\n        s.submit(plan);\n        memo.append(\" v2\");\n        s.submit(memo);\n        System.out.println(s.cancel(\"memo\") + \" \" + s.waiting());\n        s.printNext();\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "Queues",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Queue.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "String",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": "\"Strings are constant; their values cannot be changed after they are created.\""
+    }
+   ]
+  },
+  "ws-ds-use-cases": {
+   "id": "ws-ds-use-cases",
+   "section": "ds-use-cases",
+   "title": "Workshop: choosing structures",
+   "summary": "Solve four problems where the choice of structure is the solution: a maze, an expression converter, a recent-files list and a moving average.",
+   "goals": [
+    "Use a queue for breadth-first search and shortest paths",
+    "Use a stack to hold operators until it's their turn",
+    "Pick a linked list or a queue for problems that work at the ends"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: Escape the maze"
+    },
+    {
+     "type": "write",
+     "id": "ws-u20-maze",
+     "mode": "guided",
+     "title": "Escape the maze",
+     "goal": "Find the shortest way out of a grid maze. <code>#</code> is a wall, <code>S</code> the start (top left), <code>E</code> the exit. Each step moves up, down, left or right.",
+     "requirements": [],
+     "files": [
+      "Maze.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Read the grid",
+       "text": "In <code>Maze</code>, store the grid as a <code>String[]</code>. Loop over every square: count the ones that aren't walls, and print where <code>S</code> is.",
+       "hint": null,
+       "files": [
+        "Maze.java"
+       ],
+       "run": "Maze",
+       "output": "start at row 0, column 0\n22 open squares",
+       "checks": [],
+       "solution": [
+        [
+         "Maze.java",
+         "public class Maze {\n    public static void main(String[] args) {\n        String[] grid = {\n            \"S.#.....\",\n            \".##.###.\",\n            \"....#E#.\",\n            \".##.....\",\n        };\n        int open = 0;\n        for (int r = 0; r < grid.length; r++) {\n            for (int c = 0; c < grid[r].length(); c++) {\n                char ch = grid[r].charAt(c);\n                if (ch != '#') {\n                    open++;\n                }\n                if (ch == 'S') {\n                    System.out.println(\"start at row \" + r + \", column \" + c);\n                }\n            }\n        }\n        System.out.println(open + \" open squares\");\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Explore with a queue",
+       "text": "Breadth-first search from the start. Each queue entry is an <code>int[] {row, column}</code>. Take a square, count it, and add each neighbour that's inside the grid, not a wall and not seen yet (mark it seen when you add it). Print how many squares are reachable.",
+       "hint": "Keeping the four moves in an array, <code>{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}</code>, saves writing the neighbour check four times.",
+       "files": [
+        "Maze.java"
+       ],
+       "run": "Maze",
+       "output": "22 squares reachable",
+       "checks": [],
+       "solution": [
+        [
+         "Maze.java",
+         "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class Maze {\n    public static void main(String[] args) {\n        String[] grid = {\n            \"S.#.....\",\n            \".##.###.\",\n            \"....#E#.\",\n            \".##.....\",\n        };\n        int rows = grid.length;\n        int cols = grid[0].length();\n        boolean[][] seen = new boolean[rows][cols];\n        Queue<int[]> toVisit = new ArrayDeque<>();\n        toVisit.add(new int[] {0, 0});\n        seen[0][0] = true;\n        int[][] moves = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};\n        int reached = 0;\n        while (!toVisit.isEmpty()) {\n            int[] square = toVisit.remove();\n            reached++;\n            for (int[] m : moves) {\n                int r = square[0] + m[0];\n                int c = square[1] + m[1];\n                if (r >= 0 && r < rows && c >= 0 && c < cols && !seen[r][c] && grid[r].charAt(c) != '#') {\n                    seen[r][c] = true;\n                    toVisit.add(new int[] {r, c});\n                }\n            }\n        }\n        System.out.println(reached + \" squares reachable\");\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Shortest path",
+       "text": "Replace <code>seen</code> with <code>int[][] dist</code> filled with -1. The start's distance is 0; a neighbour's is one more than the square it was reached from. When you take the exit off the queue, print <code>exit in &lt;d&gt; steps</code> and stop.",
+       "hint": "Because a queue explores squares in order of distance, the first time the exit comes off the queue is by a shortest route.",
+       "files": [
+        "Maze.java"
+       ],
+       "run": "Maze",
+       "output": "exit in 9 steps",
+       "checks": [],
+       "solution": [
+        [
+         "Maze.java",
+         "import java.util.ArrayDeque;\nimport java.util.Arrays;\nimport java.util.Queue;\n\npublic class Maze {\n    public static void main(String[] args) {\n        String[] grid = {\n            \"S.#.....\",\n            \".##.###.\",\n            \"....#E#.\",\n            \".##.....\",\n        };\n        int rows = grid.length;\n        int cols = grid[0].length();\n        int[][] dist = new int[rows][cols];\n        for (int[] row : dist) {\n            Arrays.fill(row, -1);\n        }\n        Queue<int[]> toVisit = new ArrayDeque<>();\n        toVisit.add(new int[] {0, 0});\n        dist[0][0] = 0;\n        int[][] moves = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};\n        while (!toVisit.isEmpty()) {\n            int[] square = toVisit.remove();\n            if (grid[square[0]].charAt(square[1]) == 'E') {\n                System.out.println(\"exit in \" + dist[square[0]][square[1]] + \" steps\");\n                return;\n            }\n            for (int[] m : moves) {\n                int r = square[0] + m[0];\n                int c = square[1] + m[1];\n                if (r >= 0 && r < rows && c >= 0 && c < cols && dist[r][c] == -1 && grid[r].charAt(c) != '#') {\n                    dist[r][c] = dist[square[0]][square[1]] + 1;\n                    toVisit.add(new int[] {r, c});\n                }\n            }\n        }\n        System.out.println(\"no way out\");\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: From infix to postfix"
+    },
+    {
+     "type": "write",
+     "id": "ws-u20-postfix",
+     "mode": "guided",
+     "title": "From infix to postfix",
+     "goal": "Unit 13's workshop evaluated postfix like <code>3 4 +</code>. People write infix, <code>3+4</code>. A stack of operators converts one to the other (single-digit numbers only).",
+     "requirements": [],
+     "files": [
+      "ToPostfix.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Plus and minus",
+       "text": "In <code>ToPostfix</code>, write <code>convert(String infix)</code>. Digits go straight to the output. For <code>+</code> or <code>-</code>, first pop every waiting operator to the output, then push this one. At the end, pop the rest. Separate output tokens with spaces.",
+       "hint": "Popping first makes <code>9-2+1</code> mean (9 \u2212 2) + 1, which is how Java reads it.",
+       "files": [
+        "ToPostfix.java"
+       ],
+       "run": "ToPostfix",
+       "output": "3 4 +\n9 2 - 1 +",
+       "checks": [],
+       "solution": [
+        [
+         "ToPostfix.java",
+         "import java.util.ArrayDeque;\nimport java.util.Deque;\n\npublic class ToPostfix {\n    public static String convert(String infix) {\n        String output = \"\";\n        Deque<Character> ops = new ArrayDeque<>();\n        for (char c : infix.toCharArray()) {\n            if (Character.isDigit(c)) {\n                output += c + \" \";\n            } else if (c == '+' || c == '-') {\n                while (!ops.isEmpty()) {\n                    output += ops.pop() + \" \";\n                }\n                ops.push(c);\n            }\n        }\n        while (!ops.isEmpty()) {\n            output += ops.pop() + \" \";\n        }\n        return output.trim();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(convert(\"3+4\"));\n        System.out.println(convert(\"9-2+1\"));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Times and divide first",
+       "text": "Add <code>rank(char op)</code>: 2 for <code>*</code> and <code>/</code>, 1 for <code>+</code> and <code>-</code>. Before pushing an operator, pop only the waiting operators whose rank is <strong>at least</strong> as high.",
+       "hint": null,
+       "files": [
+        "ToPostfix.java"
+       ],
+       "run": "ToPostfix",
+       "output": "3 4 2 * +\n8 4 / 1 -\n1 2 3 * + 4 -",
+       "checks": [],
+       "solution": [
+        [
+         "ToPostfix.java",
+         "import java.util.ArrayDeque;\nimport java.util.Deque;\n\npublic class ToPostfix {\n    public static int rank(char op) {\n        if (op == '*' || op == '/') {\n            return 2;\n        }\n        return 1;\n    }\n\n    public static String convert(String infix) {\n        String output = \"\";\n        Deque<Character> ops = new ArrayDeque<>();\n        for (char c : infix.toCharArray()) {\n            if (Character.isDigit(c)) {\n                output += c + \" \";\n            } else if (c == '+' || c == '-' || c == '*' || c == '/') {\n                while (!ops.isEmpty() && rank(ops.peek()) >= rank(c)) {\n                    output += ops.pop() + \" \";\n                }\n                ops.push(c);\n            }\n        }\n        while (!ops.isEmpty()) {\n            output += ops.pop() + \" \";\n        }\n        return output.trim();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(convert(\"3+4*2\"));\n        System.out.println(convert(\"8/4-1\"));\n        System.out.println(convert(\"1+2*3-4\"));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Brackets",
+       "text": "Push <code>(</code> as it comes (give it rank 0 so no operator pops it). At <code>)</code>, pop operators to the output until you reach the <code>(</code>, then pop and discard the <code>(</code>.",
+       "hint": null,
+       "files": [
+        "ToPostfix.java"
+       ],
+       "run": "ToPostfix",
+       "output": "3 4 + 2 *\n2 5 1 1 + - *",
+       "checks": [],
+       "solution": [
+        [
+         "ToPostfix.java",
+         "import java.util.ArrayDeque;\nimport java.util.Deque;\n\npublic class ToPostfix {\n    public static int rank(char op) {\n        if (op == '*' || op == '/') {\n            return 2;\n        }\n        if (op == '+' || op == '-') {\n            return 1;\n        }\n        return 0;\n    }\n\n    public static String convert(String infix) {\n        String output = \"\";\n        Deque<Character> ops = new ArrayDeque<>();\n        for (char c : infix.toCharArray()) {\n            if (Character.isDigit(c)) {\n                output += c + \" \";\n            } else if (c == '(') {\n                ops.push(c);\n            } else if (c == ')') {\n                while (ops.peek() != '(') {\n                    output += ops.pop() + \" \";\n                }\n                ops.pop();\n            } else if (c == '+' || c == '-' || c == '*' || c == '/') {\n                while (!ops.isEmpty() && rank(ops.peek()) >= rank(c)) {\n                    output += ops.pop() + \" \";\n                }\n                ops.push(c);\n            }\n        }\n        while (!ops.isEmpty()) {\n            output += ops.pop() + \" \";\n        }\n        return output.trim();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(convert(\"(3+4)*2\"));\n        System.out.println(convert(\"2*(5-(1+1))\"));\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: Recent files"
+    },
+    {
+     "type": "write",
+     "id": "ws-u20-recent",
+     "mode": "independent",
+     "title": "Recent files",
+     "goal": "An editor's File menu shows the 3 most recently opened files, newest first, with no repeats. Write <code>Recent</code> using a <code>java.util.LinkedList&lt;String&gt;</code>: <code>open(String name)</code> removes <code>name</code> if it's already there, adds it at the front with <code>addFirst</code>, and if there are now more than 3, removes the last with <code>removeLast</code>. <code>toString()</code> returns the list. <code>RecentTester</code> opens <code>a</code>, <code>b</code>, <code>c</code>, <code>a</code>, <code>d</code> and prints after each.",
+     "requirements": [],
+     "files": [
+      "Recent.java",
+      "RecentTester.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "<code>remove(Object)</code> removes the first match and does nothing if there is none."
+     ],
+     "checks": [],
+     "run": "RecentTester",
+     "output": "[a]\n[b, a]\n[c, b, a]\n[a, c, b]\n[d, a, c]",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Recent.java",
+       "import java.util.LinkedList;\n\npublic class Recent {\n    private LinkedList<String> files = new LinkedList<>();\n\n    public void open(String name) {\n        files.remove(name);\n        files.addFirst(name);\n        if (files.size() > 3) {\n            files.removeLast();\n        }\n    }\n\n    @Override\n    public String toString() {\n        return files.toString();\n    }\n}\n"
+      ],
+      [
+       "RecentTester.java",
+       "public class RecentTester {\n    public static void main(String[] args) {\n        Recent r = new Recent();\n        for (String f : new String[] {\"a\", \"b\", \"c\", \"a\", \"d\"}) {\n            r.open(f);\n            System.out.println(r);\n        }\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: Moving average"
+    },
+    {
+     "type": "write",
+     "id": "ws-u20-average",
+     "mode": "independent",
+     "title": "Moving average",
+     "goal": "A moving average is the average of the last <code>k</code> values seen. Write <code>MovingAverage</code> with a constructor taking <code>k</code>, a <code>Queue&lt;Integer&gt;</code> of the recent values and a running <code>sum</code>. <code>next(int value)</code> adds the value; if the queue now holds more than <code>k</code>, it removes the oldest (and subtracts it from the sum). It returns the average of the values in the queue as a <code>double</code>. Each call is O(1): no loop over the queue. <code>AverageTester</code> uses <code>k = 3</code> and prints <code>next</code> of 2, 4, 6 and 10.",
+     "requirements": [],
+     "files": [
+      "MovingAverage.java",
+      "AverageTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckAverage.java",
+       "public class CheckAverage {\n    public static void main(String[] args) {\n        MovingAverage m = new MovingAverage(1);\n        System.out.println(m.next(5) + \" \" + m.next(-5));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckAverage",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "^(?![\\s\\S]*\\bfor\\b)",
+       "message": "<code>MovingAverage</code> keeps a running sum instead of looping over the queue.",
+       "file": "MovingAverage.java"
+      }
+     ],
+     "run": "AverageTester",
+     "output": "2.0\n3.0\n4.0\n6.666666666666667",
+     "testsOutput": "5.0 -5.0",
+     "solution": [
+      [
+       "MovingAverage.java",
+       "import java.util.ArrayDeque;\nimport java.util.Queue;\n\npublic class MovingAverage {\n    private Queue<Integer> window = new ArrayDeque<>();\n    private int k;\n    private int sum = 0;\n\n    public MovingAverage(int k) {\n        this.k = k;\n    }\n\n    public double next(int value) {\n        window.add(value);\n        sum += value;\n        if (window.size() > k) {\n            sum -= window.remove();\n        }\n        return (double) sum / window.size();\n    }\n}\n"
+      ],
+      [
+       "AverageTester.java",
+       "public class AverageTester {\n    public static void main(String[] args) {\n        MovingAverage m = new MovingAverage(3);\n        System.out.println(m.next(2));\n        System.out.println(m.next(4));\n        System.out.println(m.next(6));\n        System.out.println(m.next(10));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "4.1 Undirected Graphs",
+     "url": "https://algs4.cs.princeton.edu/41graph/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "The Queue Interface",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/queue.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "Deque<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Deque.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": "Says a Deque should be used as a stack in preference to the legacy Stack class."
+    },
+    {
+     "title": "LinkedList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
     }
    ]
   }

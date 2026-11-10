@@ -178,3 +178,7 @@ JLS_EVAL_ORDER = s("15.7 Evaluation Order", "https://docs.oracle.com/javase/spec
 OPENDSA_ANAL = s("Comparing Algorithms (growth rates)", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
                  "Virginia Tech, OpenDSA")
 JLS_REM = s("15.17.3 Remainder Operator %", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.17.3", JLS)
+ALGS4_41 = s("4.1 Undirected Graphs", "https://algs4.cs.princeton.edu/41graph/",
+             "Princeton University, Algorithms (Sedgewick & Wayne)")
+STRING_API = s("String", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html", API,
+               "\"Strings are constant; their values cannot be changed after they are created.\"")

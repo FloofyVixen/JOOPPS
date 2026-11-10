@@ -66,7 +66,7 @@ SECTIONS = [
      "lessons": ["aqueue", "lqueue", "ws-queue-impl"]},
     {"id": "ds-use-cases", "title": "Queues/Stacks/Linked List use cases",
      "blurb": "Choosing the right structure for a problem, and building with it.",
-     "planned": ["Choosing a structure", "Project: an undo history and a print queue", "Workshop"]},
+     "lessons": ["ds-choose", "ds-project", "ws-ds-use-cases"]},
     {"id": "collections", "title": "Introduction to Collections (Java)",
      "blurb": "Java's Collection → List → ArrayList/LinkedList hierarchy, and interfaces versus abstract and concrete classes.",
      "planned": ["The Collection hierarchy", "Programming to the List interface", "Workshop"]},
