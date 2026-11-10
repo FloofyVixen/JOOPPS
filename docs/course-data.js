@@ -234,10 +234,8 @@ window.COURSE = {
    "kind": "exam",
    "title": "Exam practice 2",
    "blurb": "Units 13 to 21, in the Exam 2 format: diagram problems on arrays, linked lists, stacks and queues; short answers and matching on algorithms; and code writing with scaffolding provided.",
-   "planned": [
-    "Procedural problems: diagrams",
-    "Short answers and matching",
-    "Code writing: a few lines each"
+   "lessons": [
+    "exam-practice-2"
    ]
   },
   {
@@ -28964,6 +28962,786 @@ window.COURSE = {
      "title": "Generic Types",
      "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
      "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "exam-practice-2": {
+   "id": "exam-practice-2",
+   "section": "exam-2",
+   "title": "Exam practice 2",
+   "summary": "A practice set in the Exam 2 format covering units 13 to 21: diagram problems on arrays, linked lists, stacks and queues; short answers and matching on algorithms and collections; and a few lines of code with the scaffolding given.",
+   "goals": [
+    "Draw and read diagrams of array and linked stacks and queues",
+    "Match code and operations with their big O, and collection types with their kind",
+    "Write a few lines of code inside given scaffolding"
+   ],
+   "cos225": "This page follows the Exam 2 guide's three question types: procedural problems (diagram an array or linked list, interpret changes to it as a stack or queue, and answer questions about drawings); short answers (matching, four-choice multiple choice, written math, with linked lists a favourite); and code writing, where imports and scaffolding are given and syntax errors are forgiven, but braces or indentation for control statements are required.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How to use this page"
+    },
+    {
+     "type": "list",
+     "items": [
+      "The exam is 50 minutes. Try to finish each part on paper before you check anything.",
+      "For the diagram problems, draw every step, not just the end. Then pick the matching diagram.",
+      "For code writing, write the lines on paper first, then type them in and run them. On the real exam, small syntax slips are ignored, but the structure of your loops and <code>if</code>s must be clear: use braces or indentation.",
+      "Remember the guide's rules for linked lists: no tail and no doubly linked lists, unless a question gives you one."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Part A: procedural problems"
+    },
+    {
+     "type": "trace",
+     "id": "ex2-a-astack",
+     "kind": "array",
+     "prompt": "<code>ArrayStack</code> (from unit 14) starts with 4 slots. <code>top</code> is the next free index.",
+     "question": "Draw the array, then choose the matching diagram.",
+     "files": [
+      [
+       "A1.java",
+       "public class A1 {\n    public static void main(String[] args) {\n        ArrayStack<Integer> s = new ArrayStack<>();\n        s.push(8);\n        s.push(1);\n        s.push(6);\n        s.pop();\n        s.push(3);\n        s.push(s.pop() + s.peek());\n        s.push(2);\n        System.out.println(s.arrayString());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "[8, 1, 4, 2] top=4",
+      "[8, 1, 3, 4, 2, _, _, _] top=5",
+      "[8, 1, 7, 2] top=4",
+      "[8, 1, 3, 2] top=4"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java A1",
+      "stdout": "[8, 1, 4, 2] top=4"
+     },
+     "explain": "8, 1, 6; pop removes 6; push 3 gives 8, 1, 3. <code>s.pop() + s.peek()</code> pops 3 and peeks 1 (the new top), pushing 4: 8, 1, 4. Push 2 fills the last slot, so no growth is needed."
+    },
+    {
+     "type": "trace",
+     "id": "ex2-a-cqueue",
+     "kind": "array",
+     "prompt": "<code>CircularArrayQueue</code> (from unit 19) starts with 4 slots. <code>rear</code> is the next free index; both indexes wrap.",
+     "question": "Draw the array, then choose the matching diagram.",
+     "files": [
+      [
+       "A2.java",
+       "public class A2 {\n    public static void main(String[] args) {\n        CircularArrayQueue<String> q = new CircularArrayQueue<>();\n        q.enqueue(\"A\");\n        q.enqueue(\"B\");\n        q.enqueue(\"C\");\n        q.dequeue();\n        q.dequeue();\n        q.enqueue(\"D\");\n        q.enqueue(\"E\");\n        q.enqueue(q.dequeue());\n        System.out.println(q.arrayString());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "[E, _, C, D] front=2 rear=1",
+      "[E, C, _, D] front=3 rear=2",
+      "[D, E, C, _] front=0 rear=3",
+      "[C, D, E, _] front=0 rear=3"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java A2",
+      "stdout": "[E, C, _, D] front=3 rear=2"
+     },
+     "explain": "A, B, C fill slots 0 to 2, and two dequeues clear slots 0 and 1 (front 2). D goes in slot 3 and E wraps into slot 0 (rear 1). Then <code>q.enqueue(q.dequeue())</code> takes C from slot 2 (clearing it, front 3) and stores it at the rear, slot 1 (rear 2). The queue is D, E, C. Nothing is unrolled: that only happens when the array grows."
+    },
+    {
+     "type": "trace",
+     "id": "ex2-a-linked",
+     "kind": "linked",
+     "prompt": "Nodes from unit 16. Trace the references carefully.",
+     "question": "Which diagram shows the list starting at <code>head</code> at the end?",
+     "files": [
+      [
+       "A3.java",
+       "public class A3 {\n    public static void main(String[] args) {\n        Node head = new Node(1);\n        head.setNext(new Node(2));\n        head.getNext().setNext(new Node(3));\n        Node n = new Node(4);\n        n.setNext(head.getNext().getNext());\n        head.getNext().setNext(n);\n        head = head.getNext();\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> 2 -> 4 -> 3 -> null",
+      "head -> 1 -> 2 -> 4 -> 3 -> null",
+      "head -> 2 -> 3 -> 4 -> null",
+      "head -> 4 -> 3 -> null"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java A3",
+      "stdout": "head -> 2 -> 4 -> 3 -> null"
+     },
+     "explain": "The list is 1, 2, 3. The new node 4 points at the 3, and the 2 is redirected to 4: 1, 2, 4, 3. Then <code>head</code> moves to the second node, so the list seen from <code>head</code> is 2, 4, 3."
+    },
+    {
+     "type": "trace",
+     "id": "ex2-a-lstack",
+     "kind": "linked",
+     "prompt": "<code>LinkedStack</code> (from unit 17) keeps its top at the head of its chain.",
+     "question": "Which diagram shows the stack's chain of nodes?",
+     "files": [
+      [
+       "A4.java",
+       "public class A4 {\n    public static void main(String[] args) {\n        LinkedStack<String> s = new LinkedStack<>();\n        s.push(\"x\");\n        s.push(\"y\");\n        s.push(\"z\");\n        s.pop();\n        s.push(\"w\");\n        System.out.println(s);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> x -> y -> w -> null",
+      "head -> w -> y -> x -> null",
+      "head -> w -> z -> y -> x -> null",
+      "head -> z -> y -> w -> null"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java A4",
+      "stdout": "head -> w -> y -> x -> null"
+     },
+     "explain": "Pushes put z on top of y on top of x; the pop removes z, and w becomes the new head."
+    },
+    {
+     "type": "p",
+     "html": "Questions about drawings. This queue was built by enqueueing 5, 10, 15, 20 and 25:"
+    },
+    {
+     "type": "diagram",
+     "kind": "queue",
+     "state": "front [5, 10, 15, 20, 25] rear",
+     "label": null,
+     "caption": null
+    },
+    {
+     "type": "quiz",
+     "id": "ex2-a-pic1",
+     "question": "If you call <code>dequeue()</code> twice and then <code>enqueue(30)</code>, what does <code>getFront()</code> return?",
+     "choices": [
+      "5",
+      "15",
+      "25",
+      "30"
+     ],
+     "answer": 1,
+     "explain": "Two dequeues remove 5 and 10. Enqueueing adds at the rear, so the front is 15."
+    },
+    {
+     "type": "p",
+     "html": "And this is the array of an <code>ArrayStack</code> after pushing the letters of <code>EXAM</code>:"
+    },
+    {
+     "type": "diagram",
+     "kind": "array",
+     "state": "[E, X, A, M] top=4",
+     "label": null,
+     "caption": null
+    },
+    {
+     "type": "quiz",
+     "id": "ex2-a-pic2",
+     "question": "Which statement about this stack is true?",
+     "choices": [
+      "<code>peek()</code> returns <code>E</code>, at index 0",
+      "The next <code>push</code> must first expand the array",
+      "<code>pop()</code> returns <code>A</code>",
+      "<code>top</code> points at the top value"
+     ],
+     "answer": 1,
+     "explain": "<code>top</code> is 4, equal to the array's length: the array is full, so the next push expands it. The top value, <code>M</code>, is at index <code>top - 1</code>; <code>top</code> itself is the next free slot."
+    },
+    {
+     "type": "h",
+     "html": "Part B: short answers"
+    },
+    {
+     "type": "match",
+     "id": "ex2-b-bigo",
+     "prompt": "Match each method with its big O (n is the array length, or <code>n</code> itself).",
+     "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n\u00b2)"
+     ],
+     "items": [
+      {
+       "code": "static int middle(int[] a) {\n    return a[a.length / 2];\n}",
+       "html": null,
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": "static int countZeros(int[] a) {\n    int c = 0;\n    for (int x : a) {\n        if (x == 0) {\n            c++;\n        }\n    }\n    return c;\n}",
+       "html": null,
+       "answer": 2,
+       "why": null
+      },
+      {
+       "code": "static boolean anyPairSumsToZero(int[] a) {\n    for (int i = 0; i < a.length; i++) {\n        for (int j = 0; j < a.length; j++) {\n            if (i != j && a[i] + a[j] == 0) {\n                return true;\n            }\n        }\n    }\n    return false;\n}",
+       "html": null,
+       "answer": 3,
+       "why": null
+      },
+      {
+       "code": "static int halvings(int n) {\n    int steps = 0;\n    for (int k = n; k > 1; k = k / 2) {\n        steps++;\n    }\n    return steps;\n}",
+       "html": null,
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": "static int sumFirstHundred(int[] a) {\n    int s = 0;\n    for (int i = 0; i < 100 && i < a.length; i++) {\n        s += a[i];\n    }\n    return s;\n}",
+       "html": null,
+       "answer": 0,
+       "why": "At most 100 iterations, whatever the length."
+      }
+     ],
+     "explain": null
+    },
+    {
+     "type": "match",
+     "id": "ex2-b-ops",
+     "prompt": "Match each operation with its big O.",
+     "options": [
+      "O(1)",
+      "O(n)"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "<code>push</code> on <code>ArrayStack</code> (not full)",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>dequeue</code> on a shifting <code>ArrayQueue</code>",
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>dequeue</code> on <code>CircularArrayQueue</code>",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>get(i)</code> on a linked list",
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>get(i)</code> on an <code>ArrayList</code>",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "Adding at the end of a linked list with only <code>head</code>",
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>pop</code> on <code>LinkedStack</code>",
+       "answer": 0,
+       "why": null
+      }
+     ],
+     "explain": null
+    },
+    {
+     "type": "match",
+     "id": "ex2-b-order",
+     "prompt": "Rank the big six from best (1) to worst (6).",
+     "options": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "O(n log n)",
+       "answer": 3,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(1)",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(2\u207f)",
+       "answer": 5,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(n)",
+       "answer": 2,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(n\u00b2)",
+       "answer": 4,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(log n)",
+       "answer": 1,
+       "why": null
+      }
+     ],
+     "explain": null
+    },
+    {
+     "type": "match",
+     "id": "ex2-b-kinds",
+     "prompt": "Is each type an interface, an abstract class or a concrete class?",
+     "options": [
+      "Interface",
+      "Abstract class",
+      "Concrete class"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "<code>List</code>",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>ArrayList</code>",
+       "answer": 2,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>Collection</code>",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>AbstractList</code>",
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>LinkedList</code>",
+       "answer": 2,
+       "why": null
+      }
+     ],
+     "explain": null
+    },
+    {
+     "type": "quiz",
+     "id": "ex2-b-math",
+     "question": "An O(n\u00b2) method takes 3 seconds for n = 1,000. About how long should it take for n = 3,000?",
+     "choices": [
+      "9 seconds",
+      "27 seconds",
+      "6 seconds",
+      "3 seconds"
+     ],
+     "answer": 1,
+     "explain": "Tripling n multiplies n\u00b2 by 3\u00b2 = 9, so about 3 \u00d7 9 = 27 seconds."
+    },
+    {
+     "type": "predict",
+     "id": "ex2-b-count",
+     "prompt": "How many times does <code>count++</code> run? (Written math: 0 + 1 + 2 + \u2026 + (n \u2212 1).)",
+     "files": [
+      [
+       "Count.java",
+       "public class Count {\n    public static void main(String[] args) {\n        int n = 6;\n        int count = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < i; j++) {\n                count++;\n            }\n        }\n        System.out.println(count);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "15",
+      "36",
+      "21",
+      "30"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java Count",
+      "stdout": "15"
+     },
+     "explain": "The inner loop runs <code>i</code> times for each <code>i</code> from 0 to 5: 0 + 1 + 2 + 3 + 4 + 5 = 15, which is n(n \u2212 1)/2 for n = 6. That's still O(n\u00b2)."
+    },
+    {
+     "type": "predict",
+     "id": "ex2-b-linked",
+     "prompt": "A linked-list favourite. What does this print?",
+     "files": [
+      [
+       "LL.java",
+       "public class LL {\n    public static void main(String[] args) {\n        Node head = null;\n        for (int i = 1; i <= 4; i++) {\n            Node n = new Node(i * 3);\n            n.setNext(head);\n            head = n;\n        }\n        int total = 0;\n        Node current = head;\n        while (current.getNext() != null) {\n            total += current.getData();\n            current = current.getNext();\n        }\n        System.out.println(total + \" \" + current.getData());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "27 3",
+      "30 12",
+      "18 12",
+      "27 12"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java LL",
+      "stdout": "27 3"
+     },
+     "explain": "Adding at the front builds 12, 9, 6, 3. The loop stops <strong>on</strong> the last node, so it adds 12 + 9 + 6 = 27 and <code>current</code> ends on the node holding 3."
+    },
+    {
+     "type": "quiz",
+     "id": "ex2-b-top",
+     "question": "Where is the top of a stack in an array implementation and in a linked implementation, so that push and pop are O(1)?",
+     "choices": [
+      "Array: index 0. Linked: the last node",
+      "Array: the end of the used part. Linked: the head",
+      "Array: the end of the used part. Linked: the last node",
+      "All of the above work equally well"
+     ],
+     "answer": 1,
+     "explain": "At the end of an array nothing has to shift; at the head of a chain nothing has to be searched for."
+    },
+    {
+     "type": "quiz",
+     "id": "ex2-b-pillars",
+     "question": "Which of these are among the four pillars of OOP?",
+     "choices": [
+      "Encapsulation and inheritance only",
+      "Abstraction and polymorphism only",
+      "Encapsulation, abstraction, inheritance and polymorphism",
+      "None of the above"
+     ],
+     "answer": 2,
+     "explain": "All four: encapsulation (hide the data), abstraction (show only what matters, like an ADT), inheritance (<code>extends</code>) and polymorphism (one interface, many forms, like <code>StackADT</code> with two classes)."
+    },
+    {
+     "type": "quiz",
+     "id": "ex2-b-node",
+     "question": "Which statement about a linked node is <strong>not</strong> true?",
+     "choices": [
+      "It holds a data payload and a reference to the next node",
+      "It is created with <code>new</code>",
+      "On its own, it is a linked list of one element",
+      "It must always have a non-null <code>next</code>"
+     ],
+     "answer": 3,
+     "explain": "The last node's <code>next</code> is <code>null</code>; a single node with <code>next</code> <code>null</code> is a whole list."
+    },
+    {
+     "type": "h",
+     "html": "Part C: code writing"
+    },
+    {
+     "type": "p",
+     "html": "Each task starts with the scaffolding already in the editor, as on the exam. Write only the missing lines, then run."
+    },
+    {
+     "type": "write",
+     "id": "ex2-c-lstack",
+     "mode": "independent",
+     "title": "LinkedStack push and pop",
+     "goal": "<code>LinkedStack&lt;T&gt;</code> is in the editor with <code>push</code> and <code>pop</code> left empty. Write them: <code>push</code> adds at the head; <code>pop</code> throws <code>EmptyStackException</code> when empty, otherwise removes and returns the top element. Keep <code>count</code> up to date.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "LinearNode.java",
+      "LinkedStack.java",
+      "StackCheck.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        // write push here\n    }\n\n    @Override\n    public T pop() {\n        // write pop here\n        return null;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "StackCheck.java",
+       "public class StackCheck {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new LinkedStack<>();\n        for (int i = 1; i <= 3; i++) {\n            s.push(i * 10);\n        }\n        System.out.println(s.pop() + \" \" + s.pop() + \" \" + s.size() + \" \" + s.peek());\n        try {\n            s.pop();\n            s.pop();\n        } catch (java.util.EmptyStackException e) {\n            System.out.println(\"empty\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "push: new node, point it at <code>top</code>, move <code>top</code> to it. pop: save <code>top.getElement()</code>, move <code>top</code> to <code>top.getNext()</code>."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "runtime",
+      "command": "java StackCheck",
+      "stdout": "",
+      "text": "Exception in thread \"main\" java.util.EmptyStackException\n\tat LinkedStack.peek(LinkedStack.java:26)\n\tat StackCheck.main(StackCheck.java:7)"
+     },
+     "run": "StackCheck",
+     "output": "30 20 1 10\nempty",
+     "testsOutput": null,
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "StackCheck.java",
+       "public class StackCheck {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new LinkedStack<>();\n        for (int i = 1; i <= 3; i++) {\n            s.push(i * 10);\n        }\n        System.out.println(s.pop() + \" \" + s.pop() + \" \" + s.size() + \" \" + s.peek());\n        try {\n            s.pop();\n            s.pop();\n        } catch (java.util.EmptyStackException e) {\n            System.out.println(\"empty\");\n        }\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "ex2-c-count",
+     "mode": "independent",
+     "title": "Traverse a linked list",
+     "goal": "<code>Node</code> and the scaffolding of <code>Nodes.countGreater</code> are in the editor. Write the body: count the nodes whose data is greater than <code>limit</code>. An empty list (<code>null</code>) has none.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Nodes.java",
+      "NodesCheck.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Nodes.java",
+       "public class Nodes {\n    // Returns how many nodes in the list hold a value greater than limit.\n    public static int countGreater(Node head, int limit) {\n        return 0;\n    }\n}\n"
+      ],
+      [
+       "NodesCheck.java",
+       "public class NodesCheck {\n    public static void main(String[] args) {\n        Node head = new Node(4);\n        head.setNext(new Node(9));\n        head.getNext().setNext(new Node(7));\n        System.out.println(Nodes.countGreater(head, 5) + \" \" + Nodes.countGreater(head, 100) + \" \" + Nodes.countGreater(null, 0));\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "getNext\\(\\)",
+       "message": "Move along the list with <code>getNext()</code>.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "ok",
+      "command": "java NodesCheck",
+      "stdout": "0 0 0"
+     },
+     "run": "NodesCheck",
+     "output": "2 0 0",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Nodes.java",
+       "public class Nodes {\n    // Returns how many nodes in the list hold a value greater than limit.\n    public static int countGreater(Node head, int limit) {\n        int count = 0;\n        Node current = head;\n        while (current != null) {\n            if (current.getData() > limit) {\n                count++;\n            }\n            current = current.getNext();\n        }\n        return count;\n    }\n}\n"
+      ],
+      [
+       "NodesCheck.java",
+       "public class NodesCheck {\n    public static void main(String[] args) {\n        Node head = new Node(4);\n        head.setNext(new Node(9));\n        head.getNext().setNext(new Node(7));\n        System.out.println(Nodes.countGreater(head, 5) + \" \" + Nodes.countGreater(head, 100) + \" \" + Nodes.countGreater(null, 0));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "ex2-c-enqueue",
+     "mode": "independent",
+     "title": "Circular enqueue",
+     "goal": "<code>CircularArrayQueue</code> is in the editor with the end of <code>enqueue</code> missing (the capacity check is there). Store the element at <code>rear</code>, move <code>rear</code> forward with wrap-around, and update <code>count</code>.",
+     "requirements": [],
+     "files": [
+      "QueueADT.java",
+      "CircularArrayQueue.java",
+      "QueueCheck.java"
+     ],
+     "starter": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "CircularArrayQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class CircularArrayQueue<T> implements QueueADT<T> {\n    private Object[] queue;\n    private int front;\n    private int rear;\n    private int count;\n\n    public CircularArrayQueue() {\n        queue = new Object[4];\n        front = 0;\n        rear = 0;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        if (count == queue.length) {\n            expandCapacity();\n        }\n        // store the element and move rear (wrap around!)\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = (T) queue[front];\n        queue[front] = null;\n        front = (front + 1) % queue.length;\n        count--;\n        return result;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return (T) queue[front];\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    private void expandCapacity() {\n        Object[] bigger = new Object[queue.length * 2];\n        for (int i = 0; i < count; i++) {\n            bigger[i] = queue[(front + i) % queue.length];\n        }\n        front = 0;\n        rear = count;\n        queue = bigger;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        for (int i = 0; i < count; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += queue[(front + i) % queue.length];\n        }\n        return result + \"] rear\";\n    }\n\n    // Every slot of the array, for drawing it: _ marks an empty slot.\n    public String arrayString() {\n        String result = \"[\";\n        for (int i = 0; i < queue.length; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += (queue[i] == null) ? \"_\" : queue[i];\n        }\n        return result + \"] front=\" + front + \" rear=\" + rear;\n    }\n}\n"
+      ],
+      [
+       "QueueCheck.java",
+       "public class QueueCheck {\n    public static void main(String[] args) {\n        CircularArrayQueue<String> q = new CircularArrayQueue<>();\n        for (String s : new String[] {\"a\", \"b\", \"c\"}) {\n            q.enqueue(s);\n        }\n        q.dequeue();\n        q.dequeue();\n        q.enqueue(\"d\");\n        q.enqueue(\"e\");\n        System.out.println(q.arrayString() + \" \" + q);\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "%\\s*queue\\.length",
+       "message": "Wrap <code>rear</code> with <code>% queue.length</code>.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "runtime",
+      "command": "java QueueCheck",
+      "stdout": "",
+      "text": "Exception in thread \"main\" java.util.NoSuchElementException: queue is empty\n\tat CircularArrayQueue.dequeue(CircularArrayQueue.java:28)\n\tat QueueCheck.main(QueueCheck.java:7)"
+     },
+     "run": "QueueCheck",
+     "output": "[e, _, c, d] front=2 rear=1 front [c, d, e] rear",
+     "testsOutput": null,
+     "solution": [
+      [
+       "QueueADT.java",
+       "public interface QueueADT<T> {\n    void enqueue(T element);\n\n    T dequeue();\n\n    T getFront();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "CircularArrayQueue.java",
+       "import java.util.NoSuchElementException;\n\npublic class CircularArrayQueue<T> implements QueueADT<T> {\n    private Object[] queue;\n    private int front;\n    private int rear;\n    private int count;\n\n    public CircularArrayQueue() {\n        queue = new Object[4];\n        front = 0;\n        rear = 0;\n        count = 0;\n    }\n\n    @Override\n    public void enqueue(T element) {\n        if (count == queue.length) {\n            expandCapacity();\n        }\n        queue[rear] = element;\n        rear = (rear + 1) % queue.length;\n        count++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T dequeue() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        T result = (T) queue[front];\n        queue[front] = null;\n        front = (front + 1) % queue.length;\n        count--;\n        return result;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T getFront() {\n        if (isEmpty()) {\n            throw new NoSuchElementException(\"queue is empty\");\n        }\n        return (T) queue[front];\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    private void expandCapacity() {\n        Object[] bigger = new Object[queue.length * 2];\n        for (int i = 0; i < count; i++) {\n            bigger[i] = queue[(front + i) % queue.length];\n        }\n        front = 0;\n        rear = count;\n        queue = bigger;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"front [\";\n        for (int i = 0; i < count; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += queue[(front + i) % queue.length];\n        }\n        return result + \"] rear\";\n    }\n\n    // Every slot of the array, for drawing it: _ marks an empty slot.\n    public String arrayString() {\n        String result = \"[\";\n        for (int i = 0; i < queue.length; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += (queue[i] == null) ? \"_\" : queue[i];\n        }\n        return result + \"] front=\" + front + \" rear=\" + rear;\n    }\n}\n"
+      ],
+      [
+       "QueueCheck.java",
+       "public class QueueCheck {\n    public static void main(String[] args) {\n        CircularArrayQueue<String> q = new CircularArrayQueue<>();\n        for (String s : new String[] {\"a\", \"b\", \"c\"}) {\n            q.enqueue(s);\n        }\n        q.dequeue();\n        q.dequeue();\n        q.enqueue(\"d\");\n        q.enqueue(\"e\");\n        System.out.println(q.arrayString() + \" \" + q);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "ex2-c-bigo",
+     "mode": "independent",
+     "title": "Write it at a given big O",
+     "goal": "Write <code>Given</code> with two methods: <code>public static boolean containsNegative(int[] data)</code>, which must be O(n), and <code>public static int countEqualPairs(int[] data)</code>, the number of pairs <code>i &lt; j</code> with <code>data[i] == data[j]</code>, written as O(n\u00b2) with nested loops. <code>GivenTester</code> prints both for <code>{3, -1, 3, 3}</code>.",
+     "requirements": [],
+     "files": [
+      "Given.java",
+      "GivenTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckGiven.java",
+       "public class CheckGiven {\n    public static void main(String[] args) {\n        System.out.println(Given.containsNegative(new int[] {}) + \" \" + Given.countEqualPairs(new int[] {1, 2}));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckGiven",
+     "hints": [],
+     "checks": [],
+     "run": "GivenTester",
+     "output": "true 3",
+     "testsOutput": "false 0",
+     "solution": [
+      [
+       "Given.java",
+       "public class Given {\n    public static boolean containsNegative(int[] data) {\n        for (int value : data) {\n            if (value < 0) {\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public static int countEqualPairs(int[] data) {\n        int count = 0;\n        for (int i = 0; i < data.length; i++) {\n            for (int j = i + 1; j < data.length; j++) {\n                if (data[i] == data[j]) {\n                    count++;\n                }\n            }\n        }\n        return count;\n    }\n}\n"
+      ],
+      [
+       "GivenTester.java",
+       "public class GivenTester {\n    public static void main(String[] args) {\n        int[] data = {3, -1, 3, 3};\n        System.out.println(Given.containsNegative(data) + \" \" + Given.countEqualPairs(data));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "ex2-c-list",
+     "mode": "independent",
+     "title": "A method on any List",
+     "goal": "Write <code>Lists</code> with <code>public static int sumEvens(List&lt;Integer&gt; values)</code>, the sum of the even values, using a for-each loop so it's O(n) for both <code>ArrayList</code> and <code>LinkedList</code>. <code>ListsTester</code> creates a <code>List&lt;Integer&gt;</code> as a <code>LinkedList</code>, adds 1 to 6 and prints <code>sumEvens</code>.",
+     "requirements": [],
+     "files": [
+      "Lists.java",
+      "ListsTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckLists.java",
+       "import java.util.ArrayList;\nimport java.util.List;\n\npublic class CheckLists {\n    public static void main(String[] args) {\n        List<Integer> v = new ArrayList<>();\n        v.add(-4);\n        v.add(7);\n        System.out.println(Lists.sumEvens(v) + \" \" + Lists.sumEvens(new ArrayList<>()));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckLists",
+     "hints": [],
+     "checks": [],
+     "run": "ListsTester",
+     "output": "12",
+     "testsOutput": "-4 0",
+     "solution": [
+      [
+       "Lists.java",
+       "import java.util.List;\n\npublic class Lists {\n    public static int sumEvens(List<Integer> values) {\n        int sum = 0;\n        for (int v : values) {\n            if (v % 2 == 0) {\n                sum += v;\n            }\n        }\n        return sum;\n    }\n}\n"
+      ],
+      [
+       "ListsTester.java",
+       "import java.util.LinkedList;\nimport java.util.List;\n\npublic class ListsTester {\n    public static void main(String[] args) {\n        List<Integer> values = new LinkedList<>();\n        for (int i = 1; i <= 6; i++) {\n            values.add(i);\n        }\n        System.out.println(Lists.sumEvens(values));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "1.4 Analysis of Algorithms",
+     "url": "https://algs4.cs.princeton.edu/14analysis/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "Queues",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Queue.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "Collections: Interfaces",
+     "url": "https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "List<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html",
+     "org": "Oracle, Java SE 21 API docs",
      "note": null
     }
    ]

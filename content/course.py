@@ -72,7 +72,7 @@ SECTIONS = [
      "lessons": ["coll-hierarchy", "coll-list", "ws-collections"]},
     {"id": "exam-2", "kind": "exam", "title": "Exam practice 2",
      "blurb": "Units 13 to 21, in the Exam 2 format: diagram problems on arrays, linked lists, stacks and queues; short answers and matching on algorithms; and code writing with scaffolding provided.",
-     "planned": ["Procedural problems: diagrams", "Short answers and matching", "Code writing: a few lines each"]},
+     "lessons": ["exam-practice-2"]},
     {"id": "trees", "title": "Introduction to Trees",
      "blurb": "Hierarchical data: roots, children, leaves.",
      "planned": ["Tree vocabulary", "A tree node class", "Binary trees", "Workshop"]},
