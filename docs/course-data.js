@@ -149,10 +149,10 @@ window.COURSE = {
    "id": "array-stack",
    "title": "Array Stack implementations",
    "blurb": "Build a stack on an array, and see why it matters where the top is.",
-   "planned": [
-    "ArrayStack: the top at the end",
-    "Where the top goes: end versus front",
-    "Workshop"
+   "lessons": [
+    "astack-build",
+    "astack-top",
+    "ws-array-stack"
    ]
   },
   {
@@ -18463,6 +18463,1104 @@ window.COURSE = {
      "title": "Stacks",
      "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
      "org": "Virginia Tech, OpenDSA",
+     "note": null
+    }
+   ]
+  },
+  "astack-build": {
+   "id": "astack-build",
+   "section": "array-stack",
+   "title": "ArrayStack: the top at the end",
+   "summary": "Build the stack you've been using. An array holds the values from the bottom up, and one int, <code>top</code>, tells you where the next value goes.",
+   "goals": [
+    "Store a stack in an array with the bottom at index 0",
+    "Use <code>top</code> as both the count and the next free index",
+    "Write <code>push</code>, <code>pop</code> and <code>peek</code>, and grow the array when it's full",
+    "Draw the array behind a stack after a sequence of operations"
+   ],
+   "cos225": "The Exam 2 guide asks you to diagram an array as a stack and to say where the top is. Here the top is at the end of the used part of the array; the next lesson tries the other end.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Two fields"
+    },
+    {
+     "type": "p",
+     "html": "An <code>ArrayStack</code> needs an array for the values and one <code>int</code>, <code>top</code>. The bottom of the stack is index 0, and values fill the array upward. <code>top</code> counts the values, which also makes it the index of the <strong>next free slot</strong>: with 2 values in slots 0 and 1, <code>top</code> is 2."
+    },
+    {
+     "type": "p",
+     "html": "An empty stack with room for four. The arrow shows where <code>top</code> points:"
+    },
+    {
+     "type": "diagram",
+     "kind": "array",
+     "state": "[_, _, _, _] top=0",
+     "label": null,
+     "caption": null
+    },
+    {
+     "type": "p",
+     "html": "The array is an <code>Object[]</code>, as in the generics lesson, because Java can't create a <code>T[]</code>. <code>pop</code> and <code>peek</code> cast values back to <code>T</code>."
+    },
+    {
+     "type": "h",
+     "html": "push"
+    },
+    {
+     "type": "p",
+     "html": "Store the value at <code>stack[top]</code>, then add 1 to <code>top</code>. Nothing else moves, so <code>push</code> takes the same time however big the stack is."
+    },
+    {
+     "type": "snippet",
+     "code": "        stack[top] = element;\n        top++;",
+     "caption": null
+    },
+    {
+     "type": "diagram",
+     "kind": "array",
+     "state": "[5, 8, _, _] top=2",
+     "label": null,
+     "caption": "After <code>push(5)</code> and <code>push(8)</code>. The top value, 8, is at index <code>top - 1</code>."
+    },
+    {
+     "type": "h",
+     "html": "pop and peek"
+    },
+    {
+     "type": "p",
+     "html": "<code>pop</code> goes the other way: subtract 1 from <code>top</code>, so it points at the top value, take that value, and clear the slot. <code>peek</code> reads <code>stack[top - 1]</code> without changing anything. Both throw <code>EmptyStackException</code> when <code>top</code> is 0."
+    },
+    {
+     "type": "snippet",
+     "code": "        top--;\n        T result = (T) stack[top];\n        stack[top] = null;\n        return result;",
+     "caption": null
+    },
+    {
+     "type": "diagram",
+     "kind": "array",
+     "state": "[5, _, _, _] top=1",
+     "label": null,
+     "caption": "After one <code>pop()</code>, which returned 8."
+    },
+    {
+     "type": "p",
+     "html": "Setting the slot to <code>null</code> isn't strictly needed: <code>top</code> already says the slot is free, and the next <code>push</code> overwrites it. But leaving the old reference there would keep that object in memory for as long as the stack exists, so clearing it is good practice (Princeton's *Algorithms* calls this avoiding loitering)."
+    },
+    {
+     "type": "h",
+     "html": "When the array is full"
+    },
+    {
+     "type": "p",
+     "html": "When <code>top</code> equals the array's length, there's no free slot. <code>push</code> first calls <code>expandCapacity</code>, which makes an array twice as big and copies the values across, exactly like the growable list in unit 12:"
+    },
+    {
+     "type": "diagram",
+     "kind": "array",
+     "state": "[10, 20, 30, 40, 50, _, _, _] top=5",
+     "label": null,
+     "caption": "Five pushes into a stack that started with four slots."
+    },
+    {
+     "type": "h",
+     "html": "The whole class"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ArrayStack.java",
+       "import java.util.EmptyStackException;\n\npublic class ArrayStack<T> implements StackADT<T> {\n    private Object[] stack;\n    private int top;\n\n    public ArrayStack() {\n        stack = new Object[4];\n        top = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        if (top == stack.length) {\n            expandCapacity();\n        }\n        stack[top] = element;\n        top++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        top--;\n        T result = (T) stack[top];\n        stack[top] = null;\n        return result;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return (T) stack[top - 1];\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == 0;\n    }\n\n    @Override\n    public int size() {\n        return top;\n    }\n\n    private void expandCapacity() {\n        Object[] bigger = new Object[stack.length * 2];\n        for (int i = 0; i < top; i++) {\n            bigger[i] = stack[i];\n        }\n        stack = bigger;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"bottom [\";\n        for (int i = 0; i < top; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += stack[i];\n        }\n        return result + \"] top\";\n    }\n\n    // Every slot of the array, for drawing it: _ marks an empty slot.\n    public String arrayString() {\n        String result = \"[\";\n        for (int i = 0; i < stack.length; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += (stack[i] == null) ? \"_\" : stack[i];\n        }\n        return result + \"] top=\" + top;\n    }\n}\n"
+      ],
+      [
+       "StackTester.java",
+       "public class StackTester {\n    public static void main(String[] args) {\n        StackADT<String> s = new ArrayStack<>();\n        for (String word : new String[] {\"a\", \"b\", \"c\", \"d\", \"e\"}) {\n            s.push(word);\n        }\n        System.out.println(s + \" size \" + s.size());\n        System.out.println(s.pop() + s.pop());\n        System.out.println(s.peek() + \" \" + s);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java StackTester",
+      "stdout": "bottom [a, b, c, d, e] top size 5\ned\nc bottom [a, b, c] top"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>toString</code> and <code>arrayString</code> are only for printing. <code>toString</code> shows the stack (bottom to top); <code>arrayString</code> shows every slot of the array, which is what you draw on the exam.",
+      "<code>s.pop() + s.pop()</code> with strings joins them: <code>e</code> then <code>d</code>, so it prints <code>ed</code>."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "astack-trace1",
+     "kind": "array",
+     "prompt": "Each <code>pop</code> clears the slot it takes from. Trace the array, not just the stack.",
+     "question": "Which diagram shows the array at the end?",
+     "files": [
+      [
+       "ArrayTrace.java",
+       "public class ArrayTrace {\n    public static void main(String[] args) {\n        ArrayStack<Integer> s = new ArrayStack<>();\n        s.push(3);\n        s.push(6);\n        s.push(9);\n        s.pop();\n        s.push(1);\n        s.pop();\n        System.out.println(s.arrayString());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "[3, 6, 1, _] top=3",
+      "[3, 6, _, _] top=2",
+      "[3, 6, _, _] top=3",
+      "[3, _, _, _] top=1"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java ArrayTrace",
+      "stdout": "[3, 6, _, _] top=2"
+     },
+     "explain": "After 3, 6, 9 and a pop, the array is <code>[3, 6, _, _]</code>. Pushing 1 fills index 2; popping it clears index 2 again. <code>top</code> is 2, the next free slot."
+    },
+    {
+     "type": "trace",
+     "id": "astack-trace2",
+     "kind": "array",
+     "prompt": "The array starts with four slots. Watch for the moment it fills up.",
+     "question": "Which diagram shows the array at the end?",
+     "files": [
+      [
+       "GrowTrace.java",
+       "public class GrowTrace {\n    public static void main(String[] args) {\n        ArrayStack<Integer> s = new ArrayStack<>();\n        s.push(1);\n        s.push(2);\n        s.push(3);\n        s.push(4);\n        s.pop();\n        s.push(5);\n        s.push(6);\n        System.out.println(s.arrayString());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "[1, 2, 3, 5, 6, _, _, _] top=5",
+      "[1, 2, 3, 4, 5, 6, _, _] top=6",
+      "[1, 2, 3, 5] top=4",
+      "[1, 2, 3, 5, 6] top=5"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java GrowTrace",
+      "stdout": "[1, 2, 3, 5, 6, _, _, _] top=5"
+     },
+     "explain": "Four pushes fill the array, but the <code>pop</code> frees index 3 before it ever has to grow. <code>push(5)</code> reuses index 3. Only <code>push(6)</code> finds the array full, so the array doubles to 8 and 6 goes in index 4."
+    },
+    {
+     "type": "blanks",
+     "id": "astack-blanks",
+     "title": "Write the core of ArrayStack",
+     "prompt": "Fill in the four blanks.",
+     "files": [
+      [
+       "ArrayStack.java",
+       "import java.util.EmptyStackException;\n\npublic class ArrayStack<T> implements StackADT<T> {\n    private Object[] stack;\n    private int top;\n\n    public ArrayStack() {\n        stack = new Object[4];\n        top = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        if (top == stack.length) {\n            expandCapacity();\n        }\n        [[store]];\n        [[inc]];\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        [[dec]];\n        T result = (T) stack[top];\n        stack[top] = null;\n        return result;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return (T) stack[[[peekat]]];\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == 0;\n    }\n\n    @Override\n    public int size() {\n        return top;\n    }\n\n    private void expandCapacity() {\n        Object[] bigger = new Object[stack.length * 2];\n        for (int i = 0; i < top; i++) {\n            bigger[i] = stack[i];\n        }\n        stack = bigger;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"bottom [\";\n        for (int i = 0; i < top; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += stack[i];\n        }\n        return result + \"] top\";\n    }\n\n    // Every slot of the array, for drawing it: _ marks an empty slot.\n    public String arrayString() {\n        String result = \"[\";\n        for (int i = 0; i < stack.length; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += (stack[i] == null) ? \"_\" : stack[i];\n        }\n        return result + \"] top=\" + top;\n    }\n}\n"
+      ],
+      [
+       "StackTester.java",
+       "public class StackTester {\n    public static void main(String[] args) {\n        StackADT<String> s = new ArrayStack<>();\n        for (String word : new String[] {\"a\", \"b\", \"c\", \"d\", \"e\"}) {\n            s.push(word);\n        }\n        System.out.println(s + \" size \" + s.size());\n        System.out.println(s.pop() + s.pop());\n        System.out.println(s.peek() + \" \" + s);\n    }\n}\n"
+      ]
+     ],
+     "run": "StackTester",
+     "blanks": {
+      "store": {
+       "accept": [
+        "stack[top]=element"
+       ],
+       "solution": "stack[top] = element",
+       "hint": "<code>top</code> is the next free slot.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "stack[top+1]=element",
+         "shown": "stack[top + 1] = element",
+         "why": "That skips a slot: the first push lands in index 1, and on a full array it runs past the end.",
+         "result": {
+          "kind": "runtime",
+          "command": "java StackTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4\n\tat ArrayStack.push(ArrayStack.java:17)\n\tat StackTester.main(StackTester.java:5)"
+         }
+        }
+       ],
+       "width": 24
+      },
+      "inc": {
+       "accept": [
+        "top++",
+        "top+=1",
+        "top=top+1"
+       ],
+       "solution": "top++",
+       "hint": "One more value.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "top--",
+         "shown": "top--",
+         "why": "<code>top</code> must grow with each push. Going down, the next push writes to index -1 and crashes.",
+         "result": {
+          "kind": "runtime",
+          "command": "java StackTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.ArrayIndexOutOfBoundsException: Index -1 out of bounds for length 4\n\tat ArrayStack.push(ArrayStack.java:17)\n\tat StackTester.main(StackTester.java:5)"
+         }
+        }
+       ],
+       "width": 13
+      },
+      "dec": {
+       "accept": [
+        "top--",
+        "top-=1",
+        "top=top-1"
+       ],
+       "solution": "top--",
+       "hint": "Move <code>top</code> back to the last filled slot.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "top++",
+         "shown": "top++",
+         "why": "That moves away from the values: it reads an empty slot and returns <code>null</code>.",
+         "result": {
+          "kind": "ok",
+          "command": "java StackTester",
+          "stdout": "bottom [a, b, c, d, e] top size 5\nnullnull\nnull bottom [a, b, c, d, e, null, null] top"
+         }
+        }
+       ],
+       "width": 13
+      },
+      "peekat": {
+       "accept": [
+        "top-1"
+       ],
+       "solution": "top - 1",
+       "hint": "The top value is just below the next free slot.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "top",
+         "shown": "top",
+         "why": "<code>stack[top]</code> is the next free slot, which is empty, so <code>peek</code> returns <code>null</code>.",
+         "result": {
+          "kind": "ok",
+          "command": "java StackTester",
+          "stdout": "bottom [a, b, c, d, e] top size 5\ned\nnull bottom [a, b, c] top"
+         }
+        }
+       ],
+       "width": 7
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java StackTester",
+      "stdout": "bottom [a, b, c, d, e] top size 5\ned\nc bottom [a, b, c] top"
+     },
+     "explain": "<code>top</code> is the next free slot, so push stores at <code>top</code> and then moves it up, and pop moves it down first. The top value lives at <code>top - 1</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "astack-where",
+     "question": "An <code>ArrayStack</code> has <code>top</code> equal to 3. Which index holds the value <code>peek()</code> returns?",
+     "choices": [
+      "0",
+      "2",
+      "3",
+      "4"
+     ],
+     "answer": 1,
+     "explain": "<code>top</code> counts the values (3, in indexes 0, 1 and 2) and is the next free slot. The top value is at <code>top - 1</code>, index 2."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-intstack",
+     "mode": "independent",
+     "title": "A stack of ints",
+     "goal": "Write <code>IntStack</code>, an array stack of <code>int</code> values (no generics needed). Use a private <code>int[]</code> that starts with 4 slots and doubles when full, and a private <code>int top</code>. Methods: <code>push(int)</code>, <code>pop()</code>, <code>peek()</code> (both throw <code>java.util.EmptyStackException</code> when empty), <code>isEmpty()</code> and <code>size()</code>. <code>IntStackTester</code> pushes 1 to 6, prints <code>size()</code> and <code>peek()</code>, then pops everything onto one line separated by spaces.",
+     "requirements": [],
+     "files": [
+      "IntStack.java",
+      "IntStackTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckIntStack.java",
+       "import java.util.EmptyStackException;\n\npublic class CheckIntStack {\n    public static void main(String[] args) {\n        IntStack s = new IntStack();\n        for (int i = 0; i < 20; i++) {\n            s.push(i * i);\n        }\n        System.out.println(s.pop() + \" \" + s.size());\n        IntStack e = new IntStack();\n        try {\n            e.peek();\n            System.out.println(\"no exception\");\n        } catch (EmptyStackException ex) {\n            System.out.println(\"EmptyStackException\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckIntStack",
+     "hints": [
+      "<code>top</code> is the next free index: push stores at <code>stack[top]</code> then increments; pop decrements first."
+     ],
+     "checks": [],
+     "run": "IntStackTester",
+     "output": "6 6\n6 5 4 3 2 1",
+     "testsOutput": "361 19\nEmptyStackException",
+     "solution": [
+      [
+       "IntStack.java",
+       "import java.util.EmptyStackException;\n\npublic class IntStack {\n    private int[] stack;\n    private int top;\n\n    public IntStack() {\n        stack = new int[4];\n        top = 0;\n    }\n\n    public void push(int value) {\n        if (top == stack.length) {\n            int[] bigger = new int[stack.length * 2];\n            for (int i = 0; i < top; i++) {\n                bigger[i] = stack[i];\n            }\n            stack = bigger;\n        }\n        stack[top] = value;\n        top++;\n    }\n\n    public int pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        top--;\n        return stack[top];\n    }\n\n    public int peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return stack[top - 1];\n    }\n\n    public boolean isEmpty() {\n        return top == 0;\n    }\n\n    public int size() {\n        return top;\n    }\n}\n"
+      ],
+      [
+       "IntStackTester.java",
+       "public class IntStackTester {\n    public static void main(String[] args) {\n        IntStack s = new IntStack();\n        for (int i = 1; i <= 6; i++) {\n            s.push(i);\n        }\n        System.out.println(s.size() + \" \" + s.peek());\n        while (!s.isEmpty()) {\n            System.out.print(s.pop() + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-boundedstack",
+     "mode": "independent",
+     "title": "A stack with a size limit",
+     "goal": "Write <code>BoundedStack&lt;T&gt;</code>, which implements <code>StackADT&lt;T&gt;</code> (already in the editor) with an <code>Object[]</code> whose capacity comes from the constructor and <strong>never grows</strong>. Add <code>isFull()</code>. <code>push</code> on a full stack throws <code>new IllegalStateException(&quot;stack is full&quot;)</code>; <code>pop</code> and <code>peek</code> on an empty one throw <code>EmptyStackException</code>. <code>BoundedTester</code> makes a stack of capacity 2, pushes <code>x</code> and <code>y</code>, prints <code>isFull()</code>, then tries to push <code>z</code> and prints the exception's message.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "BoundedStack.java",
+      "BoundedTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckBounded.java",
+       "public class CheckBounded {\n    public static void main(String[] args) {\n        BoundedStack<Integer> s = new BoundedStack<>(3);\n        s.push(1);\n        s.push(2);\n        s.pop();\n        s.push(3);\n        s.push(4);\n        System.out.println(s.isFull() + \" \" + s.peek() + \" \" + s.size());\n        s.pop();\n        System.out.println(s.isFull());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckBounded",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckBounded.java StackADT.java",
+      "text": "CheckBounded.java:3: error: cannot find symbol\n        BoundedStack<Integer> s = new BoundedStack<>(3);\n        ^\n  symbol:   class BoundedStack\n  location: class CheckBounded\nCheckBounded.java:3: error: cannot find symbol\n        BoundedStack<Integer> s = new BoundedStack<>(3);\n                                      ^\n  symbol:   class BoundedStack\n  location: class CheckBounded\n2 errors"
+     },
+     "run": "BoundedTester",
+     "output": "true\nstack is full",
+     "testsOutput": "true 4 3\nfalse",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "BoundedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class BoundedStack<T> implements StackADT<T> {\n    private Object[] stack;\n    private int top;\n\n    public BoundedStack(int capacity) {\n        stack = new Object[capacity];\n        top = 0;\n    }\n\n    public boolean isFull() {\n        return top == stack.length;\n    }\n\n    @Override\n    public void push(T element) {\n        if (isFull()) {\n            throw new IllegalStateException(\"stack is full\");\n        }\n        stack[top] = element;\n        top++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        top--;\n        T result = (T) stack[top];\n        stack[top] = null;\n        return result;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return (T) stack[top - 1];\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == 0;\n    }\n\n    @Override\n    public int size() {\n        return top;\n    }\n}\n"
+      ],
+      [
+       "BoundedTester.java",
+       "public class BoundedTester {\n    public static void main(String[] args) {\n        BoundedStack<String> s = new BoundedStack<>(2);\n        s.push(\"x\");\n        s.push(\"y\");\n        System.out.println(s.isFull());\n        try {\n            s.push(\"z\");\n        } catch (IllegalStateException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "EmptyStackException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/EmptyStackException.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Generic Types",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "astack-top": {
+   "id": "astack-top",
+   "section": "array-stack",
+   "title": "Where the top goes: end versus front",
+   "summary": "An array stack could keep its top at index 0 instead of at the end. It works, but every push and pop has to shift the whole array. Here's why the end is the right choice.",
+   "goals": [
+    "Implement a stack with its top at index 0",
+    "Count the values each operation has to move",
+    "Explain why an array stack keeps its top at the end"
+   ],
+   "cos225": "The Exam 2 guide asks you to contrast stack implementations and say where the top is located. For arrays, the answer is the end of the used part, and this lesson shows the cost of the alternative.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "The other end"
+    },
+    {
+     "type": "p",
+     "html": "Nothing says the top has to be at the end of the array. Here is a stack that keeps its top at index 0. To make room for a new top, <code>push</code> first shifts every value one slot to the right; <code>pop</code> shifts them all back left."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "FrontArrayStack.java",
+       "import java.util.EmptyStackException;\n\npublic class FrontArrayStack<T> implements StackADT<T> {\n    private Object[] stack;\n    private int count;\n\n    public FrontArrayStack() {\n        stack = new Object[4];\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        if (count == stack.length) {\n            expandCapacity();\n        }\n        for (int i = count; i > 0; i--) {\n            stack[i] = stack[i - 1];\n        }\n        stack[0] = element;\n        count++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = (T) stack[0];\n        for (int i = 0; i < count - 1; i++) {\n            stack[i] = stack[i + 1];\n        }\n        count--;\n        stack[count] = null;\n        return result;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return (T) stack[0];\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    private void expandCapacity() {\n        Object[] bigger = new Object[stack.length * 2];\n        for (int i = 0; i < count; i++) {\n            bigger[i] = stack[i];\n        }\n        stack = bigger;\n    }\n\n    // Every slot of the array, for drawing it: _ marks an empty slot.\n    public String arrayString() {\n        String result = \"[\";\n        for (int i = 0; i < stack.length; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += (stack[i] == null) ? \"_\" : stack[i];\n        }\n        return result + \"] top=0\";\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Both classes behave the same as stacks, but their arrays look like mirror images:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "BothEnds.java",
+       "public class BothEnds {\n    public static void main(String[] args) {\n        ArrayStack<Integer> atEnd = new ArrayStack<>();\n        FrontArrayStack<Integer> atFront = new FrontArrayStack<>();\n        for (int value : new int[] {5, 8, 2}) {\n            atEnd.push(value);\n            atFront.push(value);\n        }\n        System.out.println(atEnd.arrayString());\n        System.out.println(atFront.arrayString());\n        System.out.println(atEnd.pop() + \" \" + atFront.pop());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java BothEnds",
+      "stdout": "[5, 8, 2, _] top=3\n[2, 8, 5, _] top=0\n2 2"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "diagram",
+     "kind": "array",
+     "state": "[5, 8, 2, _] top=3",
+     "label": null,
+     "caption": "<code>ArrayStack</code> after pushing 5, 8 and 2: the top value is at index <code>top - 1</code>."
+    },
+    {
+     "type": "diagram",
+     "kind": "array",
+     "state": "[2, 8, 5, _] top=0",
+     "label": null,
+     "caption": "<code>FrontArrayStack</code> after the same pushes: the top value is always at index 0."
+    },
+    {
+     "type": "h",
+     "html": "Counting the work"
+    },
+    {
+     "type": "p",
+     "html": "With the top at the end, a push writes one slot and moves nothing, however many pushes you do. With the top at the front, a push into a stack of <code>count</code> values moves all <code>count</code> of them first. This program counts those moves for <code>n</code> pushes in a row:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "MoveCount.java",
+       "public class MoveCount {\n    // With the top at index 0, each push shifts every value already\n    // in the stack one slot right. Count those moves for n pushes.\n    public static long movesForPushes(int n) {\n        long moves = 0;\n        for (int count = 0; count < n; count++) {\n            for (int i = count; i > 0; i--) {\n                moves++;\n            }\n        }\n        return moves;\n    }\n\n    public static void main(String[] args) {\n        for (int n = 10; n <= 10000; n *= 10) {\n            System.out.println(n + \" pushes: \" + movesForPushes(n) + \" values moved\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java MoveCount",
+      "stdout": "10 pushes: 45 values moved\n100 pushes: 4950 values moved\n1000 pushes: 499500 values moved\n10000 pushes: 49995000 values moved"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Ten times more pushes means about a hundred times more moves, because each push costs more than the one before. For a single operation, the difference is:"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>Top at the end</strong>: <code>push</code>, <code>pop</code> and <code>peek</code> take the same time at any size. This is called <strong>constant time</strong>, written <strong>O(1)</strong>.",
+      "<strong>Top at the front</strong>: <code>push</code> and <code>pop</code> move every value, so their time grows in step with the size. This is <strong>linear time</strong>, written <strong>O(n)</strong>. (<code>peek</code> is still O(1): it only reads index 0.)"
+     ]
+    },
+    {
+     "type": "p",
+     "html": "Unit 15 covers this notation properly. For now: an array stack keeps its top at the end, because that's the end where adding and removing don't disturb anything else."
+    },
+    {
+     "type": "note",
+     "label": "What about growing?",
+     "html": "A <code>push</code> that finds the array full copies every value into the bigger array, so that one push is O(n). Because the capacity doubles, this happens rarely, and spread over all the pushes it adds only a constant amount of work to each (Princeton's *Algorithms* shows this in section 1.4)."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "atop-trace",
+     "kind": "array",
+     "prompt": "This stack keeps its top at index 0.",
+     "question": "Which diagram shows the array at the end?",
+     "files": [
+      [
+       "FrontTrace.java",
+       "public class FrontTrace {\n    public static void main(String[] args) {\n        FrontArrayStack<String> s = new FrontArrayStack<>();\n        s.push(\"p\");\n        s.push(\"q\");\n        s.push(\"r\");\n        s.pop();\n        s.push(\"t\");\n        System.out.println(s.arrayString());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "[p, q, t, _] top=0",
+      "[t, q, p, _] top=0",
+      "[t, r, q, p] top=0",
+      "[q, p, t, _] top=0"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java FrontTrace",
+      "stdout": "[t, q, p, _] top=0"
+     },
+     "explain": "After p, q and r, the array is <code>[r, q, p, _]</code>. <code>pop</code> removes <code>r</code> from index 0 and shifts the rest left: <code>[q, p, _, _]</code>. Pushing <code>t</code> shifts them right again and puts <code>t</code> at index 0."
+    },
+    {
+     "type": "match",
+     "id": "atop-match",
+     "prompt": "Match each operation with how its time grows as the stack holds more values. Assume the array isn't full.",
+     "options": [
+      "O(1): the same at any size",
+      "O(n): grows with the size"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "<code>push</code> with the top at the end",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>pop</code> with the top at the end",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>push</code> with the top at index 0",
+       "answer": 1,
+       "why": "Every existing value shifts one slot right first."
+      },
+      {
+       "code": null,
+       "html": "<code>pop</code> with the top at index 0",
+       "answer": 1,
+       "why": "Every remaining value shifts one slot left."
+      },
+      {
+       "code": null,
+       "html": "<code>peek</code> with the top at index 0",
+       "answer": 0,
+       "why": "<code>peek</code> only reads <code>stack[0]</code>. Nothing moves."
+      },
+      {
+       "code": null,
+       "html": "A <code>push</code> that finds the array full and expands it",
+       "answer": 1,
+       "why": "That one push copies every value into the new array."
+      }
+     ],
+     "explain": "Adding or removing at the end of an array touches one slot. Adding or removing at the front moves everything after it."
+    },
+    {
+     "type": "quiz",
+     "id": "atop-why",
+     "question": "Why does <code>ArrayStack</code> keep its top at the end of the used part of the array?",
+     "choices": [
+      "Because index 0 can't hold a value",
+      "So push and pop don't have to shift the other values",
+      "So the array never has to grow",
+      "Because <code>peek</code> would be slower at index 0"
+     ],
+     "answer": 1,
+     "explain": "At the end, push and pop change one slot and <code>top</code>. At index 0 they shift every value. <code>peek</code> is fast either way, and the array still grows when full."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-frontstack",
+     "mode": "independent",
+     "title": "Top at index 0",
+     "goal": "Write <code>FrontStack&lt;T&gt;</code>, which implements <code>StackADT&lt;T&gt;</code> (already in the editor) with its top <strong>at index 0</strong>: <code>push</code> shifts every value right before storing at index 0, and <code>pop</code> shifts them left after taking index 0. Use an <code>Object[]</code> of capacity 4 that doubles when full, and a <code>count</code>. Its <code>toString()</code> returns the usual <code>bottom [ ... ] top</code> format, so the bottom is the <strong>last</strong> used index. <code>FrontTester</code> pushes 1, 2 and 3, pops once, pushes 4 and prints the stack.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "FrontStack.java",
+      "FrontTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckFront.java",
+       "public class CheckFront {\n    public static void main(String[] args) {\n        StackADT<String> s = new FrontStack<>();\n        for (int i = 0; i < 9; i++) {\n            s.push(\"v\" + i);\n        }\n        System.out.println(s.pop() + \" \" + s.peek() + \" \" + s.size());\n        System.out.println(new FrontStack<String>());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckFront",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "stack\\[0\\]\\s*=",
+       "message": "<code>push</code> should store the new value at index 0."
+      }
+     ],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckFront.java StackADT.java",
+      "text": "CheckFront.java:3: error: cannot find symbol\n        StackADT<String> s = new FrontStack<>();\n                                 ^\n  symbol:   class FrontStack\n  location: class CheckFront\nCheckFront.java:8: error: cannot find symbol\n        System.out.println(new FrontStack<String>());\n                               ^\n  symbol:   class FrontStack\n  location: class CheckFront\n2 errors"
+     },
+     "run": "FrontTester",
+     "output": "bottom [1, 2, 4] top",
+     "testsOutput": "v8 v7 8\nbottom [] top",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "FrontStack.java",
+       "import java.util.EmptyStackException;\n\npublic class FrontStack<T> implements StackADT<T> {\n    private Object[] stack = new Object[4];\n    private int count = 0;\n\n    @Override\n    public void push(T element) {\n        if (count == stack.length) {\n            Object[] bigger = new Object[stack.length * 2];\n            for (int i = 0; i < count; i++) {\n                bigger[i] = stack[i];\n            }\n            stack = bigger;\n        }\n        for (int i = count; i > 0; i--) {\n            stack[i] = stack[i - 1];\n        }\n        stack[0] = element;\n        count++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = (T) stack[0];\n        for (int i = 0; i < count - 1; i++) {\n            stack[i] = stack[i + 1];\n        }\n        count--;\n        stack[count] = null;\n        return result;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return (T) stack[0];\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"bottom [\";\n        for (int i = count - 1; i >= 0; i--) {\n            result += stack[i];\n            if (i > 0) {\n                result += \", \";\n            }\n        }\n        return result + \"] top\";\n    }\n}\n"
+      ],
+      [
+       "FrontTester.java",
+       "public class FrontTester {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new FrontStack<>();\n        s.push(1);\n        s.push(2);\n        s.push(3);\n        s.pop();\n        s.push(4);\n        System.out.println(s);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-peekat",
+     "mode": "independent",
+     "title": "Look anywhere in an array stack",
+     "goal": "Because an array stack keeps its values in an array, it can read any of them directly. Write <code>DeepStack</code>, an <code>int</code> stack like <code>IntStack</code> (an <code>int[]</code> of 4 that doubles, and <code>top</code>), with <code>push</code>, <code>pop</code>, <code>size</code> and one extra method: <code>peekAt(int depth)</code>, which returns the value <code>depth</code> places below the top (<code>peekAt(0)</code> is the top) without changing anything. If <code>depth</code> is negative or at least <code>size()</code>, throw <code>new IndexOutOfBoundsException(&quot;depth &quot; + depth)</code>. <code>DeepTester</code> pushes 10, 20, 30 and prints <code>peekAt(0)</code>, <code>peekAt(2)</code> and <code>size()</code> on one line.",
+     "requirements": [],
+     "files": [
+      "DeepStack.java",
+      "DeepTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDeep.java",
+       "public class CheckDeep {\n    public static void main(String[] args) {\n        DeepStack s = new DeepStack();\n        for (int i = 1; i <= 6; i++) {\n            s.push(i);\n        }\n        s.pop();\n        System.out.println(s.peekAt(1) + \" \" + s.peekAt(4));\n        try {\n            s.peekAt(5);\n        } catch (IndexOutOfBoundsException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDeep",
+     "hints": [
+      "The top value is at <code>top - 1</code>, so the one <code>depth</code> below it is at <code>top - 1 - depth</code>."
+     ],
+     "checks": [],
+     "run": "DeepTester",
+     "output": "30 10 3",
+     "testsOutput": "4 1\ndepth 5",
+     "solution": [
+      [
+       "DeepStack.java",
+       "import java.util.EmptyStackException;\n\npublic class DeepStack {\n    private int[] stack = new int[4];\n    private int top = 0;\n\n    public void push(int value) {\n        if (top == stack.length) {\n            int[] bigger = new int[stack.length * 2];\n            for (int i = 0; i < top; i++) {\n                bigger[i] = stack[i];\n            }\n            stack = bigger;\n        }\n        stack[top] = value;\n        top++;\n    }\n\n    public int pop() {\n        if (top == 0) {\n            throw new EmptyStackException();\n        }\n        top--;\n        return stack[top];\n    }\n\n    public int peekAt(int depth) {\n        if (depth < 0 || depth >= top) {\n            throw new IndexOutOfBoundsException(\"depth \" + depth);\n        }\n        return stack[top - 1 - depth];\n    }\n\n    public int size() {\n        return top;\n    }\n}\n"
+      ],
+      [
+       "DeepTester.java",
+       "public class DeepTester {\n    public static void main(String[] args) {\n        DeepStack s = new DeepStack();\n        s.push(10);\n        s.push(20);\n        s.push(30);\n        System.out.println(s.peekAt(0) + \" \" + s.peekAt(2) + \" \" + s.size());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "1.4 Analysis of Algorithms",
+     "url": "https://algs4.cs.princeton.edu/14analysis/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    }
+   ]
+  },
+  "ws-array-stack": {
+   "id": "ws-array-stack",
+   "section": "array-stack",
+   "title": "Workshop: array stacks",
+   "summary": "Build an array stack from an empty file, then stretch the idea: two stacks sharing one array, a stack that forgets its oldest values, and a stack that always knows its minimum.",
+   "goals": [
+    "Write a generic array stack with push, pop, peek, expansion and toString",
+    "Keep track of a top index precisely, from either end of an array",
+    "Choose where to put the top so the common operations stay fast"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: ArrayStack from scratch"
+    },
+    {
+     "type": "write",
+     "id": "ws-u14-arraystack",
+     "mode": "guided",
+     "title": "ArrayStack from scratch",
+     "goal": "Write the whole <code>ArrayStack&lt;T&gt;</code>, one piece at a time. Create <code>StackADT.java</code> too, with the five stack methods.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "ArrayStack.java",
+      "StackTester.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Push and peek",
+       "text": "Create <code>StackADT&lt;T&gt;</code> and <code>ArrayStack&lt;T&gt;</code>, with an <code>Object[]</code> of 2 slots and <code>int top</code>. Write <code>push</code>, <code>peek</code>, <code>isEmpty</code> and <code>size</code>. For now <code>pop</code> can just <code>return null;</code> so the class compiles.",
+       "hint": "<code>push</code> stores at <code>stack[top]</code>, then increments. The top value is at <code>top - 1</code>.",
+       "files": [
+        "StackADT.java",
+        "ArrayStack.java",
+        "StackTester.java"
+       ],
+       "run": "StackTester",
+       "output": "true\nbee 2 false",
+       "checks": [],
+       "solution": [
+        [
+         "StackADT.java",
+         "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+        ],
+        [
+         "ArrayStack.java",
+         "public class ArrayStack<T> implements StackADT<T> {\n    private Object[] stack;\n    private int top;\n\n    public ArrayStack() {\n        stack = new Object[2];\n        top = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        stack[top] = element;\n        top++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        return (T) stack[top - 1];\n    }\n\n    @Override\n    public T pop() {\n        return null;\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == 0;\n    }\n\n    @Override\n    public int size() {\n        return top;\n    }\n}\n"
+        ],
+        [
+         "StackTester.java",
+         "public class StackTester {\n    public static void main(String[] args) {\n        StackADT<String> s = new ArrayStack<>();\n        System.out.println(s.isEmpty());\n        s.push(\"ant\");\n        s.push(\"bee\");\n        System.out.println(s.peek() + \" \" + s.size() + \" \" + s.isEmpty());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Pop, and empty stacks",
+       "text": "Write <code>pop</code>: move <code>top</code> down, take the value, clear the slot. <code>pop</code> and <code>peek</code> throw <code>EmptyStackException</code> (import it from <code>java.util</code>) when the stack is empty.",
+       "hint": null,
+       "files": [
+        "StackADT.java",
+        "ArrayStack.java",
+        "StackTester.java"
+       ],
+       "run": "StackTester",
+       "output": "bee ant 0\nempty",
+       "checks": [],
+       "solution": [
+        [
+         "StackADT.java",
+         "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+        ],
+        [
+         "ArrayStack.java",
+         "import java.util.EmptyStackException;\n\npublic class ArrayStack<T> implements StackADT<T> {\n    private Object[] stack;\n    private int top;\n\n    public ArrayStack() {\n        stack = new Object[2];\n        top = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        stack[top] = element;\n        top++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return (T) stack[top - 1];\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        top--;\n        T result = (T) stack[top];\n        stack[top] = null;\n        return result;\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == 0;\n    }\n\n    @Override\n    public int size() {\n        return top;\n    }\n}\n"
+        ],
+        [
+         "StackTester.java",
+         "import java.util.EmptyStackException;\n\npublic class StackTester {\n    public static void main(String[] args) {\n        StackADT<String> s = new ArrayStack<>();\n        s.push(\"ant\");\n        s.push(\"bee\");\n        System.out.println(s.pop() + \" \" + s.pop() + \" \" + s.size());\n        try {\n            s.pop();\n        } catch (EmptyStackException e) {\n            System.out.println(\"empty\");\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Growing and printing",
+       "text": "Add <code>expandCapacity()</code>, called by <code>push</code> when <code>top == stack.length</code>, and a <code>toString()</code> in the <code>bottom [ ... ] top</code> format. Push five values into the 2-slot array.",
+       "hint": null,
+       "files": [
+        "StackADT.java",
+        "ArrayStack.java",
+        "StackTester.java"
+       ],
+       "run": "StackTester",
+       "output": "bottom [ant, bee, cricket, dragonfly, earwig] top\nbottom [ant, bee, cricket, dragonfly] top 4",
+       "checks": [],
+       "solution": [
+        [
+         "StackADT.java",
+         "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+        ],
+        [
+         "ArrayStack.java",
+         "import java.util.EmptyStackException;\n\npublic class ArrayStack<T> implements StackADT<T> {\n    private Object[] stack;\n    private int top;\n\n    public ArrayStack() {\n        stack = new Object[2];\n        top = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        if (top == stack.length) {\n            expandCapacity();\n        }\n        stack[top] = element;\n        top++;\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return (T) stack[top - 1];\n    }\n\n    @SuppressWarnings(\"unchecked\")\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        top--;\n        T result = (T) stack[top];\n        stack[top] = null;\n        return result;\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == 0;\n    }\n\n    @Override\n    public int size() {\n        return top;\n    }\n\n    private void expandCapacity() {\n        Object[] bigger = new Object[stack.length * 2];\n        for (int i = 0; i < top; i++) {\n            bigger[i] = stack[i];\n        }\n        stack = bigger;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"bottom [\";\n        for (int i = 0; i < top; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += stack[i];\n        }\n        return result + \"] top\";\n    }\n}\n"
+        ],
+        [
+         "StackTester.java",
+         "public class StackTester {\n    public static void main(String[] args) {\n        StackADT<String> s = new ArrayStack<>();\n        String[] bugs = {\"ant\", \"bee\", \"cricket\", \"dragonfly\", \"earwig\"};\n        for (String bug : bugs) {\n            s.push(bug);\n        }\n        System.out.println(s);\n        s.pop();\n        System.out.println(s + \" \" + s.size());\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: Two stacks in one array"
+    },
+    {
+     "type": "write",
+     "id": "ws-u14-twostacks",
+     "mode": "guided",
+     "title": "Two stacks in one array",
+     "goal": "Two stacks can share one array: the left stack grows up from index 0, the right one grows down from the last index. The array is only full when they meet.",
+     "requirements": [],
+     "files": [
+      "TwoStacks.java",
+      "TwoTester.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Pushing from both ends",
+       "text": "Write <code>TwoStacks</code> with an <code>int[] data</code> (capacity from the constructor), <code>left</code> (next free slot from the left, starting at 0) and <code>right</code> (next free slot from the right, starting at the last index). Write <code>pushLeft</code>, <code>pushRight</code>, <code>sizeLeft()</code> and <code>sizeRight()</code>.",
+       "hint": "The right stack's size is how far <code>right</code> has moved down from the last index: <code>data.length - 1 - right</code>.",
+       "files": [
+        "TwoStacks.java",
+        "TwoTester.java"
+       ],
+       "run": "TwoTester",
+       "output": "2 1",
+       "checks": [],
+       "solution": [
+        [
+         "TwoStacks.java",
+         "public class TwoStacks {\n    private int[] data;\n    private int left;\n    private int right;\n\n    public TwoStacks(int capacity) {\n        data = new int[capacity];\n        left = 0;\n        right = capacity - 1;\n    }\n\n    public void pushLeft(int value) {\n        data[left] = value;\n        left++;\n    }\n\n    public void pushRight(int value) {\n        data[right] = value;\n        right--;\n    }\n\n    public int sizeLeft() {\n        return left;\n    }\n\n    public int sizeRight() {\n        return data.length - 1 - right;\n    }\n}\n"
+        ],
+        [
+         "TwoTester.java",
+         "public class TwoTester {\n    public static void main(String[] args) {\n        TwoStacks t = new TwoStacks(5);\n        t.pushLeft(1);\n        t.pushLeft(2);\n        t.pushRight(9);\n        System.out.println(t.sizeLeft() + \" \" + t.sizeRight());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Popping",
+       "text": "Add <code>popLeft()</code> and <code>popRight()</code>. Each moves its index back toward its own end and returns the value there. An empty side throws <code>IllegalStateException</code> with the message <code>left stack is empty</code> or <code>right stack is empty</code>.",
+       "hint": null,
+       "files": [
+        "TwoStacks.java",
+        "TwoTester.java"
+       ],
+       "run": "TwoTester",
+       "output": "2 8 9\nright stack is empty",
+       "checks": [],
+       "solution": [
+        [
+         "TwoStacks.java",
+         "public class TwoStacks {\n    private int[] data;\n    private int left;\n    private int right;\n\n    public TwoStacks(int capacity) {\n        data = new int[capacity];\n        left = 0;\n        right = capacity - 1;\n    }\n\n    public void pushLeft(int value) {\n        data[left] = value;\n        left++;\n    }\n\n    public void pushRight(int value) {\n        data[right] = value;\n        right--;\n    }\n\n    public int popLeft() {\n        if (left == 0) {\n            throw new IllegalStateException(\"left stack is empty\");\n        }\n        left--;\n        return data[left];\n    }\n\n    public int popRight() {\n        if (right == data.length - 1) {\n            throw new IllegalStateException(\"right stack is empty\");\n        }\n        right++;\n        return data[right];\n    }\n\n    public int sizeLeft() {\n        return left;\n    }\n\n    public int sizeRight() {\n        return data.length - 1 - right;\n    }\n}\n"
+        ],
+        [
+         "TwoTester.java",
+         "public class TwoTester {\n    public static void main(String[] args) {\n        TwoStacks t = new TwoStacks(5);\n        t.pushLeft(1);\n        t.pushLeft(2);\n        t.pushRight(9);\n        t.pushRight(8);\n        System.out.println(t.popLeft() + \" \" + t.popRight() + \" \" + t.popRight());\n        try {\n            t.popRight();\n        } catch (IllegalStateException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Full means they've met",
+       "text": "Add <code>isFull()</code>, true when <code>left &gt; right</code> (no free slot between them). Both push methods throw <code>IllegalStateException(&quot;array is full&quot;)</code> when it's full.",
+       "hint": "With capacity 4, after two pushes on each side <code>left</code> is 2 and <code>right</code> is 1.",
+       "files": [
+        "TwoStacks.java",
+        "TwoTester.java"
+       ],
+       "run": "TwoTester",
+       "output": "true\narray is full\n3 1 true",
+       "checks": [],
+       "solution": [
+        [
+         "TwoStacks.java",
+         "public class TwoStacks {\n    private int[] data;\n    private int left;\n    private int right;\n\n    public TwoStacks(int capacity) {\n        data = new int[capacity];\n        left = 0;\n        right = capacity - 1;\n    }\n\n    public boolean isFull() {\n        return left > right;\n    }\n\n    public void pushLeft(int value) {\n        if (isFull()) {\n            throw new IllegalStateException(\"array is full\");\n        }\n        data[left] = value;\n        left++;\n    }\n\n    public void pushRight(int value) {\n        if (isFull()) {\n            throw new IllegalStateException(\"array is full\");\n        }\n        data[right] = value;\n        right--;\n    }\n\n    public int popLeft() {\n        if (left == 0) {\n            throw new IllegalStateException(\"left stack is empty\");\n        }\n        left--;\n        return data[left];\n    }\n\n    public int popRight() {\n        if (right == data.length - 1) {\n            throw new IllegalStateException(\"right stack is empty\");\n        }\n        right++;\n        return data[right];\n    }\n\n    public int sizeLeft() {\n        return left;\n    }\n\n    public int sizeRight() {\n        return data.length - 1 - right;\n    }\n}\n"
+        ],
+        [
+         "TwoTester.java",
+         "public class TwoTester {\n    public static void main(String[] args) {\n        TwoStacks t = new TwoStacks(4);\n        t.pushLeft(1);\n        t.pushRight(9);\n        t.pushLeft(2);\n        t.pushRight(8);\n        System.out.println(t.isFull());\n        try {\n            t.pushLeft(3);\n        } catch (IllegalStateException e) {\n            System.out.println(e.getMessage());\n        }\n        t.popRight();\n        t.pushLeft(3);\n        System.out.println(t.sizeLeft() + \" \" + t.sizeRight() + \" \" + t.isFull());\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: A stack that forgets"
+    },
+    {
+     "type": "write",
+     "id": "ws-u14-dropstack",
+     "mode": "independent",
+     "title": "A stack that forgets",
+     "goal": "Undo histories often keep only the most recent changes. Write <code>DropStack</code>, a <code>String</code> stack with a fixed capacity (from the constructor) and the top at the end. When <code>push</code> finds it full, it <strong>drops the bottom value</strong> (shift everything left one slot) to make room, instead of growing. Methods: <code>push</code>, <code>pop</code> (throw <code>IllegalStateException(&quot;empty&quot;)</code> if empty), <code>size()</code>, and <code>toString()</code> in the <code>bottom [ ... ] top</code> format. <code>DropTester</code> makes a capacity-3 stack, pushes <code>a</code> to <code>e</code>, prints it, pops once and prints it again.",
+     "requirements": [],
+     "files": [
+      "DropStack.java",
+      "DropTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDrop.java",
+       "public class CheckDrop {\n    public static void main(String[] args) {\n        DropStack s = new DropStack(2);\n        s.push(\"x\");\n        System.out.println(s + \" \" + s.size());\n        s.push(\"y\");\n        s.push(\"z\");\n        System.out.println(s.pop() + s.pop() + \" \" + s.size());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDrop",
+     "hints": [
+      "Shifting left is O(n), but it only happens when the stack is full."
+     ],
+     "checks": [],
+     "run": "DropTester",
+     "output": "bottom [c, d, e] top\nbottom [c, d] top",
+     "testsOutput": "bottom [x] top 1\nzy 0",
+     "solution": [
+      [
+       "DropStack.java",
+       "public class DropStack {\n    private String[] stack;\n    private int top;\n\n    public DropStack(int capacity) {\n        stack = new String[capacity];\n        top = 0;\n    }\n\n    public void push(String value) {\n        if (top == stack.length) {\n            for (int i = 0; i < top - 1; i++) {\n                stack[i] = stack[i + 1];\n            }\n            top--;\n        }\n        stack[top] = value;\n        top++;\n    }\n\n    public String pop() {\n        if (top == 0) {\n            throw new IllegalStateException(\"empty\");\n        }\n        top--;\n        String result = stack[top];\n        stack[top] = null;\n        return result;\n    }\n\n    public int size() {\n        return top;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"bottom [\";\n        for (int i = 0; i < top; i++) {\n            if (i > 0) {\n                result += \", \";\n            }\n            result += stack[i];\n        }\n        return result + \"] top\";\n    }\n}\n"
+      ],
+      [
+       "DropTester.java",
+       "public class DropTester {\n    public static void main(String[] args) {\n        DropStack s = new DropStack(3);\n        for (String v : new String[] {\"a\", \"b\", \"c\", \"d\", \"e\"}) {\n            s.push(v);\n        }\n        System.out.println(s);\n        s.pop();\n        System.out.println(s);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: A stack that knows its minimum"
+    },
+    {
+     "type": "write",
+     "id": "ws-u14-minstack",
+     "mode": "independent",
+     "title": "A stack that knows its minimum",
+     "goal": "Write <code>MinStack</code>, an <code>int</code> stack whose <code>min()</code> returns the smallest value in the stack in O(1): no loop. Keep two <code>int[]</code> arrays of the same capacity (4, doubling together) and one <code>top</code>: <code>values</code> holds the stack, and <code>mins[i]</code> holds the smallest of <code>values[0]</code> to <code>values[i]</code>. So <code>push</code> stores <code>Math.min(value, mins[top - 1])</code> (or just <code>value</code> when empty), and <code>min()</code> reads <code>mins[top - 1]</code>. Methods: <code>push</code>, <code>pop</code>, <code>min</code> and <code>size</code>; <code>pop</code> and <code>min</code> throw <code>java.util.EmptyStackException</code> when empty. <code>MinTester</code> pushes 5, 3, 7 and 2, then prints <code>min()</code>, pops, and prints <code>min()</code> again, all on one line.",
+     "requirements": [],
+     "files": [
+      "MinStack.java",
+      "MinTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckMin.java",
+       "public class CheckMin {\n    public static void main(String[] args) {\n        MinStack s = new MinStack();\n        int[] data = {9, 8, 10, 4, 6, 1, 12};\n        for (int v : data) {\n            s.push(v);\n        }\n        String out = \"\";\n        while (s.size() > 0) {\n            out += s.min() + \" \";\n            s.pop();\n        }\n        System.out.println(out.trim());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckMin",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "mins\\[top - 1\\]|mins\\[top-1\\]",
+       "message": "<code>min()</code> should read the saved minimum, <code>mins[top - 1]</code>, rather than searching."
+      }
+     ],
+     "run": "MinTester",
+     "output": "2 3",
+     "testsOutput": "1 1 4 4 8 8 9",
+     "solution": [
+      [
+       "MinStack.java",
+       "import java.util.EmptyStackException;\n\npublic class MinStack {\n    private int[] values = new int[4];\n    private int[] mins = new int[4];\n    private int top = 0;\n\n    public void push(int value) {\n        if (top == values.length) {\n            int[] biggerValues = new int[values.length * 2];\n            int[] biggerMins = new int[mins.length * 2];\n            for (int i = 0; i < top; i++) {\n                biggerValues[i] = values[i];\n                biggerMins[i] = mins[i];\n            }\n            values = biggerValues;\n            mins = biggerMins;\n        }\n        values[top] = value;\n        if (top == 0) {\n            mins[top] = value;\n        } else {\n            mins[top] = Math.min(value, mins[top - 1]);\n        }\n        top++;\n    }\n\n    public int pop() {\n        if (top == 0) {\n            throw new EmptyStackException();\n        }\n        top--;\n        return values[top];\n    }\n\n    public int min() {\n        if (top == 0) {\n            throw new EmptyStackException();\n        }\n        return mins[top - 1];\n    }\n\n    public int size() {\n        return top;\n    }\n}\n"
+      ],
+      [
+       "MinTester.java",
+       "public class MinTester {\n    public static void main(String[] args) {\n        MinStack s = new MinStack();\n        s.push(5);\n        s.push(3);\n        s.push(7);\n        s.push(2);\n        String line = s.min() + \" \";\n        s.pop();\n        line += s.min();\n        System.out.println(line);\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "EmptyStackException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/EmptyStackException.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Generic Types",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
+     "org": "Oracle, The Java Tutorials",
      "note": null
     }
    ]

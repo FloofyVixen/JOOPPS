@@ -48,7 +48,7 @@ SECTIONS = [
      "lessons": ["stack-lifo", "stack-trace", "stack-use", "ws-arrays-stacks"]},
     {"id": "array-stack", "title": "Array Stack implementations",
      "blurb": "Build a stack on an array, and see why it matters where the top is.",
-     "planned": ["ArrayStack: the top at the end", "Where the top goes: end versus front", "Workshop"]},
+     "lessons": ["astack-build", "astack-top", "ws-array-stack"]},
     {"id": "big-o", "title": "The return of big O! (algorithm complexity)",
      "blurb": "The growth rate of algorithms: the big six categories, how they look in code, and how they rank.",
      "planned": ["Growth rates and the big six", "Reading big O from code", "Writing constant, linear and quadratic code", "Workshop"]},
