@@ -173,7 +173,8 @@ OPENDSA_STACK = s("Stacks", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/htm
                   "Virginia Tech, OpenDSA")
 OPENDSA_QUEUE = s("Queues", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/Queue.html",
                   "Virginia Tech, OpenDSA")
-JLS_EVAL_ORDER = s("JLS §15.7: Evaluation Order", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.7", JLS,
+JLS_EVAL_ORDER = s("15.7 Evaluation Order", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.7", JLS,
                    "The left operand of a binary operator is fully evaluated before the right one.")
 OPENDSA_ANAL = s("Comparing Algorithms (growth rates)", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
                  "Virginia Tech, OpenDSA")
+JLS_REM = s("15.17.3 Remainder Operator %", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.17.3", JLS)

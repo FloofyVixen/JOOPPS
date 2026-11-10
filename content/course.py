@@ -63,7 +63,7 @@ SECTIONS = [
      "lessons": ["queue-fifo", "queue-trace", "queue-use", "ws-queues"]},
     {"id": "queue-impl", "title": "ArrayQueues vs Linked Queues",
      "blurb": "Where to put the front and the rear, in an array and in a linked list, and what each choice costs.",
-     "planned": ["Array queues: shifting versus circular", "Linked queues: front and rear", "Workshop"]},
+     "lessons": ["aqueue", "lqueue", "ws-queue-impl"]},
     {"id": "ds-use-cases", "title": "Queues/Stacks/Linked List use cases",
      "blurb": "Choosing the right structure for a problem, and building with it.",
      "planned": ["Choosing a structure", "Project: an undo history and a print queue", "Workshop"]},

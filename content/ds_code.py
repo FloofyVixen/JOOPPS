@@ -483,6 +483,17 @@ public class LinkedQueue<T> implements QueueADT<T> {
         }
         return result + "] rear";
     }
+
+    // The chain of nodes, for drawing it: the front is the head of the chain.
+    public String chainString() {
+        String result = "head";
+        LinearNode<T> current = front;
+        while (current != null) {
+            result += " -> " + current.getElement();
+            current = current.getNext();
+        }
+        return result + " -> null";
+    }
 }
 """
 
