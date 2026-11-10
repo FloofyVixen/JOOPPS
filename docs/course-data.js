@@ -159,11 +159,11 @@ window.COURSE = {
    "id": "big-o",
    "title": "The return of big O! (algorithm complexity)",
    "blurb": "The growth rate of algorithms: the big six categories, how they look in code, and how they rank.",
-   "planned": [
-    "Growth rates and the big six",
-    "Reading big O from code",
-    "Writing constant, linear and quadratic code",
-    "Workshop"
+   "lessons": [
+    "bigo-growth",
+    "bigo-code",
+    "bigo-write",
+    "ws-big-o"
    ]
   },
   {
@@ -595,7 +595,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "System\\.out\\.println\\(",
-       "message": "Print the lines with <code>System.out.println</code>."
+       "message": "Print the lines with <code>System.out.println</code>.",
+       "file": null
       }
      ],
      "run": "Postcard",
@@ -631,7 +632,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "System\\.out\\.print\\(",
-       "message": "Use <code>System.out.print</code> (without <code>ln</code>) at least once."
+       "message": "Use <code>System.out.print</code> (without <code>ln</code>) at least once.",
+       "file": null
       }
      ],
      "run": "OneLine",
@@ -994,19 +996,23 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\bString\\s+\\w+\\s*=",
-       "message": "Declare a <code>String</code> variable."
+       "message": "Declare a <code>String</code> variable.",
+       "file": null
       },
       {
        "pattern": "\\bint\\s+\\w+\\s*=",
-       "message": "Declare an <code>int</code> variable."
+       "message": "Declare an <code>int</code> variable.",
+       "file": null
       },
       {
        "pattern": "\\bdouble\\s+\\w+\\s*=",
-       "message": "Declare a <code>double</code> variable."
+       "message": "Declare a <code>double</code> variable.",
+       "file": null
       },
       {
        "pattern": "\\bboolean\\s+\\w+\\s*=",
-       "message": "Declare a <code>boolean</code> variable."
+       "message": "Declare a <code>boolean</code> variable.",
+       "file": null
       }
      ],
      "run": "Pet",
@@ -1042,7 +1048,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "(\\w+)\\s*(\\+=|=\\s*\\1\\s*\\+)",
-       "message": "Add to the existing variable, for example <code>balance = balance + 25.5;</code>."
+       "message": "Add to the existing variable, for example <code>balance = balance + 25.5;</code>.",
+       "file": null
       }
      ],
      "run": "Savings",
@@ -1078,11 +1085,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\w+\\s*/\\s*\\w+",
-       "message": "Work out the share with <code>/</code>."
+       "message": "Work out the share with <code>/</code>.",
+       "file": null
       },
       {
        "pattern": "\\w+\\s*%\\s*\\w+",
-       "message": "Work out the leftovers with <code>%</code>."
+       "message": "Work out the leftovers with <code>%</code>.",
+       "file": null
       }
      ],
      "run": "Pizza",
@@ -1415,11 +1424,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\belse\\s+if\\b",
-       "message": "Use an <code>else if</code> for the middle case."
+       "message": "Use an <code>else if</code> for the middle case.",
+       "file": null
       },
       {
        "pattern": "\\|\\|",
-       "message": "Combine the two conditions with <code>||</code>."
+       "message": "Combine the two conditions with <code>||</code>.",
+       "file": null
       }
      ],
      "run": "TicketPrice",
@@ -1455,7 +1466,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\bfor\\s*\\(",
-       "message": "Use a <code>for</code> loop."
+       "message": "Use a <code>for</code> loop.",
+       "file": null
       }
      ],
      "run": "WhatToWear",
@@ -1491,11 +1503,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "%\\s*2",
-       "message": "Test for even numbers with <code>% 2</code>."
+       "message": "Test for even numbers with <code>% 2</code>.",
+       "file": null
       },
       {
        "pattern": "\\b(for|while)\\s*\\(",
-       "message": "Use a loop."
+       "message": "Use a loop.",
+       "file": null
       }
      ],
      "run": "EvenSum",
@@ -2181,7 +2195,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "day\\s*<\\s*steps\\.length",
-       "message": "Fix the loop condition so it stops before <code>steps.length</code>."
+       "message": "Fix the loop condition so it stops before <code>steps.length</code>.",
+       "file": null
       }
      ],
      "starterResult": {
@@ -2343,7 +2358,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "\\bfor\\s*\\(",
-         "message": "Use a <code>for</code> loop."
+         "message": "Use a <code>for</code> loop.",
+         "file": null
         }
        ],
        "solution": [
@@ -2365,11 +2381,13 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "static\\s+int\\s+times\\s*\\(\\s*int\\s+\\w+\\s*,\\s*int\\s+\\w+\\s*\\)",
-         "message": "Write the method <code>public static int times(int a, int b)</code>."
+         "message": "Write the method <code>public static int times(int a, int b)</code>.",
+         "file": null
         },
         {
          "pattern": "times\\s*\\(\\s*7\\s*,",
-         "message": "Call <code>times(7, i)</code> inside the loop."
+         "message": "Call <code>times(7, i)</code> inside the loop.",
+         "file": null
         }
        ],
        "solution": [
@@ -2391,7 +2409,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "%\\s*2",
-         "message": "Test for even numbers with <code>% 2</code>."
+         "message": "Test for even numbers with <code>% 2</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -2452,7 +2471,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "static\\s+double\\s+tip\\s*\\(",
-         "message": "Write <code>public static double tip(double bill, double rate)</code>."
+         "message": "Write <code>public static double tip(double bill, double rate)</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -2491,7 +2511,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "\\bif\\s*\\(",
-         "message": "Use an <code>if</code> statement."
+         "message": "Use an <code>if</code> statement.",
+         "file": null
         }
        ],
        "solution": [
@@ -2570,7 +2591,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\b(for|while)\\s*\\(",
-       "message": "Use a loop."
+       "message": "Use a loop.",
+       "file": null
       }
      ],
      "run": "CountingGame",
@@ -2900,7 +2922,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "new\\s+Planet\\s*\\(",
-       "message": "Create <code>Planet</code> objects with <code>new Planet()</code>."
+       "message": "Create <code>Planet</code> objects with <code>new Planet()</code>.",
+       "file": null
       }
      ],
      "run": "PlanetTester",
@@ -3090,7 +3113,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "new\\s+Pet\\s*\\(",
-         "message": "Create the pet with <code>new Pet()</code>."
+         "message": "Create the pet with <code>new Pet()</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -3659,7 +3683,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "this\\.\\w+\\s*=",
-       "message": "Store the parameters with <code>this.field = parameter;</code>."
+       "message": "Store the parameters with <code>this.field = parameter;</code>.",
+       "file": null
       }
      ],
      "run": "ConcertTester",
@@ -4065,7 +4090,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "public\\s+String\\s+toString\\s*\\(\\s*\\)",
-       "message": "Write <code>public String toString()</code>."
+       "message": "Write <code>public String toString()</code>.",
+       "file": null
       }
      ],
      "run": "PointTester",
@@ -4241,7 +4267,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "this\\.owner\\s*=",
-         "message": "Store the owner with <code>this.owner = owner;</code>."
+         "message": "Store the owner with <code>this.owner = owner;</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -4783,7 +4810,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+double\\s+balance",
-       "message": "Make the field <code>private double balance</code>."
+       "message": "Make the field <code>private double balance</code>.",
+       "file": null
       }
      ],
      "run": "BankAccountTester",
@@ -4826,7 +4854,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+int\\s+volume",
-       "message": "Make the field <code>private int volume</code>."
+       "message": "Make the field <code>private int volume</code>.",
+       "file": null
       }
      ],
      "run": "SpeakerTester",
@@ -4868,11 +4897,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+String\\s+name",
-       "message": "Make <code>name</code> a <code>private String</code> field."
+       "message": "Make <code>name</code> a <code>private String</code> field.",
+       "file": null
       },
       {
        "pattern": "private\\s+int\\s+age",
-       "message": "Make <code>age</code> a <code>private int</code> field."
+       "message": "Make <code>age</code> a <code>private int</code> field.",
+       "file": null
       }
      ],
      "run": "PersonTester",
@@ -4971,7 +5002,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-         "message": "Make the fields <code>private</code>."
+         "message": "Make the fields <code>private</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -5065,7 +5097,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-         "message": "Make the fields <code>private</code>."
+         "message": "Make the fields <code>private</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -5114,7 +5147,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "moveTo\\s*\\(\\s*floor\\s*\\+\\s*1\\s*\\)",
-         "message": "Have <code>goUp()</code> call <code>moveTo(floor + 1)</code>."
+         "message": "Have <code>goUp()</code> call <code>moveTo(floor + 1)</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -5160,7 +5194,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-       "message": "Make the fields <code>private</code>."
+       "message": "Make the fields <code>private</code>.",
+       "file": null
       }
      ],
      "run": "LoginTester",
@@ -5207,7 +5242,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-       "message": "Make the fields <code>private</code>."
+       "message": "Make the fields <code>private</code>.",
+       "file": null
       }
      ],
      "run": "BatteryTester",
@@ -5673,7 +5709,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\.equals\\s*\\(",
-       "message": "Compare the names with <code>.equals(...)</code>."
+       "message": "Compare the names with <code>.equals(...)</code>.",
+       "file": null
       }
      ],
      "run": "ZooTester",
@@ -5867,7 +5904,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "!=\\s*null",
-         "message": "Skip empty slots with a <code>!= null</code> check."
+         "message": "Skip empty slots with a <code>!= null</code> check.",
+         "file": null
         }
        ],
        "solution": [
@@ -5999,7 +6037,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "!=\\s*null",
-         "message": "Skip empty slots with a <code>!= null</code> check."
+         "message": "Skip empty slots with a <code>!= null</code> check.",
+         "file": null
         }
        ],
        "solution": [
@@ -6058,7 +6097,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "\\.equals\\s*\\(",
-         "message": "Compare names with <code>.equals(...)</code>."
+         "message": "Compare names with <code>.equals(...)</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -6926,7 +6966,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-         "message": "Make the fields <code>private</code>."
+         "message": "Make the fields <code>private</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -6976,7 +7017,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "!=\\s*null",
-         "message": "Skip empty slots with a <code>!= null</code> check."
+         "message": "Skip empty slots with a <code>!= null</code> check.",
+         "file": null
         }
        ],
        "solution": [
@@ -7058,7 +7100,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-         "message": "Make the fields <code>private</code>."
+         "message": "Make the fields <code>private</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -7135,7 +7178,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "!=\\s*null",
-         "message": "Skip empty slots with a <code>!= null</code> check."
+         "message": "Skip empty slots with a <code>!= null</code> check.",
+         "file": null
         }
        ],
        "solution": [
@@ -7190,11 +7234,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-       "message": "Make the fields <code>private</code>."
+       "message": "Make the fields <code>private</code>.",
+       "file": null
       },
       {
        "pattern": "\\.equals\\s*\\(",
-       "message": "Compare names with <code>.equals(...)</code>."
+       "message": "Compare names with <code>.equals(...)</code>.",
+       "file": null
       }
      ],
      "run": "InventoryTester",
@@ -7247,7 +7293,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+\\w+\\s+\\w+\\s*;",
-       "message": "Make the fields <code>private</code>."
+       "message": "Make the fields <code>private</code>.",
+       "file": null
       }
      ],
      "run": "CourseTester",
@@ -7703,7 +7750,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "class\\s+Truck\\s+extends\\s+Vehicle",
-       "message": "Declare <code>public class Truck extends Vehicle</code>."
+       "message": "Declare <code>public class Truck extends Vehicle</code>.",
+       "file": null
       }
      ],
      "run": "TruckTester",
@@ -7754,7 +7802,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "private\\s+double\\s+balance",
-       "message": "Keep <code>balance</code> as <code>private double balance</code> in <code>Account</code>."
+       "message": "Keep <code>balance</code> as <code>private double balance</code> in <code>Account</code>.",
+       "file": null
       }
      ],
      "run": "SavingsTester",
@@ -8209,7 +8258,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "super\\s*\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*\\w+\\s*\\)",
-       "message": "Pass the three room values up with <code>super(name, width, length);</code>."
+       "message": "Pass the three room values up with <code>super(name, width, length);</code>.",
+       "file": null
       }
      ],
      "run": "RoomTester",
@@ -8438,7 +8488,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "class\\s+Teacher\\s+extends\\s+Person",
-         "message": "Declare <code>Teacher extends Person</code>."
+         "message": "Declare <code>Teacher extends Person</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -8471,7 +8522,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "class\\s+HeadTeacher\\s+extends\\s+Teacher",
-         "message": "Declare <code>HeadTeacher extends Teacher</code>."
+         "message": "Declare <code>HeadTeacher extends Teacher</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -8554,7 +8606,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "class\\s+CreditCard\\s+extends\\s+Card",
-         "message": "Declare <code>CreditCard extends Card</code>."
+         "message": "Declare <code>CreditCard extends Card</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -8587,7 +8640,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "class\\s+GiftCard\\s+extends\\s+Card",
-         "message": "Declare <code>GiftCard extends Card</code>."
+         "message": "Declare <code>GiftCard extends Card</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -8640,11 +8694,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "class\\s+House\\s+extends\\s+Building",
-       "message": "Declare <code>House extends Building</code>."
+       "message": "Declare <code>House extends Building</code>.",
+       "file": null
       },
       {
        "pattern": "class\\s+Office\\s+extends\\s+Building",
-       "message": "Declare <code>Office extends Building</code>."
+       "message": "Declare <code>Office extends Building</code>.",
+       "file": null
       }
      ],
      "run": "StreetTester",
@@ -8697,11 +8753,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "class\\s+WorkContact\\s+extends\\s+Contact",
-       "message": "Declare <code>WorkContact extends Contact</code>."
+       "message": "Declare <code>WorkContact extends Contact</code>.",
+       "file": null
       },
       {
        "pattern": "super\\s*\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)",
-       "message": "Pass the name and phone up with <code>super(name, phone);</code>."
+       "message": "Pass the name and phone up with <code>super(name, phone);</code>.",
+       "file": null
       }
      ],
      "run": "ContactTester",
@@ -9125,7 +9183,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "@Override",
-       "message": "Mark the overriding methods with <code>@Override</code>."
+       "message": "Mark the overriding methods with <code>@Override</code>.",
+       "file": null
       }
      ],
      "run": "BandTester",
@@ -9176,7 +9235,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "super\\.toString\\s*\\(\\s*\\)",
-       "message": "Reuse the parent's text with <code>super.toString()</code>."
+       "message": "Reuse the parent's text with <code>super.toString()</code>.",
+       "file": null
       }
      ],
      "run": "StaffTester",
@@ -9221,7 +9281,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "super\\.send\\s*\\(\\s*\\)",
-       "message": "Call the parent's version with <code>super.send()</code>."
+       "message": "Call the parent's version with <code>super.send()</code>.",
+       "file": null
       }
      ],
      "run": "MessageTester",
@@ -9673,7 +9734,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "Animal\\s*\\[\\s*\\]",
-       "message": "Store the animals in an <code>Animal[]</code>."
+       "message": "Store the animals in an <code>Animal[]</code>.",
+       "file": null
       }
      ],
      "run": "ChorusTester",
@@ -9726,11 +9788,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "instanceof\\s+Cat",
-       "message": "Use <code>instanceof Cat</code> to find the cats."
+       "message": "Use <code>instanceof Cat</code> to find the cats.",
+       "file": null
       },
       {
        "pattern": "\\(\\s*Cat\\s*\\)",
-       "message": "Cast with <code>(Cat)</code> before calling <code>purr()</code>."
+       "message": "Cast with <code>(Cat)</code> before calling <code>purr()</code>.",
+       "file": null
       }
      ],
      "run": "CatCount",
@@ -9780,7 +9844,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "show\\s*\\(\\s*Object\\s+\\w+\\s*\\)",
-       "message": "Give <code>show</code> a parameter of type <code>Object</code>."
+       "message": "Give <code>show</code> a parameter of type <code>Object</code>.",
+       "file": null
       }
      ],
      "run": "Showcase",
@@ -9916,11 +9981,13 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "@Override",
-         "message": "Mark overriding methods with <code>@Override</code>."
+         "message": "Mark overriding methods with <code>@Override</code>.",
+         "file": null
         },
         {
          "pattern": "super\\.deliver\\s*\\(\\s*\\)",
-         "message": "Reuse the parent's delivery with <code>super.deliver()</code>."
+         "message": "Reuse the parent's delivery with <code>super.deliver()</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -9985,7 +10052,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "instanceof\\s+SmsNotification",
-         "message": "Count with <code>instanceof SmsNotification</code>."
+         "message": "Count with <code>instanceof SmsNotification</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -10046,7 +10114,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "super\\.toString\\s*\\(\\s*\\)",
-         "message": "Build on the parent's text with <code>super.toString()</code>."
+         "message": "Build on the parent's text with <code>super.toString()</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -10160,7 +10229,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "@Override",
-       "message": "Mark overriding methods with <code>@Override</code>."
+       "message": "Mark overriding methods with <code>@Override</code>.",
+       "file": null
       }
      ],
      "run": "RaiseTester",
@@ -10210,11 +10280,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "@Override",
-       "message": "Mark overriding methods with <code>@Override</code>."
+       "message": "Mark overriding methods with <code>@Override</code>.",
+       "file": null
       },
       {
        "pattern": "Greeter\\s*\\[\\s*\\]",
-       "message": "Store the greeters in a <code>Greeter[]</code>."
+       "message": "Store the greeters in a <code>Greeter[]</code>.",
+       "file": null
       }
      ],
      "run": "GreetTester",
@@ -10618,15 +10690,18 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "interface\\s+Describable",
-       "message": "Declare <code>Describable</code> as an <code>interface</code>."
+       "message": "Declare <code>Describable</code> as an <code>interface</code>.",
+       "file": null
       },
       {
        "pattern": "class\\s+City\\b[^{]*implements[^{]*\\bDescribable\\b",
-       "message": "<code>City</code> should implement <code>Describable</code>."
+       "message": "<code>City</code> should implement <code>Describable</code>.",
+       "file": null
       },
       {
        "pattern": "class\\s+River\\b[^{]*implements[^{]*\\bDescribable\\b",
-       "message": "<code>River</code> should implement <code>Describable</code>."
+       "message": "<code>River</code> should implement <code>Describable</code>.",
+       "file": null
       }
      ],
      "run": "MapTester",
@@ -10675,11 +10750,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "interface\\s+Resizable",
-       "message": "Declare <code>Resizable</code> as an <code>interface</code>."
+       "message": "Declare <code>Resizable</code> as an <code>interface</code>.",
+       "file": null
       },
       {
        "pattern": "class\\s+Balloon\\b[^{]*implements[^{]*\\bResizable\\b",
-       "message": "<code>Balloon</code> should implement <code>Resizable</code>."
+       "message": "<code>Balloon</code> should implement <code>Resizable</code>.",
+       "file": null
       }
      ],
      "run": "BalloonTester",
@@ -10726,11 +10803,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "MAX_SPEED\\s*=\\s*100",
-       "message": "Declare the constant <code>int MAX_SPEED = 100;</code> in <code>Speedy</code>."
+       "message": "Declare the constant <code>int MAX_SPEED = 100;</code> in <code>Speedy</code>.",
+       "file": null
       },
       {
        "pattern": ">\\s*MAX_SPEED",
-       "message": "Use the constant <code>MAX_SPEED</code> in <code>Scooter</code> instead of typing 100."
+       "message": "Use the constant <code>MAX_SPEED</code> in <code>Scooter</code> instead of typing 100.",
+       "file": null
       }
      ],
      "run": "ScooterTester",
@@ -11133,7 +11212,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "class\\s+Duck\\s+extends\\s+Bird\\s+implements",
-       "message": "Write <code>class Duck extends Bird implements Swimmer, Flyer</code>."
+       "message": "Write <code>class Duck extends Bird implements Swimmer, Flyer</code>.",
+       "file": null
       }
      ],
      "run": "PondTester",
@@ -11187,11 +11267,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "class\\s+Robot\\b[^{]*implements[^{]*\\bWalker\\b",
-       "message": "<code>Robot</code> should implement <code>Walker</code>."
+       "message": "<code>Robot</code> should implement <code>Walker</code>.",
+       "file": null
       },
       {
        "pattern": "class\\s+Robot\\b[^{]*implements[^{]*\\bTalker\\b",
-       "message": "<code>Robot</code> should implement <code>Talker</code>."
+       "message": "<code>Robot</code> should implement <code>Talker</code>.",
+       "file": null
       }
      ],
      "run": "RobotTester",
@@ -11620,7 +11702,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "total\\s*\\(\\s*Priced\\s*\\[\\s*\\]\\s*\\w+\\s*\\)",
-       "message": "Give <code>total</code> a parameter of type <code>Priced[]</code>."
+       "message": "Give <code>total</code> a parameter of type <code>Priced[]</code>.",
+       "file": null
       }
      ],
      "run": "Till",
@@ -11671,7 +11754,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "instanceof\\s+Chargeable",
-       "message": "Count with <code>instanceof Chargeable</code>."
+       "message": "Count with <code>instanceof Chargeable</code>.",
+       "file": null
       }
      ],
      "run": "Gadgets",
@@ -12033,7 +12117,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "class\\s+Book\\b[^{]*implements[^{]*\\bComparable\\b",
-       "message": "<code>Book</code> should implement <code>Comparable</code>."
+       "message": "<code>Book</code> should implement <code>Comparable</code>.",
+       "file": null
       }
      ],
      "run": "Shelf",
@@ -12211,7 +12296,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "interface\\s+Switchable",
-         "message": "Declare <code>Switchable</code> as an <code>interface</code>."
+         "message": "Declare <code>Switchable</code> as an <code>interface</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -12244,7 +12330,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "implements\\s+Switchable\\s*,\\s*Dimmable|implements\\s+Dimmable\\s*,\\s*Switchable",
-         "message": "Make <code>Lamp</code> implement both: <code>implements Switchable, Dimmable</code>."
+         "message": "Make <code>Lamp</code> implement both: <code>implements Switchable, Dimmable</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -12319,7 +12406,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "instanceof\\s+Dimmable",
-         "message": "Check with <code>instanceof Dimmable</code>."
+         "message": "Check with <code>instanceof Dimmable</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -12465,7 +12553,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "interface\\s+HasArea",
-       "message": "Declare <code>HasArea</code> as an <code>interface</code>."
+       "message": "Declare <code>HasArea</code> as an <code>interface</code>.",
+       "file": null
       }
      ],
      "run": "AreaTester",
@@ -12521,7 +12610,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "implements\\s+Printer\\s*,\\s*Faxer|implements\\s+Faxer\\s*,\\s*Printer",
-       "message": "Implement both: <code>implements Printer, Faxer</code>."
+       "message": "Implement both: <code>implements Printer, Faxer</code>.",
+       "file": null
       }
      ],
      "run": "OfficeTester",
@@ -12888,11 +12978,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "abstract\\s+class\\s+Car",
-       "message": "Declare <code>public abstract class Car</code>."
+       "message": "Declare <code>public abstract class Car</code>.",
+       "file": null
       },
       {
        "pattern": "abstract\\s+void\\s+start\\s*\\(\\s*\\)\\s*;",
-       "message": "Declare <code>public abstract void start();</code> (no body)."
+       "message": "Declare <code>public abstract void start();</code> (no body).",
+       "file": null
       }
      ],
      "run": "GarageTester",
@@ -13097,11 +13189,13 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "abstract\\s+class\\s+Payment",
-         "message": "Declare <code>Payment</code> as <code>abstract</code>."
+         "message": "Declare <code>Payment</code> as <code>abstract</code>.",
+         "file": null
         },
         {
          "pattern": "abstract\\s+double\\s+fee\\s*\\(\\s*\\)\\s*;",
-         "message": "Declare <code>public abstract double fee();</code>"
+         "message": "Declare <code>public abstract double fee();</code>",
+         "file": null
         }
        ],
        "solution": [
@@ -13222,7 +13316,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "abstract\\s+class\\s+Hero",
-         "message": "Declare <code>Hero</code> as <code>abstract</code>."
+         "message": "Declare <code>Hero</code> as <code>abstract</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -13335,7 +13430,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "abstract\\s+class\\s+Plan",
-       "message": "Declare <code>Plan</code> as <code>abstract</code>."
+       "message": "Declare <code>Plan</code> as <code>abstract</code>.",
+       "file": null
       }
      ],
      "run": "PlanTester",
@@ -13389,11 +13485,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "abstract\\s+class\\s+Animal",
-       "message": "Declare <code>Animal</code> as <code>abstract</code>."
+       "message": "Declare <code>Animal</code> as <code>abstract</code>.",
+       "file": null
       },
       {
        "pattern": "abstract\\s+String\\s+sound\\s*\\(\\s*\\)\\s*;",
-       "message": "Declare <code>public abstract String sound();</code>"
+       "message": "Declare <code>public abstract String sound();</code>",
+       "file": null
       }
      ],
      "run": "AnimalTester",
@@ -14055,11 +14153,13 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "abstract\\s+class\\s+Employee",
-         "message": "Make <code>Employee</code> abstract."
+         "message": "Make <code>Employee</code> abstract.",
+         "file": null
         },
         {
          "pattern": "abstract\\s+double\\s+monthlyPay\\s*\\(\\s*\\)\\s*;",
-         "message": "Declare <code>public abstract double monthlyPay();</code>"
+         "message": "Declare <code>public abstract double monthlyPay();</code>",
+         "file": null
         }
        ],
        "solution": [
@@ -14223,7 +14323,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "super\\.toString\\s*\\(\\s*\\)",
-         "message": "Build <code>Book</code>'s text with <code>super.toString()</code>."
+         "message": "Build <code>Book</code>'s text with <code>super.toString()</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -14326,7 +14427,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "instanceof\\s+Book",
-         "message": "Count with <code>instanceof Book</code>."
+         "message": "Count with <code>instanceof Book</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -14390,7 +14492,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "abstract\\s+int\\s+watts\\s*\\(\\s*\\)\\s*;",
-       "message": "Declare <code>public abstract int watts();</code> in <code>Device</code>."
+       "message": "Declare <code>public abstract int watts();</code> in <code>Device</code>.",
+       "file": null
       }
      ],
      "run": "HouseTester",
@@ -14453,11 +14556,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "super\\.withdraw\\s*\\(",
-       "message": "Reuse <code>Account</code>'s rule with <code>super.withdraw(...)</code>."
+       "message": "Reuse <code>Account</code>'s rule with <code>super.withdraw(...)</code>.",
+       "file": null
       },
       {
        "pattern": "@Override",
-       "message": "Mark the overriding <code>withdraw</code> with <code>@Override</code>."
+       "message": "Mark the overriding <code>withdraw</code> with <code>@Override</code>.",
+       "file": null
       }
      ],
      "run": "AccountTester",
@@ -14810,7 +14915,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "ArrayList\\s*<\\s*String\\s*>",
-       "message": "Use an <code>ArrayList&lt;String&gt;</code>."
+       "message": "Use an <code>ArrayList&lt;String&gt;</code>.",
+       "file": null
       }
      ],
      "run": "Roster",
@@ -15120,7 +15226,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "new\\s+int\\s*\\[",
-       "message": "Create a new array with <code>new int[...]</code>."
+       "message": "Create a new array with <code>new int[...]</code>.",
+       "file": null
       }
      ],
      "run": "Copier",
@@ -15820,7 +15927,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "class\\s+Box\\s*<\\s*T\\s*>",
-       "message": "Declare the class as <code>Box&lt;T&gt;</code>."
+       "message": "Declare the class as <code>Box&lt;T&gt;</code>.",
+       "file": null
       }
      ],
      "run": "BoxTester",
@@ -16037,11 +16145,13 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "throw\\s+new\\s+IndexOutOfBoundsException",
-         "message": "Throw an <code>IndexOutOfBoundsException</code> for a bad index."
+         "message": "Throw an <code>IndexOutOfBoundsException</code> for a bad index.",
+         "file": null
         },
         {
          "pattern": ">=\\s*size",
-         "message": "Reject indexes that are <code>&gt;= size</code>, not just ones past the array's length."
+         "message": "Reject indexes that are <code>&gt;= size</code>, not just ones past the array's length.",
+         "file": null
         }
        ],
        "solution": [
@@ -16068,7 +16178,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "items\\s*\\[\\s*i\\s*\\]\\s*=\\s*items\\s*\\[\\s*i\\s*\\+\\s*1\\s*\\]",
-         "message": "Shift left with <code>items[i] = items[i + 1];</code>."
+         "message": "Shift left with <code>items[i] = items[i + 1];</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -16762,7 +16873,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "super\\.weeklyPay\\s*\\(\\s*\\)",
-       "message": "Use <code>super.weeklyPay()</code> in <code>Intern</code>."
+       "message": "Use <code>super.weeklyPay()</code> in <code>Intern</code>.",
+       "file": null
       }
      ],
      "run": "PayTester",
@@ -16807,7 +16919,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "interface\\s+Discountable",
-       "message": "Declare <code>Discountable</code> as an interface."
+       "message": "Declare <code>Discountable</code> as an interface.",
+       "file": null
       }
      ],
      "run": "SaleTester",
@@ -17175,11 +17288,13 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\.pop\\(\\)",
-       "message": "Use <code>pop()</code> to take the values off the stack."
+       "message": "Use <code>pop()</code> to take the values off the stack.",
+       "file": null
       },
       {
        "pattern": "isEmpty\\(\\)",
-       "message": "Loop until <code>isEmpty()</code> is true, rather than counting to 4."
+       "message": "Loop until <code>isEmpty()</code> is true, rather than counting to 4.",
+       "file": null
       }
      ],
      "starterResult": {
@@ -18071,7 +18186,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "Deque<String>",
-       "message": "Use a <code>Deque&lt;String&gt;</code> as the stack."
+       "message": "Use a <code>Deque&lt;String&gt;</code> as the stack.",
+       "file": null
       }
      ],
      "run": "ReverseWords",
@@ -18231,7 +18347,8 @@ window.COURSE = {
        "checks": [
         {
          "pattern": "Deque<String>",
-         "message": "Keep the history in a <code>Deque&lt;String&gt;</code>."
+         "message": "Keep the history in a <code>Deque&lt;String&gt;</code>.",
+         "file": null
         }
        ],
        "solution": [
@@ -18390,7 +18507,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "\\.push\\(",
-       "message": "Use the stack: push each character."
+       "message": "Use the stack: push each character.",
+       "file": null
       }
      ],
      "run": "Palindrome",
@@ -19153,7 +19271,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "stack\\[0\\]\\s*=",
-       "message": "<code>push</code> should store the new value at index 0."
+       "message": "<code>push</code> should store the new value at index 0.",
+       "file": null
       }
      ],
      "starterResult": {
@@ -19520,7 +19639,8 @@ window.COURSE = {
      "checks": [
       {
        "pattern": "mins\\[top - 1\\]|mins\\[top-1\\]",
-       "message": "<code>min()</code> should read the saved minimum, <code>mins[top - 1]</code>, rather than searching."
+       "message": "<code>min()</code> should read the saved minimum, <code>mins[top - 1]</code>, rather than searching.",
+       "file": null
       }
      ],
      "run": "MinTester",
@@ -19561,6 +19681,1194 @@ window.COURSE = {
      "title": "Generic Types",
      "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
      "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "bigo-growth": {
+   "id": "bigo-growth",
+   "section": "big-o",
+   "title": "Growth rates and the big six",
+   "summary": "Big O describes how an algorithm's work grows as its input grows. Six growth rates cover almost everything in this course, and they always rank in the same order.",
+   "goals": [
+    "Explain that big O is about growth rate, not exact speed",
+    "Drop constants and smaller terms to find an algorithm's big O",
+    "Name the six common growth rates and rank them from best to worst"
+   ],
+   "cos225": "The Exam 2 guide says the point of big O is <strong>growth rate</strong>, asks for the \"big six\" categories and their order from best to worst, and loves matching problems. This lesson covers all three.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Counting steps, not seconds"
+    },
+    {
+     "type": "p",
+     "html": "The same program runs faster on a fast computer, so seconds don't tell you much about an algorithm. Instead, count its basic steps (comparisons, assignments, array reads) as a function of the input size, <code>n</code>. Then ask: when <code>n</code> gets bigger, how fast does the count grow?"
+    },
+    {
+     "type": "p",
+     "html": "These three methods do one step, <code>n</code> steps and <code>n \u00d7 n</code> steps:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "StepCount.java",
+       "public class StepCount {\n    // Each method returns how many basic steps it takes for input size n.\n    public static long constant(int n) {\n        long steps = 0;\n        steps++;  // look at one value\n        return steps;\n    }\n\n    public static long linear(int n) {\n        long steps = 0;\n        for (int i = 0; i < n; i++) {\n            steps++;\n        }\n        return steps;\n    }\n\n    public static long quadratic(int n) {\n        long steps = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                steps++;\n            }\n        }\n        return steps;\n    }\n\n    public static void main(String[] args) {\n        for (int n = 10; n <= 10000; n *= 10) {\n            System.out.println(\"n = \" + n + \": \" + constant(n) + \", \" + linear(n) + \", \" + quadratic(n));\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java StepCount",
+      "stdout": "n = 10: 1, 10, 100\nn = 100: 1, 100, 10000\nn = 1000: 1, 1000, 1000000\nn = 10000: 1, 10000, 100000000"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Multiply <code>n</code> by 10 and the constant method doesn't change, the linear one does 10 times more work, and the quadratic one does 100 times more. That pattern of growth is what <strong>big O</strong> describes. It's the point of big O: not how long something takes, but how its cost <strong>grows</strong> as the input grows."
+    },
+    {
+     "type": "h",
+     "html": "Only the biggest term matters"
+    },
+    {
+     "type": "p",
+     "html": "Suppose you count the steps of an algorithm exactly and get 3n\u00b2 + 5n + 2. For small <code>n</code>, every part counts. As <code>n</code> grows, the n\u00b2 term takes over:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Terms.java",
+       "public class Terms {\n    public static void main(String[] args) {\n        for (long n = 10; n <= 100000; n *= 10) {\n            long total = 3 * n * n + 5 * n + 2;\n            long biggest = 3 * n * n;\n            System.out.println(\"n = \" + n + \": total \" + total + \", the 3n^2 term is \"\n                    + (100 * biggest / total) + \"% of it\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Terms",
+      "stdout": "n = 10: total 352, the 3n^2 term is 85% of it\nn = 100: total 30502, the 3n^2 term is 98% of it\nn = 1000: total 3005002, the 3n^2 term is 99% of it\nn = 10000: total 300050002, the 3n^2 term is 99% of it\nn = 100000: total 30000500002, the 3n^2 term is 99% of it"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "So big O keeps only the fastest-growing term and drops its constant: 3n\u00b2 + 5n + 2 is <strong>O(n\u00b2)</strong>. The constant 3 is dropped too, because it doesn't change the shape of the growth: double <code>n</code> and 3n\u00b2 still quadruples, just as n\u00b2 does."
+    },
+    {
+     "type": "list",
+     "items": [
+      "5n + 100 is O(n).",
+      "n\u00b2/2 + n is O(n\u00b2).",
+      "1000 is O(1): it doesn't grow at all."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "The big six"
+    },
+    {
+     "type": "p",
+     "html": "Most algorithms you'll meet fall into one of six growth rates. From best (slowest growing) to worst:"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>O(1), constant</strong>: the same work at any size. Reading <code>array[i]</code>, pushing onto an array stack.",
+      "<strong>O(log n), logarithmic</strong>: the work grows by one step each time <code>n</code> doubles. Anything that halves the problem each step, such as binary search.",
+      "<strong>O(n), linear</strong>: work in step with <code>n</code>. One loop over the data: summing an array, finding the largest value.",
+      "<strong>O(n log n), linearithmic</strong>: a little more than linear. Fast sorting algorithms, such as merge sort.",
+      "<strong>O(n\u00b2), quadratic</strong>: a loop inside a loop over the data. Comparing every pair of values.",
+      "<strong>O(2\u207f), exponential</strong>: the work doubles each time <code>n</code> grows by one. Trying every possible subset of <code>n</code> items."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "This program prints each growth rate for a few sizes. <code>log2</code> counts how many times <code>n</code> can be halved before it reaches 1, which is what log base 2 means:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Growth.java",
+       "public class Growth {\n    // How many times n can be halved before reaching 1: log base 2 of n.\n    public static int log2(int n) {\n        int count = 0;\n        while (n > 1) {\n            n = n / 2;\n            count++;\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"n\\tlog n\\tn log n\\tn^2\\t2^n\");\n        for (int n = 2; n <= 32; n *= 2) {\n            long twoToN = 1;\n            for (int k = 0; k < n; k++) {\n                twoToN *= 2;\n            }\n            System.out.println(n + \"\\t\" + log2(n) + \"\\t\" + (n * log2(n)) + \"\\t\" + (n * n) + \"\\t\" + twoToN);\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Growth",
+      "stdout": "n\tlog n\tn log n\tn^2\t2^n\n2\t1\t2\t4\t4\n4\t2\t8\t16\t16\n8\t3\t24\t64\t256\n16\t4\t64\t256\t65536\n32\t5\t160\t1024\t4294967296"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "By n = 32, the exponential column is already in the billions, while log n has only reached 5. The order never changes once <code>n</code> is big enough:"
+    },
+    {
+     "type": "note",
+     "label": "Best to worst",
+     "html": "O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n\u00b2) &lt; O(2\u207f)"
+    },
+    {
+     "type": "p",
+     "html": "Princeton's *Algorithms* table also lists <strong>cubic</strong>, O(n\u00b3), three nested loops, which sits between quadratic and exponential. The exam guide's three main categories are constant, linear and quadratic; the next lesson shows how each looks in code."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "match",
+     "id": "bigo-names",
+     "prompt": "Match each growth rate with its name.",
+     "options": [
+      "constant",
+      "logarithmic",
+      "linear",
+      "linearithmic",
+      "quadratic",
+      "exponential"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "O(n\u00b2)",
+       "answer": 4,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(1)",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(2\u207f)",
+       "answer": 5,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(n)",
+       "answer": 2,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(log n)",
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "O(n log n)",
+       "answer": 3,
+       "why": null
+      }
+     ],
+     "explain": null
+    },
+    {
+     "type": "match",
+     "id": "bigo-simplify",
+     "prompt": "Each expression counts an algorithm's steps. Match it with its big O.",
+     "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)",
+      "O(n\u00b2)",
+      "O(2\u207f)"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "4n + 7",
+       "answer": 2,
+       "why": "Drop the constant 7 and the factor 4."
+      },
+      {
+       "code": null,
+       "html": "n\u00b2 + 1000n",
+       "answer": 4,
+       "why": "n\u00b2 eventually outgrows 1000n (once n is over 1000)."
+      },
+      {
+       "code": null,
+       "html": "500",
+       "answer": 0,
+       "why": "It doesn't depend on n at all."
+      },
+      {
+       "code": null,
+       "html": "2\u207f + n\u00b3",
+       "answer": 5,
+       "why": "Exponential outgrows any power of n."
+      },
+      {
+       "code": null,
+       "html": "3 log n + 2",
+       "answer": 1,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "n log n + n",
+       "answer": 3,
+       "why": "n log n grows faster than n, since log n keeps growing."
+      }
+     ],
+     "explain": null
+    },
+    {
+     "type": "quiz",
+     "id": "bigo-double",
+     "question": "An O(n\u00b2) method takes 2 seconds when n is 1,000. Roughly how long would you expect it to take when n is 2,000?",
+     "choices": [
+      "2 seconds",
+      "4 seconds",
+      "8 seconds",
+      "4,000 seconds"
+     ],
+     "answer": 2,
+     "explain": "Doubling n multiplies n\u00b2 by 4, so 2 seconds becomes about 8. An O(n) method would take about 4 seconds; an O(1) method, still 2."
+    },
+    {
+     "type": "quiz",
+     "id": "bigo-point",
+     "question": "What does big O tell you about an algorithm?",
+     "choices": [
+      "Exactly how many seconds it takes",
+      "How its work grows as the input gets larger",
+      "How much memory the computer has",
+      "The number of lines of code"
+     ],
+     "answer": 1,
+     "explain": "Big O is about growth rate: how the cost changes as <code>n</code> grows, ignoring constants that depend on the computer."
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.4 Analysis of Algorithms",
+     "url": "https://algs4.cs.princeton.edu/14analysis/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Comparing Algorithms (growth rates)",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    }
+   ]
+  },
+  "bigo-code": {
+   "id": "bigo-code",
+   "section": "big-o",
+   "title": "Reading big O from code",
+   "summary": "You can usually see an algorithm's big O from the shape of its loops: no loop, one loop, a loop inside a loop.",
+   "goals": [
+    "Recognise O(1), O(n) and O(n\u00b2) code by its loops",
+    "Tell loops in sequence (add) from nested loops (multiply)",
+    "Spot a halving loop (O(log n)) and a fixed-size loop (O(1))",
+    "Count the cost of method calls inside a loop"
+   ],
+   "cos225": "The Exam 2 guide asks how O(1), O(n) and O(n\u00b2) look in code (no loop, one loop, nested loops), and how they compare. Expect a matching question pairing code with its big O.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Look at the loops"
+    },
+    {
+     "type": "p",
+     "html": "Big O counts how the work grows with <code>n</code>, the size of the input. Most of the work in a method happens in its loops, so start there:"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>No loop</strong> over the input: <strong>O(1)</strong>. A fixed number of steps.",
+      "<strong>One loop</strong> over the input: <strong>O(n)</strong>. Each value is visited once.",
+      "<strong>A loop inside a loop</strong>, both over the input: <strong>O(n\u00b2)</strong>. For each of the n values, the inner loop does n more steps."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "Three more patterns need a closer look. This program counts the steps of each:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Patterns.java",
+       "public class Patterns {\n    public static long fixedLoop(int n) {\n        long steps = 0;\n        for (int i = 0; i < 10; i++) {\n            steps++;\n        }\n        return steps;\n    }\n\n    public static long twoLoops(int n) {\n        long steps = 0;\n        for (int i = 0; i < n; i++) {\n            steps++;\n        }\n        for (int i = 0; i < n; i++) {\n            steps++;\n        }\n        return steps;\n    }\n\n    public static long nestedLoops(int n) {\n        long steps = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                steps++;\n            }\n        }\n        return steps;\n    }\n\n    public static long halving(int n) {\n        long steps = 0;\n        while (n > 1) {\n            n = n / 2;\n            steps++;\n        }\n        return steps;\n    }\n\n    public static void main(String[] args) {\n        for (int n = 1000; n <= 1000000; n *= 1000) {\n            System.out.println(\"n = \" + n);\n            System.out.println(\"  fixed loop:   \" + fixedLoop(n));\n            System.out.println(\"  two loops:    \" + twoLoops(n));\n            System.out.println(\"  halving:      \" + halving(n));\n        }\n        System.out.println(\"nested loops, n = 1000: \" + nestedLoops(1000));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Patterns",
+      "stdout": "n = 1000\n  fixed loop:   10\n  two loops:    2000\n  halving:      9\nn = 1000000\n  fixed loop:   10\n  two loops:    2000000\n  halving:      19\nnested loops, n = 1000: 1000000"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>A loop with a fixed limit</strong> (<code>i &lt; 10</code>) does the same work at any size: <strong>O(1)</strong>. Check what a loop counts up to, not just that there is one.",
+      "<strong>Two loops one after the other</strong> add: n + n = 2n, still <strong>O(n)</strong>. A thousand times more input means a thousand times more steps.",
+      "<strong>A loop that halves</strong> <code>n</code> grows by one step each time <code>n</code> doubles: <strong>O(log n)</strong>. A million needs only 19 halvings.",
+      "<strong>Nested loops</strong> multiply: 1000 \u00d7 1000 is a million steps."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Triangles are still quadratic"
+    },
+    {
+     "type": "p",
+     "html": "A common nested loop starts the inner loop at <code>i + 1</code>, so it compares each pair only once. That does about half the work of a full square:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Triangle.java",
+       "public class Triangle {\n    public static void main(String[] args) {\n        int n = 5;\n        int steps = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                steps++;\n            }\n        }\n        System.out.println(steps);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Triangle",
+      "stdout": "10"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "For n = 5 that's 4 + 3 + 2 + 1 + 0 = 10 steps, which is n(n \u2212 1)/2. Dropping the constant \u00bd and the smaller term leaves <strong>O(n\u00b2)</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Hidden loops in method calls"
+    },
+    {
+     "type": "p",
+     "html": "A method call costs whatever that method does. <code>ArrayList.contains</code> has to search the list, which the Java documentation says takes linear time. Calling it inside a loop puts a loop inside a loop:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Hidden.java",
+       "import java.util.ArrayList;\n\npublic class Hidden {\n    public static int countShared(ArrayList<Integer> a, ArrayList<Integer> b) {\n        int shared = 0;\n        for (int value : a) {\n            if (b.contains(value)) {\n                shared++;\n            }\n        }\n        return shared;\n    }\n\n    public static void main(String[] args) {\n        ArrayList<Integer> a = new ArrayList<>();\n        ArrayList<Integer> b = new ArrayList<>();\n        for (int i = 0; i < 6; i++) {\n            a.add(i);\n            b.add(i * 2);\n        }\n        System.out.println(countShared(a, b));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Hidden",
+      "stdout": "3"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "The <code>for</code> loop runs n times, and each <code>contains</code> can look at all n values of <code>b</code>. So <code>countShared</code> is <strong>O(n\u00b2)</strong>, though you only see one loop."
+    },
+    {
+     "type": "p",
+     "html": "By contrast, <code>get(i)</code>, <code>size()</code> and <code>add</code> at the end of an <code>ArrayList</code> are O(1) (adding is O(1) on average, since growing is rare), so a loop that calls only those stays O(n)."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "match",
+     "id": "bigo-code-match",
+     "prompt": "Match each method with its big O, where n is the length of the array (or the value of <code>n</code>).",
+     "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n\u00b2)"
+     ],
+     "items": [
+      {
+       "code": "static int first(int[] data) {\n    return data[0];\n}",
+       "html": null,
+       "answer": 0,
+       "why": "One array read, however long the array is."
+      },
+      {
+       "code": "static int sum(int[] data) {\n    int total = 0;\n    for (int i = 0; i < data.length; i++) {\n        total += data[i];\n    }\n    return total;\n}",
+       "html": null,
+       "answer": 2,
+       "why": "One loop that visits each value once."
+      },
+      {
+       "code": "static boolean hasDuplicate(int[] data) {\n    for (int i = 0; i < data.length; i++) {\n        for (int j = i + 1; j < data.length; j++) {\n            if (data[i] == data[j]) {\n                return true;\n            }\n        }\n    }\n    return false;\n}",
+       "html": null,
+       "answer": 3,
+       "why": "A loop inside a loop: every pair is compared. Starting <code>j</code> at <code>i + 1</code> halves the work, but n\u00b2/2 is still O(n\u00b2)."
+      },
+      {
+       "code": "static int digitsInBinary(int n) {\n    int count = 1;\n    while (n > 1) {\n        n = n / 2;\n        count++;\n    }\n    return count;\n}",
+       "html": null,
+       "answer": 1,
+       "why": "<code>n</code> is halved each time round, so doubling <code>n</code> adds only one more step."
+      },
+      {
+       "code": "static int firstTenSum(int[] data) {\n    int total = 0;\n    for (int i = 0; i < 10 && i < data.length; i++) {\n        total += data[i];\n    }\n    return total;\n}",
+       "html": null,
+       "answer": 0,
+       "why": "The loop runs at most 10 times, however long the array is. A loop isn't automatically O(n): it depends on what it counts up to."
+      },
+      {
+       "code": "static int range(int[] data) {\n    int min = data[0];\n    for (int value : data) {\n        min = Math.min(min, value);\n    }\n    int max = data[0];\n    for (int value : data) {\n        max = Math.max(max, value);\n    }\n    return max - min;\n}",
+       "html": null,
+       "answer": 2,
+       "why": "Two loops one after the other: n + n = 2n steps, which is O(n). Only loops <strong>inside</strong> loops multiply."
+      }
+     ],
+     "explain": "No loop or a fixed loop: O(1). A halving loop: O(log n). Loops over the data in sequence: O(n). Nested loops over the data: O(n\u00b2)."
+    },
+    {
+     "type": "quiz",
+     "id": "bigo-code-index",
+     "question": "A method loops <code>for (int i = 0; i &lt; n; i++)</code> and inside calls <code>list.indexOf(x)</code> on an <code>ArrayList</code> of n values. What is its big O?",
+     "choices": [
+      "O(1)",
+      "O(n)",
+      "O(n log n)",
+      "O(n\u00b2)"
+     ],
+     "answer": 3,
+     "explain": "<code>indexOf</code> searches the list, which is O(n). Doing that n times is n \u00d7 n: O(n\u00b2)."
+    },
+    {
+     "type": "quiz",
+     "id": "bigo-code-compare",
+     "question": "Method A is O(n) and method B is O(n\u00b2). For a large input, which statement is true?",
+     "choices": [
+      "A is always faster, at every size",
+      "B will eventually take much longer than A as n grows",
+      "They take the same time, since both have loops",
+      "B is faster, because n\u00b2 is a smaller number"
+     ],
+     "answer": 1,
+     "explain": "Big O describes growth. For small n, B might even be faster, but as n grows, n\u00b2 outgrows n and B falls further and further behind."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-bigo-sorted-dups",
+     "mode": "independent",
+     "title": "Duplicates in O(n)",
+     "goal": "In a <strong>sorted</strong> array, equal values sit next to each other, so you only need to compare neighbours. Write <code>Dups</code> with <code>public static boolean hasDuplicate(int[] sorted)</code> that runs in O(n): one loop, no nested loop. <code>DupsTester</code> (a separate file) prints the result for <code>{1, 3, 3, 7}</code> and <code>{2, 4, 6}</code>.",
+     "requirements": [],
+     "files": [
+      "Dups.java",
+      "DupsTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckDups.java",
+       "public class CheckDups {\n    public static void main(String[] args) {\n        System.out.println(Dups.hasDuplicate(new int[] {}) + \" \" + Dups.hasDuplicate(new int[] {5})\n                + \" \" + Dups.hasDuplicate(new int[] {-2, -2}) + \" \" + Dups.hasDuplicate(new int[] {1, 2, 3, 4, 4}));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckDups",
+     "hints": [
+      "Start at <code>i = 1</code> and compare <code>sorted[i]</code> with <code>sorted[i - 1]</code>, so you never read past either end."
+     ],
+     "checks": [
+      {
+       "pattern": "^(?![\\s\\S]*\\bfor\\b[^}]*\\{[^}]*\\bfor\\b)",
+       "message": "<code>Dups.java</code> has no loop inside a loop, so it's O(n).",
+       "file": "Dups.java"
+      }
+     ],
+     "run": "DupsTester",
+     "output": "true\nfalse",
+     "testsOutput": "false false true true",
+     "solution": [
+      [
+       "Dups.java",
+       "public class Dups {\n    public static boolean hasDuplicate(int[] sorted) {\n        for (int i = 1; i < sorted.length; i++) {\n            if (sorted[i] == sorted[i - 1]) {\n                return true;\n            }\n        }\n        return false;\n    }\n}\n"
+      ],
+      [
+       "DupsTester.java",
+       "public class DupsTester {\n    public static void main(String[] args) {\n        System.out.println(Dups.hasDuplicate(new int[] {1, 3, 3, 7}));\n        System.out.println(Dups.hasDuplicate(new int[] {2, 4, 6}));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-bigo-stepcounter",
+     "mode": "independent",
+     "title": "Count the steps yourself",
+     "goal": "Write <code>StepCounter</code> with three methods that return how many times their innermost line runs for a given <code>n</code>: <code>linear(int n)</code> (one loop to <code>n</code>), <code>quadratic(int n)</code> (two nested loops to <code>n</code>) and <code>logarithmic(int n)</code> (halve <code>n</code> until it reaches 1). All return <code>long</code>. <code>main</code> prints the three counts for <code>n = 8</code> on one line, separated by spaces.",
+     "requirements": [],
+     "files": [
+      "StepCounter.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckSteps.java",
+       "public class CheckSteps {\n    public static void main(String[] args) {\n        System.out.println(StepCounter.linear(1024) + \" \" + StepCounter.quadratic(1024) + \" \" + StepCounter.logarithmic(1024));\n        System.out.println(StepCounter.linear(1) + \" \" + StepCounter.quadratic(1) + \" \" + StepCounter.logarithmic(1));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSteps",
+     "hints": [],
+     "checks": [],
+     "run": "StepCounter",
+     "output": "8 64 3",
+     "testsOutput": "1024 1048576 10\n1 1 0",
+     "solution": [
+      [
+       "StepCounter.java",
+       "public class StepCounter {\n    public static long linear(int n) {\n        long steps = 0;\n        for (int i = 0; i < n; i++) {\n            steps++;\n        }\n        return steps;\n    }\n\n    public static long quadratic(int n) {\n        long steps = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                steps++;\n            }\n        }\n        return steps;\n    }\n\n    public static long logarithmic(int n) {\n        long steps = 0;\n        while (n > 1) {\n            n = n / 2;\n            steps++;\n        }\n        return steps;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(linear(8) + \" \" + quadratic(8) + \" \" + logarithmic(8));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.4 Analysis of Algorithms",
+     "url": "https://algs4.cs.princeton.edu/14analysis/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Comparing Algorithms (growth rates)",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "bigo-write": {
+   "id": "bigo-write",
+   "section": "big-o",
+   "title": "Writing constant, linear and quadratic code",
+   "summary": "Exam questions ask you to write a method with a given big O. Each of the three main growth rates has a recognisable shape you can reach for.",
+   "goals": [
+    "Write an O(1) method: direct access or a formula, no loop over the data",
+    "Write an O(n) method: one pass with a running result",
+    "Write an O(n\u00b2) method: every pair, with a loop inside a loop",
+    "Solve one problem at two different growth rates"
+   ],
+   "cos225": "The Exam 2 guide: \"write functions of a given big O (constant, linear, quadratic)\". Code questions give you the scaffolding and ask for a few lines.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Three shapes"
+    },
+    {
+     "type": "p",
+     "html": "When a question asks for a method of a particular big O, start from its shape:"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>O(1)</strong>: no loop over the input. Read a value by index, do arithmetic, compare, return.",
+      "<strong>O(n)</strong>: one loop over the input, keeping a running result: a total, a count, the best value so far.",
+      "<strong>O(n\u00b2)</strong>: a loop inside a loop, typically to look at every pair of values."
+     ]
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ThreeWays.java",
+       "public class ThreeWays {\n    // O(1): one array read, no loop.\n    public static int last(int[] data) {\n        return data[data.length - 1];\n    }\n\n    // O(n): one pass, keeping a running total.\n    public static double average(int[] data) {\n        int total = 0;\n        for (int i = 0; i < data.length; i++) {\n            total += data[i];\n        }\n        return (double) total / data.length;\n    }\n\n    // O(n^2): try every pair i < j.\n    public static int pairsWithSum(int[] data, int target) {\n        int count = 0;\n        for (int i = 0; i < data.length; i++) {\n            for (int j = i + 1; j < data.length; j++) {\n                if (data[i] + data[j] == target) {\n                    count++;\n                }\n            }\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        int[] data = {4, 9, 1, 6, 5};\n        System.out.println(last(data));\n        System.out.println(average(data));\n        System.out.println(pairsWithSum(data, 10));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ThreeWays",
+      "stdout": "5\n5.0\n2"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "The pairs that add to 10 are 4 + 6 and 9 + 1. The 5 can't pair with itself, because <code>j</code> always starts after <code>i</code>."
+    },
+    {
+     "type": "h",
+     "html": "One problem, two growth rates"
+    },
+    {
+     "type": "p",
+     "html": "Big O belongs to an algorithm, not to a problem. The sum 1 + 2 + \u2026 + n can be added up in a loop (O(n)), or worked out with Gauss's formula n(n + 1)/2 (O(1)):"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "SumTo.java",
+       "public class SumTo {\n    // O(n): add 1 + 2 + ... + n one at a time.\n    public static long loopSum(int n) {\n        long total = 0;\n        for (int i = 1; i <= n; i++) {\n            total += i;\n        }\n        return total;\n    }\n\n    // O(1): the same answer from a formula.\n    public static long formulaSum(int n) {\n        return (long) n * (n + 1) / 2;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(loopSum(100) + \" \" + formulaSum(100));\n        System.out.println(loopSum(1000000) + \" \" + formulaSum(1000000));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java SumTo",
+      "stdout": "5050 5050\n500000500000 500000500000"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "Both give the same answers, but for a million, the loop does a million additions while the formula does one multiplication and one division. The <code>(long)</code> cast stops <code>n * (n + 1)</code> overflowing an <code>int</code>."
+    },
+    {
+     "type": "p",
+     "html": "So when you're asked for O(1), look for a way to compute the answer directly instead of visiting the values; when you're asked for O(n), look for a way to finish in one pass instead of comparing pairs."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "bigo-largest",
+     "title": "An O(n) largest value",
+     "prompt": "Finish <code>largest</code> so it finds the largest value in one pass. It must work for all-negative arrays too.",
+     "files": [
+      [
+       "Largest.java",
+       "public class Largest {\n    public static int largest(int[] data) {\n        int best = [[start]];\n        for (int i = [[from]]; i < data.length; i++) {\n            if ([[test]]) {\n                best = data[i];\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(largest(new int[] {3, 8, 2, 8, 5}));\n        System.out.println(largest(new int[] {-4, -9, -1}));\n    }\n}\n"
+      ]
+     ],
+     "run": "Largest",
+     "blanks": {
+      "start": {
+       "accept": [
+        "data[0]"
+       ],
+       "solution": "data[0]",
+       "hint": "Start with a value that's really in the array.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "0",
+         "shown": "0",
+         "why": "For <code>{-4, -9, -1}</code>, nothing beats 0, so it returns 0, which isn't in the array.",
+         "result": {
+          "kind": "ok",
+          "command": "java Largest",
+          "stdout": "8\n0"
+         }
+        }
+       ],
+       "width": 7
+      },
+      "from": {
+       "accept": [
+        "1",
+        "0"
+       ],
+       "solution": "1",
+       "hint": "<code>data[0]</code> is already in <code>best</code>.",
+       "exact": false,
+       "wrong": [],
+       "width": 1
+      },
+      "test": {
+       "accept": [
+        "data[i]>best",
+        "best<data[i]"
+       ],
+       "solution": "data[i] > best",
+       "hint": "Replace <code>best</code> when you find something bigger.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "data[i]<best",
+         "shown": "data[i] < best",
+         "why": "That keeps the smallest value instead.",
+         "result": {
+          "kind": "ok",
+          "command": "java Largest",
+          "stdout": "2\n-9"
+         }
+        }
+       ],
+       "width": 14
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java Largest",
+      "stdout": "8\n-1"
+     },
+     "explain": "Start with the first value, then one loop compares each value with the best so far. One pass: O(n)."
+    },
+    {
+     "type": "quiz",
+     "id": "bigo-write-which",
+     "question": "You're asked to write an O(1) method that returns the middle value of an array. Which body fits?",
+     "choices": [
+      "<code>return data[data.length / 2];</code>",
+      "A loop that counts to <code>data.length / 2</code>, then returns that value",
+      "A loop that finds the median by comparing every pair",
+      "Sorting the array first, then returning the middle"
+     ],
+     "answer": 0,
+     "explain": "Arrays allow direct access by index, so one read is enough. Any loop that depends on the length makes it O(n) or worse."
+    },
+    {
+     "type": "quiz",
+     "id": "bigo-write-pairs",
+     "question": "Which method has to be at least O(n\u00b2) the way it's described?",
+     "choices": [
+      "Return the first value",
+      "Count how many values are even",
+      "Print every pair of values (all n \u00d7 n combinations)",
+      "Return the length of the array"
+     ],
+     "answer": 2,
+     "explain": "Printing n \u00d7 n pairs means doing n\u00b2 things, so no algorithm can do it in less. Counting evens is one pass; the others are single steps."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-bigo-constant",
+     "mode": "independent",
+     "title": "Write O(1) methods",
+     "goal": "Write <code>Constant</code> with two O(1) methods, <strong>with no loops at all</strong>: <code>lastValue(int[] data)</code> returns the last value, and <code>sumTo(int n)</code> returns 1 + 2 + \u2026 + n as a <code>long</code>, using the formula n(n + 1)/2. Put <code>main</code> in a separate <code>ConstantTester</code>, which prints <code>lastValue</code> of <code>{7, 2, 9}</code> and <code>sumTo(10)</code> and <code>sumTo(100000)</code>.",
+     "requirements": [],
+     "files": [
+      "Constant.java",
+      "ConstantTester.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "<code>100000 * 100001</code> is too big for an <code>int</code>. Cast to <code>long</code> before multiplying: <code>(long) n * (n + 1) / 2</code>."
+     ],
+     "checks": [
+      {
+       "pattern": "^(?![\\s\\S]*\\b(for|while)\\b)",
+       "message": "<code>Constant.java</code> has no <code>for</code> or <code>while</code> loops, so both methods are O(1).",
+       "file": "Constant.java"
+      }
+     ],
+     "run": "ConstantTester",
+     "output": "9\n55\n5000050000",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Constant.java",
+       "public class Constant {\n    public static int lastValue(int[] data) {\n        return data[data.length - 1];\n    }\n\n    public static long sumTo(int n) {\n        return (long) n * (n + 1) / 2;\n    }\n}\n"
+      ],
+      [
+       "ConstantTester.java",
+       "public class ConstantTester {\n    public static void main(String[] args) {\n        System.out.println(Constant.lastValue(new int[] {7, 2, 9}));\n        System.out.println(Constant.sumTo(10));\n        System.out.println(Constant.sumTo(100000));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-bigo-linear",
+     "mode": "independent",
+     "title": "Write an O(n) method",
+     "goal": "Write <code>Linear</code> with <code>public static boolean isSorted(int[] data)</code>, which returns <code>true</code> if every value is at least the one before it. Use one loop: O(n). <code>LinearTester</code> prints the result for <code>{1, 2, 2, 5}</code>, <code>{3, 1, 4}</code> and an empty array.",
+     "requirements": [],
+     "files": [
+      "Linear.java",
+      "LinearTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckLinear.java",
+       "public class CheckLinear {\n    public static void main(String[] args) {\n        System.out.println(Linear.isSorted(new int[] {9}) + \" \" + Linear.isSorted(new int[] {1, 2, 3, 0}));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckLinear",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "^(?![\\s\\S]*\\bfor\\b[^}]*\\{[^}]*\\bfor\\b)",
+       "message": "<code>Linear.java</code> has no loop inside a loop.",
+       "file": "Linear.java"
+      }
+     ],
+     "run": "LinearTester",
+     "output": "true\nfalse\ntrue",
+     "testsOutput": "true false",
+     "solution": [
+      [
+       "Linear.java",
+       "public class Linear {\n    public static boolean isSorted(int[] data) {\n        for (int i = 1; i < data.length; i++) {\n            if (data[i] < data[i - 1]) {\n                return false;\n            }\n        }\n        return true;\n    }\n}\n"
+      ],
+      [
+       "LinearTester.java",
+       "public class LinearTester {\n    public static void main(String[] args) {\n        System.out.println(Linear.isSorted(new int[] {1, 2, 2, 5}));\n        System.out.println(Linear.isSorted(new int[] {3, 1, 4}));\n        System.out.println(Linear.isSorted(new int[] {}));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-bigo-quadratic",
+     "mode": "independent",
+     "title": "Write an O(n\u00b2) method",
+     "goal": "Write <code>Quadratic</code> with <code>public static int countInversions(int[] data)</code>: the number of pairs <code>i &lt; j</code> where <code>data[i] &gt; data[j]</code>. (A sorted array has 0; a reversed one has the most.) Use nested loops. <code>QuadraticTester</code> prints it for <code>{2, 4, 1, 3}</code> and <code>{5, 4, 3, 2, 1}</code>.",
+     "requirements": [],
+     "files": [
+      "Quadratic.java",
+      "QuadraticTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckInv.java",
+       "public class CheckInv {\n    public static void main(String[] args) {\n        System.out.println(Quadratic.countInversions(new int[] {1, 2, 3}) + \" \" + Quadratic.countInversions(new int[] {3, 3, 1}));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckInv",
+     "hints": [
+      "Start <code>j</code> at <code>i + 1</code> so each pair is checked once, and in the right order.",
+      "In <code>{2, 4, 1, 3}</code> the inversions are (2, 1), (4, 1) and (4, 3)."
+     ],
+     "checks": [],
+     "run": "QuadraticTester",
+     "output": "3\n10",
+     "testsOutput": "0 2",
+     "solution": [
+      [
+       "Quadratic.java",
+       "public class Quadratic {\n    public static int countInversions(int[] data) {\n        int count = 0;\n        for (int i = 0; i < data.length; i++) {\n            for (int j = i + 1; j < data.length; j++) {\n                if (data[i] > data[j]) {\n                    count++;\n                }\n            }\n        }\n        return count;\n    }\n}\n"
+      ],
+      [
+       "QuadraticTester.java",
+       "public class QuadraticTester {\n    public static void main(String[] args) {\n        System.out.println(Quadratic.countInversions(new int[] {2, 4, 1, 3}));\n        System.out.println(Quadratic.countInversions(new int[] {5, 4, 3, 2, 1}));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.4 Analysis of Algorithms",
+     "url": "https://algs4.cs.princeton.edu/14analysis/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Comparing Algorithms (growth rates)",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    }
+   ]
+  },
+  "ws-big-o": {
+   "id": "ws-big-o",
+   "section": "big-o",
+   "title": "Workshop: big O",
+   "summary": "Measure the difference between growth rates for yourself: replace an O(n\u00b2) search with an O(n) one, and an O(n) search with an O(log n) one, counting the steps each takes.",
+   "goals": [
+    "Count an algorithm's steps to see its growth rate",
+    "Replace a nested loop with a single pass when the data allows it",
+    "Write methods that meet a required big O"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: From O(n\u00b2) to O(n)"
+    },
+    {
+     "type": "write",
+     "id": "ws-u15-pairs",
+     "mode": "guided",
+     "title": "From O(n\u00b2) to O(n)",
+     "goal": "Does a sorted array contain two values that add up to a target? Write the obvious nested-loop version, measure it, then write a single-pass version.",
+     "requirements": [],
+     "files": [
+      "PairSum.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Every pair",
+       "text": "In <code>PairSum</code>, write <code>slowHasPair(int[] sorted, int target)</code>, which checks every pair <code>i &lt; j</code> with nested loops.",
+       "hint": null,
+       "files": [
+        "PairSum.java"
+       ],
+       "run": "PairSum",
+       "output": "true\nfalse",
+       "checks": [],
+       "solution": [
+        [
+         "PairSum.java",
+         "public class PairSum {\n    public static boolean slowHasPair(int[] sorted, int target) {\n        for (int i = 0; i < sorted.length; i++) {\n            for (int j = i + 1; j < sorted.length; j++) {\n                if (sorted[i] + sorted[j] == target) {\n                    return true;\n                }\n            }\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        int[] data = {1, 3, 4, 6, 9, 12};\n        System.out.println(slowHasPair(data, 13));\n        System.out.println(slowHasPair(data, 2));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Count the checks",
+       "text": "Add a <code>public static long checks</code> counter and increase it once per pair checked. Search a 1000-value array of even numbers for a pair adding to 1, which can't exist, so every pair is checked.",
+       "hint": "1000 \u00d7 999 / 2 = 499,500: that's n(n \u2212 1)/2, O(n\u00b2).",
+       "files": [
+        "PairSum.java"
+       ],
+       "run": "PairSum",
+       "output": "false\n499500 checks",
+       "checks": [],
+       "solution": [
+        [
+         "PairSum.java",
+         "public class PairSum {\n    public static long checks = 0;\n\n    public static boolean slowHasPair(int[] sorted, int target) {\n        for (int i = 0; i < sorted.length; i++) {\n            for (int j = i + 1; j < sorted.length; j++) {\n                checks++;\n                if (sorted[i] + sorted[j] == target) {\n                    return true;\n                }\n            }\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        int[] big = new int[1000];\n        for (int i = 0; i < big.length; i++) {\n            big[i] = 2 * i;\n        }\n        System.out.println(slowHasPair(big, 1));\n        System.out.println(checks + \" checks\");\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Two pointers",
+       "text": "Write <code>fastHasPair</code>: start <code>left</code> at 0 and <code>right</code> at the end. If the pair sums to the target, you're done; if it's too small, move <code>left</code> right; if too big, move <code>right</code> left. Each step moves one pointer, so it's O(n). Count its checks too.",
+       "hint": "This only works because the array is sorted: moving <code>left</code> right always makes the sum bigger, and moving <code>right</code> left makes it smaller.",
+       "files": [
+        "PairSum.java"
+       ],
+       "run": "PairSum",
+       "output": "false 499500 checks\nfalse 999 checks\ntrue 5 checks",
+       "checks": [
+        {
+         "pattern": "while\\s*\\(\\s*left\\s*<\\s*right\\s*\\)",
+         "message": "<code>fastHasPair</code> loops <code>while (left &lt; right)</code>.",
+         "file": null
+        }
+       ],
+       "solution": [
+        [
+         "PairSum.java",
+         "public class PairSum {\n    public static long checks = 0;\n\n    public static boolean slowHasPair(int[] sorted, int target) {\n        for (int i = 0; i < sorted.length; i++) {\n            for (int j = i + 1; j < sorted.length; j++) {\n                checks++;\n                if (sorted[i] + sorted[j] == target) {\n                    return true;\n                }\n            }\n        }\n        return false;\n    }\n\n    public static boolean fastHasPair(int[] sorted, int target) {\n        int left = 0;\n        int right = sorted.length - 1;\n        while (left < right) {\n            checks++;\n            int sum = sorted[left] + sorted[right];\n            if (sum == target) {\n                return true;\n            } else if (sum < target) {\n                left++;\n            } else {\n                right--;\n            }\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        int[] big = new int[1000];\n        for (int i = 0; i < big.length; i++) {\n            big[i] = 2 * i;\n        }\n        System.out.println(slowHasPair(big, 1) + \" \" + checks + \" checks\");\n        checks = 0;\n        System.out.println(fastHasPair(big, 1) + \" \" + checks + \" checks\");\n        checks = 0;\n        System.out.println(fastHasPair(big, 1990) + \" \" + checks + \" checks\");\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: From O(n) to O(log n)"
+    },
+    {
+     "type": "write",
+     "id": "ws-u15-search",
+     "mode": "guided",
+     "title": "From O(n) to O(log n)",
+     "goal": "Finding a value in an array means checking values one by one, unless the array is sorted. Then you can halve the search each step.",
+     "requirements": [],
+     "files": [
+      "Search.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Linear search",
+       "text": "In <code>Search</code>, write <code>linearSearch(int[] data, int target)</code>, returning the index of <code>target</code> or -1, and count each comparison in <code>steps</code>. Search 1000 multiples of 3 for 2997, the last one.",
+       "hint": null,
+       "files": [
+        "Search.java"
+       ],
+       "run": "Search",
+       "output": "999 after 1000 steps",
+       "checks": [],
+       "solution": [
+        [
+         "Search.java",
+         "public class Search {\n    public static long steps = 0;\n\n    public static int linearSearch(int[] data, int target) {\n        for (int i = 0; i < data.length; i++) {\n            steps++;\n            if (data[i] == target) {\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int[] data = new int[1000];\n        for (int i = 0; i < data.length; i++) {\n            data[i] = 3 * i;\n        }\n        System.out.println(linearSearch(data, 2997) + \" after \" + steps + \" steps\");\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Binary search",
+       "text": "Add <code>binarySearch</code> for sorted arrays: look at the middle of the range <code>low..high</code>; if the target is bigger, search the right half (<code>low = mid + 1</code>), otherwise the left half (<code>high = mid - 1</code>). Stop when <code>low &gt; high</code>. Count each middle you look at.",
+       "hint": null,
+       "files": [
+        "Search.java"
+       ],
+       "run": "Search",
+       "output": "999 after 1000 steps\n999 after 10 steps",
+       "checks": [],
+       "solution": [
+        [
+         "Search.java",
+         "public class Search {\n    public static long steps = 0;\n\n    public static int linearSearch(int[] data, int target) {\n        for (int i = 0; i < data.length; i++) {\n            steps++;\n            if (data[i] == target) {\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public static int binarySearch(int[] sorted, int target) {\n        int low = 0;\n        int high = sorted.length - 1;\n        while (low <= high) {\n            steps++;\n            int mid = (low + high) / 2;\n            if (sorted[mid] == target) {\n                return mid;\n            } else if (sorted[mid] < target) {\n                low = mid + 1;\n            } else {\n                high = mid - 1;\n            }\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int[] data = new int[1000];\n        for (int i = 0; i < data.length; i++) {\n            data[i] = 3 * i;\n        }\n        System.out.println(linearSearch(data, 2997) + \" after \" + steps + \" steps\");\n        steps = 0;\n        System.out.println(binarySearch(data, 2997) + \" after \" + steps + \" steps\");\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Watch them grow",
+       "text": "Search arrays of 1000, 10,000, 100,000 and 1,000,000 values for -1, which isn't there, so both searches do their maximum work. Print the steps for each.",
+       "hint": "Linear search grows \u00d710 each time. Binary search grows by only 3 or 4 steps, because multiplying <code>n</code> by 10 is a bit more than 3 doublings.",
+       "files": [
+        "Search.java"
+       ],
+       "run": "Search",
+       "output": "n = 1000: linear 1000, binary 9\nn = 10000: linear 10000, binary 13\nn = 100000: linear 100000, binary 16\nn = 1000000: linear 1000000, binary 19",
+       "checks": [],
+       "solution": [
+        [
+         "Search.java",
+         "public class Search {\n    public static long steps = 0;\n\n    public static int linearSearch(int[] data, int target) {\n        for (int i = 0; i < data.length; i++) {\n            steps++;\n            if (data[i] == target) {\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public static int binarySearch(int[] sorted, int target) {\n        int low = 0;\n        int high = sorted.length - 1;\n        while (low <= high) {\n            steps++;\n            int mid = (low + high) / 2;\n            if (sorted[mid] == target) {\n                return mid;\n            } else if (sorted[mid] < target) {\n                low = mid + 1;\n            } else {\n                high = mid - 1;\n            }\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        for (int n = 1000; n <= 1000000; n *= 10) {\n            int[] data = new int[n];\n            for (int i = 0; i < n; i++) {\n                data[i] = 3 * i;\n            }\n            steps = 0;\n            linearSearch(data, -1);\n            long linear = steps;\n            steps = 0;\n            binarySearch(data, -1);\n            System.out.println(\"n = \" + n + \": linear \" + linear + \", binary \" + steps);\n        }\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: Largest difference in O(n)"
+    },
+    {
+     "type": "write",
+     "id": "ws-u15-range",
+     "mode": "independent",
+     "title": "Largest difference in O(n)",
+     "goal": "The largest difference between any two values in an array is just the maximum minus the minimum, so you don't need to compare pairs. Write <code>Spread</code> with <code>public static int maxDifference(int[] data)</code> (at least one value) that finds both in <strong>one loop</strong>. <code>SpreadTester</code> prints it for <code>{7, 2, 9, 4}</code> and <code>{-3, -8}</code>.",
+     "requirements": [],
+     "files": [
+      "Spread.java",
+      "SpreadTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckSpread.java",
+       "public class CheckSpread {\n    public static void main(String[] args) {\n        System.out.println(Spread.maxDifference(new int[] {4}) + \" \" + Spread.maxDifference(new int[] {1, 100, -100}));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSpread",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "^(?![\\s\\S]*\\bfor\\b[^}]*\\{[^}]*\\bfor\\b)",
+       "message": "<code>Spread.java</code> has no loop inside a loop, so it's O(n).",
+       "file": "Spread.java"
+      }
+     ],
+     "run": "SpreadTester",
+     "output": "7\n5",
+     "testsOutput": "0 200",
+     "solution": [
+      [
+       "Spread.java",
+       "public class Spread {\n    public static int maxDifference(int[] data) {\n        int min = data[0];\n        int max = data[0];\n        for (int i = 1; i < data.length; i++) {\n            if (data[i] < min) {\n                min = data[i];\n            }\n            if (data[i] > max) {\n                max = data[i];\n            }\n        }\n        return max - min;\n    }\n}\n"
+      ],
+      [
+       "SpreadTester.java",
+       "public class SpreadTester {\n    public static void main(String[] args) {\n        System.out.println(Spread.maxDifference(new int[] {7, 2, 9, 4}));\n        System.out.println(Spread.maxDifference(new int[] {-3, -8}));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: Count common values two ways"
+    },
+    {
+     "type": "write",
+     "id": "ws-u15-common",
+     "mode": "independent",
+     "title": "Count common values two ways",
+     "goal": "Write <code>Common</code> with two methods that count how many values of <code>a</code> also appear in <code>b</code> (each array has no repeats): <code>countSlow(int[] a, int[] b)</code> with nested loops (O(n\u00b2)), and <code>countSorted(int[] a, int[] b)</code> for <strong>sorted</strong> arrays in O(n), walking an index through each array: if <code>a[i] == b[j]</code> count it and advance both, otherwise advance the one with the smaller value. <code>CommonTester</code> prints both counts for <code>a = {1, 4, 6, 8, 10}</code> and <code>b = {2, 4, 5, 8, 11}</code>.",
+     "requirements": [],
+     "files": [
+      "Common.java",
+      "CommonTester.java"
+     ],
+     "starter": [],
+     "tests": [
+      [
+       "CheckCommon.java",
+       "public class CheckCommon {\n    public static void main(String[] args) {\n        int[] a = {1, 2, 3};\n        int[] b = {3, 4};\n        int[] e = {};\n        System.out.println(Common.countSorted(a, b) + \" \" + Common.countSorted(a, e) + \" \" + Common.countSorted(a, a));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckCommon",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "while\\s*\\(",
+       "message": "<code>countSorted</code> walks both arrays with one <code>while</code> loop.",
+       "file": null
+      }
+     ],
+     "run": "CommonTester",
+     "output": "2 2",
+     "testsOutput": "1 0 3",
+     "solution": [
+      [
+       "Common.java",
+       "public class Common {\n    public static int countSlow(int[] a, int[] b) {\n        int count = 0;\n        for (int i = 0; i < a.length; i++) {\n            for (int j = 0; j < b.length; j++) {\n                if (a[i] == b[j]) {\n                    count++;\n                }\n            }\n        }\n        return count;\n    }\n\n    public static int countSorted(int[] a, int[] b) {\n        int count = 0;\n        int i = 0;\n        int j = 0;\n        while (i < a.length && j < b.length) {\n            if (a[i] == b[j]) {\n                count++;\n                i++;\n                j++;\n            } else if (a[i] < b[j]) {\n                i++;\n            } else {\n                j++;\n            }\n        }\n        return count;\n    }\n}\n"
+      ],
+      [
+       "CommonTester.java",
+       "public class CommonTester {\n    public static void main(String[] args) {\n        int[] a = {1, 4, 6, 8, 10};\n        int[] b = {2, 4, 5, 8, 11};\n        System.out.println(Common.countSlow(a, b) + \" \" + Common.countSorted(a, b));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.4 Analysis of Algorithms",
+     "url": "https://algs4.cs.princeton.edu/14analysis/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Comparing Algorithms (growth rates)",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
+     "org": "Virginia Tech, OpenDSA",
      "note": null
     }
    ]

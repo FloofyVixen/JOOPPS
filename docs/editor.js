@@ -449,7 +449,9 @@
         }
         var code = learnerFiles().map(function (f) { return stripComments(f[1]); }).join("\n");
         (step.checks || []).forEach(function (chk) {
-          var ok = new RegExp(chk.pattern).test(code);
+          var target = chk.file ? learnerFiles().filter(function (f) { return f[0] === chk.file; })
+            .map(function (f) { return stripComments(f[1]); }).join("\n") : code;
+          var ok = new RegExp(chk.pattern).test(target);
           if (!ok) allOk = false;
           results.appendChild(line(ok, chk.message));
         });

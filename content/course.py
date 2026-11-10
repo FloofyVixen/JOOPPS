@@ -51,7 +51,7 @@ SECTIONS = [
      "lessons": ["astack-build", "astack-top", "ws-array-stack"]},
     {"id": "big-o", "title": "The return of big O! (algorithm complexity)",
      "blurb": "The growth rate of algorithms: the big six categories, how they look in code, and how they rank.",
-     "planned": ["Growth rates and the big six", "Reading big O from code", "Writing constant, linear and quadratic code", "Workshop"]},
+     "lessons": ["bigo-growth", "bigo-code", "bigo-write", "ws-big-o"]},
     {"id": "linked", "title": "Linked Data Structures",
      "blurb": "Nodes with a data payload and a reference to the next node, starting from the head.",
      "planned": ["Nodes and the head", "Traversing with getNext()", "Adding and removing nodes", "Workshop"]},

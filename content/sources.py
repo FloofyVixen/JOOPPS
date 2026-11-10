@@ -175,3 +175,5 @@ OPENDSA_QUEUE = s("Queues", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/htm
                   "Virginia Tech, OpenDSA")
 JLS_EVAL_ORDER = s("JLS §15.7: Evaluation Order", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html#jls-15.7", JLS,
                    "The left operand of a binary operator is fully evaluated before the right one.")
+OPENDSA_ANAL = s("Comparing Algorithms (growth rates)", "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
+                 "Virginia Tech, OpenDSA")

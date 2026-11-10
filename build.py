@@ -425,7 +425,10 @@ def check_stage(where, files, tests, run, output, tests_run, tests_output, check
             fail(where, f"hidden tests do not pass on the reference solution: {t}")
     code = "\n".join(strip_comments(s) for s in files.values())
     for c in checks:
-        if not re.search(c["pattern"], code):
+        if c.get("file") and c["file"] not in files:
+            fail(where, f"check names a file that isn't in the task: {c['file']}")
+        target = strip_comments(files[c["file"]]) if c.get("file") else code
+        if not re.search(c["pattern"], target):
             fail(where, f"reference solution fails its own check {c['pattern']!r}")
 
 
@@ -442,7 +445,7 @@ def process_write(where, b):
         "files": b["files"], "starter": [[n, s] for n, s in b.get("starter", {}).items()],
         "tests": [[n, s] for n, s in tests.items()], "testsRun": tests_run,
         "hints": [inline(h) for h in b.get("hints", [])],
-        "checks": [{"pattern": c["pattern"], "message": inline(c["message"])} for c in checks],
+        "checks": [{"pattern": c["pattern"], "message": inline(c["message"]), "file": c.get("file")} for c in checks],
     }
     starter = b.get("starter", {})
     if starter:
@@ -460,7 +463,7 @@ def process_write(where, b):
             steps.append({"title": st["title"], "text": inline(st["text"]),
                           "hint": inline(st["hint"]) if st.get("hint") else None,
                           "files": st.get("files", b["files"]), "run": st["run"], "output": st["output"],
-                          "checks": [{"pattern": c["pattern"], "message": inline(c["message"])} for c in st_checks],
+                          "checks": [{"pattern": c["pattern"], "message": inline(c["message"]), "file": c.get("file")} for c in st_checks],
                           "solution": [[n, s] for n, s in st["solution"].items()]})
         out["steps"] = steps
         return out
