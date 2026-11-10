@@ -500,3 +500,18 @@ def main_class(name, body, imports=""):
 
 def lines(*stmts):
     return "".join("        " + s + "\n" for s in stmts)
+
+SHOW = """public class Show {
+    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.
+    public static String chain(Node head) {
+        String result = "head";
+        Node current = head;
+        while (current != null) {
+            result += " -> " + current.getData();
+            current = current.getNext();
+        }
+        return result + " -> null";
+    }
+}
+"""
+NODE_FILES = {"Node.java": NODE, "Show.java": SHOW}

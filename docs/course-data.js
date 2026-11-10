@@ -170,11 +170,11 @@ window.COURSE = {
    "id": "linked",
    "title": "Linked Data Structures",
    "blurb": "Nodes with a data payload and a reference to the next node, starting from the head.",
-   "planned": [
-    "Nodes and the head",
-    "Traversing with getNext()",
-    "Adding and removing nodes",
-    "Workshop"
+   "lessons": [
+    "link-nodes",
+    "link-traverse",
+    "link-change",
+    "ws-linked"
    ]
   },
   {
@@ -20869,6 +20869,1713 @@ window.COURSE = {
      "title": "Comparing Algorithms (growth rates)",
      "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/AnalIntro.html",
      "org": "Virginia Tech, OpenDSA",
+     "note": null
+    }
+   ]
+  },
+  "link-nodes": {
+   "id": "link-nodes",
+   "section": "linked",
+   "title": "Nodes and the head",
+   "summary": "A linked structure keeps each value in its own small object, a node, which holds a reference to the next node. You reach the whole chain from its first node, the head.",
+   "goals": [
+    "Describe a node: a data payload and a reference to the next node",
+    "Create nodes with <code>new</code> and link them with <code>setNext</code>",
+    "Explain the role of <code>head</code>, and why a single node is already a linked list",
+    "Draw a chain of nodes from code"
+   ],
+   "cos225": "Straight from the Exam 2 guide: a node is typically called head, made with <code>new</code>, has a reference to <code>next</code> and a data payload, and every node on its own is a linked list. Linked-list problems are an exam favourite.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Why not an array?"
+    },
+    {
+     "type": "p",
+     "html": "An array is one block of memory with a fixed size. Growing it means copying everything, and adding at the front means shifting everything. A <strong>linked</strong> structure avoids both: each value lives in its own object, and the objects are connected by references, like a chain."
+    },
+    {
+     "type": "h",
+     "html": "The node"
+    },
+    {
+     "type": "p",
+     "html": "Each link of the chain is a <strong>node</strong>. A node holds two things: its <strong>data</strong> (the payload, here an <code>int</code>) and <strong>next</strong>, a reference to the next node. The last node's <code>next</code> is <code>null</code>, meaning nothing comes after it."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Notice that <code>Node</code> has a field of type <code>Node</code>. That's allowed: the field doesn't hold a whole node inside it, only a reference to another node object."
+    },
+    {
+     "type": "h",
+     "html": "Linking nodes together"
+    },
+    {
+     "type": "p",
+     "html": "Create nodes with <code>new</code>, then link each one to the next with <code>setNext</code>. A variable that refers to the first node is traditionally called <strong>head</strong>: from it, <code>getNext()</code> reaches every other node."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ThreeNodes.java",
+       "public class ThreeNodes {\n    public static void main(String[] args) {\n        Node first = new Node(7);\n        Node second = new Node(3);\n        Node third = new Node(9);\n        first.setNext(second);\n        second.setNext(third);\n        Node head = first;\n        System.out.println(head.getData());\n        System.out.println(head.getNext().getData());\n        System.out.println(head.getNext().getNext().getData());\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ThreeNodes",
+      "stdout": "7\n3\n9\nhead -> 7 -> 3 -> 9 -> null"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "<code>Show.chain</code> (a helper you'll write yourself in the next lesson) prints the chain by following <code>getNext()</code> from the head until it reaches <code>null</code>."
+    },
+    {
+     "type": "diagram",
+     "kind": "linked",
+     "state": "head -> 7 -> 3 -> 9 -> null",
+     "label": null,
+     "caption": "Each box is a node: its data, and its <code>next</code> reference pointing to the following node. The last <code>next</code> is <code>null</code>."
+    },
+    {
+     "type": "p",
+     "html": "<code>head.getNext().getData()</code> reads left to right: start at the head, follow its <code>next</code> to the second node, and read that node's data."
+    },
+    {
+     "type": "h",
+     "html": "Every node is a linked list"
+    },
+    {
+     "type": "p",
+     "html": "A single node whose <code>next</code> is <code>null</code> is a complete linked list of one value. And <code>head = null</code> is the <strong>empty</strong> list: there's no first node at all."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "OneNode.java",
+       "public class OneNode {\n    public static void main(String[] args) {\n        Node head = new Node(42);\n        System.out.println(Show.chain(head));\n        Node empty = null;\n        System.out.println(Show.chain(empty));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java OneNode",
+      "stdout": "head -> 42 -> null\nhead -> null"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "Look at it the other way, too: from any node, the nodes you can reach by following <code>next</code> form a linked list of their own. In <code>7 -&gt; 3 -&gt; 9</code>, the node holding 3 is the head of the list <code>3 -&gt; 9</code>. Many linked-list methods use this idea."
+    },
+    {
+     "type": "h",
+     "html": "Adding at the front"
+    },
+    {
+     "type": "p",
+     "html": "The cheapest place to add is the front: make a new node, point its <code>next</code> at the current head, then make it the new head. Nothing else moves, so it's O(1) however long the list is."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "AddFront.java",
+       "public class AddFront {\n    public static void main(String[] args) {\n        Node head = null;\n        for (int value = 1; value <= 3; value++) {\n            Node node = new Node(value);\n            node.setNext(head);\n            head = node;\n            System.out.println(Show.chain(head));\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java AddFront",
+      "stdout": "head -> 1 -> null\nhead -> 2 -> 1 -> null\nhead -> 3 -> 2 -> 1 -> null"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "Each new value goes in front, so the list ends up in the reverse of the order the values were added, just like a stack."
+    },
+    {
+     "type": "p",
+     "html": "The order of the two steps matters. If you wrote <code>head = node;</code> first, then <code>node.setNext(head)</code> would point the node at itself, and the rest of the list would be lost."
+    },
+    {
+     "type": "h",
+     "html": "Don't lose the head"
+    },
+    {
+     "type": "p",
+     "html": "The only way into the chain is through a reference to one of its nodes. If no variable refers to a node any more, you can't reach it, and Java eventually reclaims its memory:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Lost.java",
+       "public class Lost {\n    public static void main(String[] args) {\n        Node head = new Node(1);\n        head.setNext(new Node(2));\n        head.getNext().setNext(new Node(3));\n        Node saved = head.getNext();\n        head = null;\n        System.out.println(Show.chain(head));\n        System.out.println(Show.chain(saved));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Lost",
+      "stdout": "head -> null\nhead -> 2 -> 3 -> null"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "After <code>head = null</code>, the node holding 1 is gone for good. The nodes holding 2 and 3 are still reachable, because <code>saved</code> refers to the second node."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "node-trace1",
+     "kind": "linked",
+     "prompt": "The nodes are created in one order but linked in another. Follow the <code>setNext</code> calls.",
+     "question": "Which diagram shows the list starting at <code>head</code>?",
+     "files": [
+      [
+       "NodeTrace.java",
+       "public class NodeTrace {\n    public static void main(String[] args) {\n        Node a = new Node(4);\n        Node b = new Node(8);\n        Node c = new Node(6);\n        b.setNext(a);\n        a.setNext(c);\n        Node head = b;\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> 4 -> 8 -> 6 -> null",
+      "head -> 8 -> 4 -> 6 -> null",
+      "head -> 8 -> 6 -> 4 -> null",
+      "head -> 8 -> 4 -> null"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java NodeTrace",
+      "stdout": "head -> 8 -> 4 -> 6 -> null"
+     },
+     "explain": "<code>head</code> is <code>b</code> (8). <code>b</code>'s next is <code>a</code> (4), and <code>a</code>'s next is <code>c</code> (6). <code>c</code>'s next was never set, so it's <code>null</code>."
+    },
+    {
+     "type": "trace",
+     "id": "node-trace2",
+     "kind": "linked",
+     "prompt": "Trace each assignment. <code>n</code> is reused for a second node halfway through.",
+     "question": "Which diagram shows the list at the end?",
+     "files": [
+      [
+       "FrontTrace.java",
+       "public class FrontTrace {\n    public static void main(String[] args) {\n        Node head = new Node(5);\n        Node n = new Node(2);\n        n.setNext(head);\n        head = n;\n        n = new Node(7);\n        n.setNext(head.getNext());\n        head.setNext(n);\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> 7 -> 2 -> 5 -> null",
+      "head -> 2 -> 5 -> 7 -> null",
+      "head -> 2 -> 7 -> 5 -> null",
+      "head -> 2 -> 7 -> null"
+     ],
+     "answer": 2,
+     "result": {
+      "kind": "ok",
+      "command": "java FrontTrace",
+      "stdout": "head -> 2 -> 7 -> 5 -> null"
+     },
+     "explain": "Lines 4 to 6 put 2 in front of 5. Then the new node 7 points at <code>head.getNext()</code>, the 5, and <code>head.setNext(n)</code> makes the 2 point at 7. So 7 is inserted between 2 and 5."
+    },
+    {
+     "type": "predict",
+     "id": "node-follow",
+     "prompt": "What does this print?",
+     "files": [
+      [
+       "Follow.java",
+       "public class Follow {\n    public static void main(String[] args) {\n        Node head = new Node(10);\n        head.setNext(new Node(20));\n        head.getNext().setNext(new Node(30));\n        Node second = head.getNext();\n        System.out.println(second.getData() + \" \" + second.getNext().getData());\n        System.out.println(second.getNext().getNext());\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "20 30\nnull",
+      "10 20\nnull",
+      "20 30\n30",
+      "20 30\n0"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java Follow",
+      "stdout": "20 30\nnull"
+     },
+     "explain": "<code>second</code> refers to the node holding 20, whose next holds 30. That node is last, so its <code>getNext()</code> is <code>null</code>, and printing a <code>null</code> reference prints <code>null</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "node-one",
+     "question": "Which statement about linked lists is true?",
+     "choices": [
+      "A linked list needs at least two nodes",
+      "A single node whose <code>next</code> is <code>null</code> is a linked list of one value",
+      "The head must always hold the smallest value",
+      "Nodes must be created in the order they appear in the list"
+     ],
+     "answer": 1,
+     "explain": "Every node on its own is a linked list. Nodes can be created in any order; it's the <code>next</code> references that decide the order of the list."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-link-byhand",
+     "mode": "independent",
+     "title": "Build a list by hand",
+     "goal": "Write <code>ByHand</code>. Its <code>main</code> creates three nodes holding 3, 1 and 4 with <code>new</code>, links them in that order with <code>setNext</code>, stores the first in a variable <code>head</code>, and prints <code>Show.chain(head)</code>. Then it prints the data of the last node, reached from <code>head</code> with <code>getNext()</code> calls. <code>Node</code> and <code>Show</code> (with <code>Show.chain(head)</code>) are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "ByHand.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "getNext\\(\\)\\s*\\.\\s*getNext\\(\\)",
+       "message": "Reach the last node from <code>head</code> with <code>head.getNext().getNext()</code>.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "runtime",
+      "command": "java ByHand",
+      "stdout": "",
+      "text": "Error: Could not find or load main class ByHand\nCaused by: java.lang.ClassNotFoundException: ByHand"
+     },
+     "run": "ByHand",
+     "output": "head -> 3 -> 1 -> 4 -> null\n4",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "ByHand.java",
+       "public class ByHand {\n    public static void main(String[] args) {\n        Node head = new Node(3);\n        Node second = new Node(1);\n        Node third = new Node(4);\n        head.setNext(second);\n        second.setNext(third);\n        System.out.println(Show.chain(head));\n        System.out.println(head.getNext().getNext().getData());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-link-addfront",
+     "mode": "independent",
+     "title": "An add-at-front method",
+     "goal": "Write <code>Front</code> with <code>public static Node addFront(Node head, int value)</code>, which puts a new node holding <code>value</code> in front and returns the new head. <code>main</code> starts with an empty list (<code>null</code>), adds 1, 2 and 3 with <code>head = addFront(head, ...)</code>, and prints the chain. <code>Node</code> and <code>Show</code> (with <code>Show.chain(head)</code>) are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "Front.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckFront.java",
+       "public class CheckFront {\n    public static void main(String[] args) {\n        Node one = Front.addFront(null, 8);\n        System.out.println(Show.chain(one));\n        Node two = Front.addFront(one, 9);\n        System.out.println(Show.chain(two) + \" \" + (two.getNext() == one));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckFront",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckFront.java Node.java Show.java",
+      "text": "CheckFront.java:3: error: cannot find symbol\n        Node one = Front.addFront(null, 8);\n                   ^\n  symbol:   variable Front\n  location: class CheckFront\nCheckFront.java:5: error: cannot find symbol\n        Node two = Front.addFront(one, 9);\n                   ^\n  symbol:   variable Front\n  location: class CheckFront\n2 errors"
+     },
+     "run": "Front",
+     "output": "head -> 3 -> 2 -> 1 -> null",
+     "testsOutput": "head -> 8 -> null\nhead -> 9 -> 8 -> null true",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Front.java",
+       "public class Front {\n    public static Node addFront(Node head, int value) {\n        Node node = new Node(value);\n        node.setNext(head);\n        return node;\n    }\n\n    public static void main(String[] args) {\n        Node head = null;\n        head = addFront(head, 1);\n        head = addFront(head, 2);\n        head = addFront(head, 3);\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-link-second",
+     "mode": "independent",
+     "title": "The second value, safely",
+     "goal": "Write <code>Second</code> with <code>public static int secondValue(Node head)</code>, which returns the data of the second node, or -1 if the list has fewer than two nodes. Don't let it throw a <code>NullPointerException</code>. <code>main</code> prints it for an empty list, a one-node list, and the list 5 \u2192 6 \u2192 7. <code>Node</code> and <code>Show</code> (with <code>Show.chain(head)</code>) are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "Second.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [
+      "<code>||</code> stops at the first <code>true</code>, so <code>head.getNext()</code> is only called when <code>head</code> isn't <code>null</code>."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "runtime",
+      "command": "java Second",
+      "stdout": "",
+      "text": "Error: Could not find or load main class Second\nCaused by: java.lang.ClassNotFoundException: Second"
+     },
+     "run": "Second",
+     "output": "-1\n-1\n6",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Second.java",
+       "public class Second {\n    public static int secondValue(Node head) {\n        if (head == null || head.getNext() == null) {\n            return -1;\n        }\n        return head.getNext().getData();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(secondValue(null));\n        System.out.println(secondValue(new Node(5)));\n        Node head = new Node(5);\n        head.setNext(new Node(6));\n        head.getNext().setNext(new Node(7));\n        System.out.println(secondValue(head));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "Objects",
+     "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/objects.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "NullPointerException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/NullPointerException.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "link-traverse": {
+   "id": "link-traverse",
+   "section": "linked",
+   "title": "Traversing with getNext()",
+   "summary": "To visit every node, start a reference at the head and keep moving it to <code>getNext()</code> until it becomes <code>null</code>. That one loop is the base of almost every linked-list method.",
+   "goals": [
+    "Traverse a linked list with a <code>while</code> loop and with a <code>for</code> loop",
+    "Write size, sum, contains and get by traversal",
+    "Choose between <code>current != null</code> and <code>current.getNext() != null</code>",
+    "Avoid <code>NullPointerException</code> at the end of the list and on an empty list"
+   ],
+   "cos225": "The Exam 2 guide lists traversal with <code>.getNext()</code>, a for loop and a while loop. Expect to write a few lines like these, with the node class given.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "The traversal loop"
+    },
+    {
+     "type": "p",
+     "html": "You can't jump to the third node of a linked list the way you jump to <code>array[2]</code>: the only way there is to follow <code>next</code> from the head, one node at a time. Use a second reference, usually called <code>current</code>, so the <code>head</code> variable stays pointing at the start:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Walk.java",
+       "public class Walk {\n    // Builds head -> values[0] -> values[1] -> ... by adding at the front, last value first.\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static void printAll(Node head) {\n        Node current = head;\n        while (current != null) {\n            System.out.println(current.getData());\n            current = current.getNext();\n        }\n    }\n\n    public static void main(String[] args) {\n        Node head = build(4, 8, 15);\n        printAll(head);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Walk",
+      "stdout": "4\n8\n15"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>current</code> starts at the head.",
+      "<code>current != null</code> means there's still a node to visit. When <code>current</code> moves past the last node, it becomes <code>null</code> and the loop ends.",
+      "<code>current = current.getNext();</code> is the step that moves along the chain. Forget it and the loop never ends.",
+      "<code>build</code> makes a list from the values you pass it, using add-at-front from the last value back. The <code>int...</code> parameter lets you pass any number of values."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "The <code>Show.chain</code> helper from the last lesson is exactly this loop, building a string instead of printing:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "The for-loop version"
+    },
+    {
+     "type": "p",
+     "html": "The same three parts (start, condition, step) fit in a <code>for</code> loop header. Use whichever you find clearer; both are common on exams. Here the traversal counts, adds and searches:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "Measure.java",
+       "public class Measure {\n    // Builds head -> values[0] -> values[1] -> ... by adding at the front, last value first.\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static int size(Node head) {\n        int count = 0;\n        for (Node current = head; current != null; current = current.getNext()) {\n            count++;\n        }\n        return count;\n    }\n\n    public static int sum(Node head) {\n        int total = 0;\n        for (Node current = head; current != null; current = current.getNext()) {\n            total += current.getData();\n        }\n        return total;\n    }\n\n    public static boolean contains(Node head, int target) {\n        Node current = head;\n        while (current != null) {\n            if (current.getData() == target) {\n                return true;\n            }\n            current = current.getNext();\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Node head = build(4, 8, 15, 16);\n        System.out.println(size(head) + \" \" + sum(head));\n        System.out.println(contains(head, 15) + \" \" + contains(head, 5));\n        System.out.println(size(null) + \" \" + sum(null));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java Measure",
+      "stdout": "4 43\ntrue false\n0 0"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "An empty list is <code>null</code>, so the loop body never runs: size 0, sum 0. No special case needed. <code>contains</code> can stop as soon as it finds the value."
+    },
+    {
+     "type": "p",
+     "html": "Each of these visits every node once, so they're O(n). Even <code>size</code> is O(n) here, because nothing stores the count: you have to walk the list to find out."
+    },
+    {
+     "type": "h",
+     "html": "Stopping at the last node"
+    },
+    {
+     "type": "p",
+     "html": "Sometimes you need the last node itself, to read it or to attach something after it. Then the condition is <code>current.getNext() != null</code>: stop <strong>on</strong> the last node instead of after it. But that condition calls a method on <code>current</code>, so <code>current</code> must not be <code>null</code>:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "LastNode.java",
+       "public class LastNode {\n    // Builds head -> values[0] -> values[1] -> ... by adding at the front, last value first.\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static int lastValue(Node head) {\n        Node current = head;\n        while (current.getNext() != null) {\n            current = current.getNext();\n        }\n        return current.getData();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(lastValue(build(4, 8, 15)));\n        System.out.println(lastValue(build(23)));\n        System.out.println(lastValue(null));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java LastNode",
+      "stdout": "15\n23",
+      "text": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"Node.getNext()\" because \"<local1>\" is null\n\tat LastNode.lastValue(LastNode.java:15)\n\tat LastNode.main(LastNode.java:24)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "For the empty list, <code>current</code> is <code>null</code>, and calling <code>getNext()</code> on <code>null</code> throws a <code>NullPointerException</code>. (<code>&lt;local1&gt;</code> stands for the local variable <code>current</code>: as in the lesson on arrays of objects, javac leaves out local variable names unless you compile with <code>-g</code>.) Check for an empty list first whenever your loop condition uses <code>current.getNext()</code>."
+    },
+    {
+     "type": "h",
+     "html": "Getting the value at an index"
+    },
+    {
+     "type": "p",
+     "html": "To reach index <code>i</code>, step <code>i</code> times from the head. That's O(n), where an array is O(1): the price of a linked structure."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "GetAt.java",
+       "public class GetAt {\n    // Builds head -> values[0] -> values[1] -> ... by adding at the front, last value first.\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static int get(Node head, int index) {\n        Node current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current.getData();\n    }\n\n    public static void main(String[] args) {\n        Node head = build(4, 8, 15, 16, 23);\n        System.out.println(get(head, 0) + \" \" + get(head, 3));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java GetAt",
+      "stdout": "4 16"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "blanks",
+     "id": "trav-count",
+     "title": "Count values above a limit",
+     "prompt": "Fill in the traversal so <code>countAbove</code> visits every node, including for an empty list.",
+     "files": [
+      [
+       "CountAbove.java",
+       "public class CountAbove {\n    // Builds head -> values[0] -> values[1] -> ... by adding at the front, last value first.\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static int countAbove(Node head, int limit) {\n        int count = 0;\n        Node current = [[start]];\n        while ([[cond]]) {\n            if (current.getData() > limit) {\n                count++;\n            }\n            [[step]];\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        Node head = build(3, 12, 7, 20, 9);\n        System.out.println(countAbove(head, 8));\n        System.out.println(countAbove(null, 8));\n    }\n}\n"
+      ]
+     ],
+     "run": "CountAbove",
+     "blanks": {
+      "start": {
+       "accept": [
+        "head"
+       ],
+       "solution": "head",
+       "hint": "Start at the first node.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "head.getNext()",
+         "shown": "head.getNext()",
+         "why": "That skips the first node, and for an empty list it calls <code>getNext()</code> on <code>null</code> and crashes.",
+         "result": {
+          "kind": "runtime",
+          "command": "java CountAbove",
+          "stdout": "3",
+          "text": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"Node.getNext()\" because \"<parameter1>\" is null\n\tat CountAbove.countAbove(CountAbove.java:15)\n\tat CountAbove.main(CountAbove.java:28)"
+         }
+        }
+       ],
+       "width": 14
+      },
+      "cond": {
+       "accept": [
+        "current!=null",
+        "null!=current"
+       ],
+       "solution": "current != null",
+       "hint": "Keep going while there's a node to look at.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "current.getNext()!=null",
+         "shown": "current.getNext() != null",
+         "why": "That stops on the last node without counting it (20 is missed), and crashes on an empty list.",
+         "result": {
+          "kind": "runtime",
+          "command": "java CountAbove",
+          "stdout": "2",
+          "text": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"Node.getNext()\" because \"<local3>\" is null\n\tat CountAbove.countAbove(CountAbove.java:16)\n\tat CountAbove.main(CountAbove.java:28)"
+         }
+        }
+       ],
+       "width": 25
+      },
+      "step": {
+       "accept": [
+        "current=current.getNext()"
+       ],
+       "solution": "current = current.getNext()",
+       "hint": "Move <code>current</code> to the next node. Just calling <code>current.getNext()</code> reads the next node without moving, and the loop never ends.",
+       "exact": false,
+       "wrong": [],
+       "width": 27
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java CountAbove",
+      "stdout": "3\n0"
+     },
+     "explain": "Start at the head, loop while <code>current != null</code>, and move with <code>current = current.getNext()</code>."
+    },
+    {
+     "type": "predict",
+     "id": "trav-skip",
+     "prompt": "This loop jumps two nodes at a time. What does it print?",
+     "files": [
+      [
+       "Skip.java",
+       "public class Skip {\n    // Builds head -> values[0] -> values[1] -> ... by adding at the front, last value first.\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static void everyOther(Node head) {\n        Node current = head;\n        while (current != null) {\n            System.out.print(current.getData() + \" \");\n            if (current.getNext() == null) {\n                current = null;\n            } else {\n                current = current.getNext().getNext();\n            }\n        }\n        System.out.println();\n    }\n\n    public static void main(String[] args) {\n        everyOther(build(1, 2, 3, 4, 5));\n        everyOther(build(1, 2, 3, 4));\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "1 3 5 \n1 3 ",
+      "1 3 5 \n1 3 4 ",
+      "2 4 \n2 4 ",
+      "1 2 3 4 5 \n1 2 3 4 "
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java Skip",
+      "stdout": "1 3 5 \n1 3 "
+     },
+     "explain": "It prints the node it's on, then jumps to the node after next: 1, 3, 5, then 5 has no next and the loop ends. For four values, it prints 1 and 3, then jumps from 3 past 4 to <code>null</code>."
+    },
+    {
+     "type": "quiz",
+     "id": "trav-cond",
+     "question": "Your loop is <code>while (current.getNext() != null) { current = current.getNext(); }</code>. After it ends (on a non-empty list), what does <code>current</code> refer to?",
+     "choices": [
+      "<code>null</code>",
+      "The head",
+      "The last node",
+      "The second-to-last node"
+     ],
+     "answer": 2,
+     "explain": "The loop stops when <code>current</code>'s next is <code>null</code>, which is only true of the last node."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-link-size",
+     "mode": "independent",
+     "title": "Size with a while loop",
+     "goal": "Write <code>Size</code> with <code>public static int size(Node head)</code> that counts the nodes using a <code>while</code> loop and a <code>current</code> reference. <code>main</code> prints the size of an empty list and of a list of 4 nodes. Copy this <code>build</code> helper into your class to make test lists: it's the add-at-front loop from the lessons. <code>Node</code> is already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Size.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ]
+     ],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "while\\s*\\(",
+       "message": "Use a <code>while</code> loop.",
+       "file": null
+      },
+      {
+       "pattern": "current\\s*=\\s*current\\.getNext\\(\\)",
+       "message": "Move along with <code>current = current.getNext()</code>.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "runtime",
+      "command": "java Size",
+      "stdout": "",
+      "text": "Error: Could not find or load main class Size\nCaused by: java.lang.ClassNotFoundException: Size"
+     },
+     "run": "Size",
+     "output": "0\n4",
+     "testsOutput": null,
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Size.java",
+       "public class Size {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static int size(Node head) {\n        int count = 0;\n        Node current = head;\n        while (current != null) {\n            count++;\n            current = current.getNext();\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(size(null));\n        System.out.println(size(build(9, 8, 7, 6)));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-link-max",
+     "mode": "independent",
+     "title": "Largest value with a for loop",
+     "goal": "Write <code>Max</code> with <code>public static int max(Node head)</code> for a non-empty list, using a <code>for</code> loop over the nodes: <code>for (Node current = ...; ...; ...)</code>. <code>main</code> prints the max of 3, 17, -2, 9 and of -5, -1, -8. Copy this <code>build</code> helper into your class to make test lists: it's the add-at-front loop from the lessons. <code>Node</code> is already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Max.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckMax.java",
+       "public class CheckMax {\n    public static void main(String[] args) {\n        System.out.println(Max.max(new Node(4)));\n        Node h = new Node(1);\n        h.setNext(new Node(2));\n        System.out.println(Max.max(h));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckMax",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "for\\s*\\(\\s*Node\\s+\\w+\\s*=",
+       "message": "Traverse with <code>for (Node current = ...; ...; ...)</code>.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckMax.java Node.java",
+      "text": "CheckMax.java:3: error: cannot find symbol\n        System.out.println(Max.max(new Node(4)));\n                           ^\n  symbol:   variable Max\n  location: class CheckMax\nCheckMax.java:6: error: cannot find symbol\n        System.out.println(Max.max(h));\n                           ^\n  symbol:   variable Max\n  location: class CheckMax\n2 errors"
+     },
+     "run": "Max",
+     "output": "17\n-1",
+     "testsOutput": "4\n2",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Max.java",
+       "public class Max {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static int max(Node head) {\n        int best = head.getData();\n        for (Node current = head.getNext(); current != null; current = current.getNext()) {\n            if (current.getData() > best) {\n                best = current.getData();\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(max(build(3, 17, -2, 9)));\n        System.out.println(max(build(-5, -1, -8)));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-link-get",
+     "mode": "independent",
+     "title": "Get by index",
+     "goal": "Write <code>Get</code> with <code>public static int get(Node head, int index)</code>, which steps <code>index</code> times from the head and returns that node's data. If <code>index</code> is negative or the list runs out first, throw <code>new IndexOutOfBoundsException(&quot;index &quot; + index)</code>. <code>main</code> prints <code>get</code> at 0 and 2 of the list 10, 20, 30, then catches the exception for index 3 and prints its message. Copy this <code>build</code> helper into your class to make test lists: it's the add-at-front loop from the lessons. <code>Node</code> is already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Get.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckGet.java",
+       "public class CheckGet {\n    public static void main(String[] args) {\n        String out = \"\";\n        try {\n            Get.get(null, 0);\n        } catch (IndexOutOfBoundsException e) {\n            out += e.getMessage() + \"; \";\n        }\n        try {\n            Get.get(new Node(1), -1);\n        } catch (IndexOutOfBoundsException e) {\n            out += e.getMessage();\n        }\n        System.out.println(out);\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckGet",
+     "hints": [
+      "Stop early if <code>current</code> becomes <code>null</code>, then check after the loop: if it's <code>null</code>, the index was past the end."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckGet.java Node.java",
+      "text": "CheckGet.java:5: error: cannot find symbol\n            Get.get(null, 0);\n            ^\n  symbol:   variable Get\n  location: class CheckGet\nCheckGet.java:10: error: cannot find symbol\n            Get.get(new Node(1), -1);\n            ^\n  symbol:   variable Get\n  location: class CheckGet\n2 errors"
+     },
+     "run": "Get",
+     "output": "10 30\nindex 3",
+     "testsOutput": "index 0; index -1",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Get.java",
+       "public class Get {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static int get(Node head, int index) {\n        if (index < 0) {\n            throw new IndexOutOfBoundsException(\"index \" + index);\n        }\n        Node current = head;\n        for (int i = 0; i < index && current != null; i++) {\n            current = current.getNext();\n        }\n        if (current == null) {\n            throw new IndexOutOfBoundsException(\"index \" + index);\n        }\n        return current.getData();\n    }\n\n    public static void main(String[] args) {\n        Node head = build(10, 20, 30);\n        System.out.println(get(head, 0) + \" \" + get(head, 2));\n        try {\n            get(head, 3);\n        } catch (IndexOutOfBoundsException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "NullPointerException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/NullPointerException.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "The while and do-while Statements",
+     "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/while.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    },
+    {
+     "title": "The for Statement",
+     "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "link-change": {
+   "id": "link-change",
+   "section": "linked",
+   "title": "Adding and removing nodes",
+   "summary": "Changing a linked list means changing <code>next</code> references: a node is added by linking it in, and removed by linking around it. Nothing else has to move.",
+   "goals": [
+    "Add a node at the front, at the end, and after a given node",
+    "Remove the first node, the node after a given node, and a node by value",
+    "Set references in the right order so no part of the list is lost",
+    "Say which operations are O(1) and which are O(n), with only a head reference"
+   ],
+   "cos225": "The Exam 2 guide's linked-list problems ask you to draw the list after changes like these and to write a few lines that make them. The guide says not to assume a tail reference, so adding at the end walks the list.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Changing links, not moving values"
+    },
+    {
+     "type": "p",
+     "html": "In an array, inserting in the middle shifts every later value. In a linked list, the nodes stay where they are in memory: you only change one or two <code>next</code> references. Here are the six basic changes as static methods. Methods that might change which node is first <strong>return the new head</strong>, and the caller writes <code>head = ...</code>."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ListOps.java",
+       "public class ListOps {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    // O(1): the new node becomes the head.\n    public static Node addFirst(Node head, int value) {\n        Node node = new Node(value);\n        node.setNext(head);\n        return node;\n    }\n\n    // O(n): walk to the last node, then attach after it.\n    public static Node addLast(Node head, int value) {\n        Node node = new Node(value);\n        if (head == null) {\n            return node;\n        }\n        Node current = head;\n        while (current.getNext() != null) {\n            current = current.getNext();\n        }\n        current.setNext(node);\n        return head;\n    }\n\n    // O(1) once you have the node: link the new node in after it.\n    public static void insertAfter(Node before, int value) {\n        Node node = new Node(value);\n        node.setNext(before.getNext());\n        before.setNext(node);\n    }\n\n    // O(1): the second node becomes the head.\n    public static Node removeFirst(Node head) {\n        return head.getNext();\n    }\n\n    // O(1) once you have the node: skip over the node after it.\n    public static void removeAfter(Node before) {\n        before.setNext(before.getNext().getNext());\n    }\n\n    // O(n): find the node before the one to remove.\n    public static Node removeValue(Node head, int value) {\n        if (head == null) {\n            return null;\n        }\n        if (head.getData() == value) {\n            return head.getNext();\n        }\n        Node current = head;\n        while (current.getNext() != null) {\n            if (current.getNext().getData() == value) {\n                current.setNext(current.getNext().getNext());\n                return head;\n            }\n            current = current.getNext();\n        }\n        return head;\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ListOps.java",
+       "public class ListOps {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    // O(1): the new node becomes the head.\n    public static Node addFirst(Node head, int value) {\n        Node node = new Node(value);\n        node.setNext(head);\n        return node;\n    }\n\n    // O(n): walk to the last node, then attach after it.\n    public static Node addLast(Node head, int value) {\n        Node node = new Node(value);\n        if (head == null) {\n            return node;\n        }\n        Node current = head;\n        while (current.getNext() != null) {\n            current = current.getNext();\n        }\n        current.setNext(node);\n        return head;\n    }\n\n    // O(1) once you have the node: link the new node in after it.\n    public static void insertAfter(Node before, int value) {\n        Node node = new Node(value);\n        node.setNext(before.getNext());\n        before.setNext(node);\n    }\n\n    // O(1): the second node becomes the head.\n    public static Node removeFirst(Node head) {\n        return head.getNext();\n    }\n\n    // O(1) once you have the node: skip over the node after it.\n    public static void removeAfter(Node before) {\n        before.setNext(before.getNext().getNext());\n    }\n\n    // O(n): find the node before the one to remove.\n    public static Node removeValue(Node head, int value) {\n        if (head == null) {\n            return null;\n        }\n        if (head.getData() == value) {\n            return head.getNext();\n        }\n        Node current = head;\n        while (current.getNext() != null) {\n            if (current.getNext().getData() == value) {\n                current.setNext(current.getNext().getNext());\n                return head;\n            }\n            current = current.getNext();\n        }\n        return head;\n    }\n}\n"
+      ],
+      [
+       "EditDemo.java",
+       "public class EditDemo {\n    public static void main(String[] args) {\n        Node head = ListOps.build(10, 20, 30);\n        System.out.println(Show.chain(head));\n        head = ListOps.addFirst(head, 5);\n        System.out.println(Show.chain(head));\n        head = ListOps.addLast(head, 40);\n        System.out.println(Show.chain(head));\n        ListOps.insertAfter(head.getNext(), 15);\n        System.out.println(Show.chain(head));\n        head = ListOps.removeFirst(head);\n        System.out.println(Show.chain(head));\n        ListOps.removeAfter(head);\n        System.out.println(Show.chain(head));\n        head = ListOps.removeValue(head, 30);\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java EditDemo",
+      "stdout": "head -> 10 -> 20 -> 30 -> null\nhead -> 5 -> 10 -> 20 -> 30 -> null\nhead -> 5 -> 10 -> 20 -> 30 -> 40 -> null\nhead -> 5 -> 10 -> 15 -> 20 -> 30 -> 40 -> null\nhead -> 10 -> 15 -> 20 -> 30 -> 40 -> null\nhead -> 10 -> 20 -> 30 -> 40 -> null\nhead -> 10 -> 20 -> 40 -> null"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Adding"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>At the front</strong> (<code>addFirst</code>): the new node's <code>next</code> is the old head, and it becomes the head. O(1).",
+      "<strong>At the end</strong> (<code>addLast</code>): walk to the last node, the one whose <code>next</code> is <code>null</code>, and set its <code>next</code> to the new node. With only a head reference that walk is O(n). An empty list is a special case: the new node becomes the head.",
+      "<strong>After a node</strong> (<code>insertAfter</code>): the new node takes over the old <code>next</code>, then the earlier node points at the new one. O(1), once you have the earlier node."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "In <code>insertAfter</code>, the order of the two lines matters. If <code>before.setNext(node)</code> ran first, <code>before.getNext()</code> would already be the new node, so the new node would point at itself and the rest of the list would be cut off. <strong>Link the new node in first, then redirect the old link.</strong>"
+    },
+    {
+     "type": "diagram",
+     "kind": "linked",
+     "state": "head -> 5 -> 10 -> 15 -> 20 -> 30 -> 40 -> null",
+     "label": null,
+     "caption": "After <code>addFirst(5)</code>, <code>addLast(40)</code> and <code>insertAfter(head.getNext(), 15)</code>, which puts 15 after the node holding 10."
+    },
+    {
+     "type": "h",
+     "html": "Removing"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>The first node</strong> (<code>removeFirst</code>): the head becomes <code>head.getNext()</code>. O(1).",
+      "<strong>The node after a node</strong> (<code>removeAfter</code>): point <code>before</code> at the node two along, skipping one. The skipped node is no longer reachable, so it's gone. O(1).",
+      "<strong>By value</strong> (<code>removeValue</code>): you need the node <strong>before</strong> the one to remove, so the loop looks one ahead with <code>current.getNext().getData()</code>. If the head itself matches, return <code>head.getNext()</code> instead. O(n)."
+     ]
+    },
+    {
+     "type": "diagram",
+     "kind": "linked",
+     "state": "head -> 10 -> 20 -> 40 -> null",
+     "label": null,
+     "caption": "The end of the demo: <code>removeFirst</code> took 5, <code>removeAfter(head)</code> skipped 15, and <code>removeValue(head, 30)</code> linked 20 straight to 40."
+    },
+    {
+     "type": "note",
+     "label": "No tail",
+     "html": "Some linked lists also keep a <code>tail</code> reference to the last node, which makes adding at the end O(1). The exam guide says not to assume one, so don't use a tail in your answers unless the question gives you one."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "change-trace1",
+     "kind": "linked",
+     "prompt": "<code>ListOps</code> is the class above. Trace each call.",
+     "question": "Which diagram shows the list at the end?",
+     "files": [
+      [
+       "EditTrace.java",
+       "public class EditTrace {\n    public static void main(String[] args) {\n        Node head = ListOps.build(1, 2, 3, 4);\n        head = ListOps.removeValue(head, 3);\n        head = ListOps.addFirst(head, 9);\n        ListOps.insertAfter(head.getNext().getNext(), 7);\n        head = ListOps.removeFirst(head);\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> 1 -> 2 -> 7 -> 4 -> null",
+      "head -> 1 -> 7 -> 2 -> 4 -> null",
+      "head -> 9 -> 1 -> 2 -> 7 -> 4 -> null",
+      "head -> 1 -> 2 -> 4 -> 7 -> null"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java EditTrace",
+      "stdout": "head -> 1 -> 2 -> 7 -> 4 -> null"
+     },
+     "explain": "Removing 3 gives 1, 2, 4. Adding 9 in front gives 9, 1, 2, 4. <code>head.getNext().getNext()</code> is the node holding 2, so 7 goes after it: 9, 1, 2, 7, 4. Removing the first node leaves 1, 2, 7, 4."
+    },
+    {
+     "type": "trace",
+     "id": "change-trace2",
+     "kind": "linked",
+     "prompt": "This code changes links directly. Draw the nodes and redraw an arrow at each <code>setNext</code>.",
+     "question": "Which diagram shows the list at the end?",
+     "files": [
+      [
+       "LinkTrace.java",
+       "public class LinkTrace {\n    public static void main(String[] args) {\n        Node head = ListOps.build(6, 7, 8);\n        Node second = head.getNext();\n        head.setNext(second.getNext());\n        second.setNext(head);\n        head = second;\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> 6 -> 7 -> 8 -> null",
+      "head -> 7 -> 6 -> 8 -> null",
+      "head -> 7 -> 8 -> 6 -> null",
+      "head -> 7 -> 6 -> null"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java LinkTrace",
+      "stdout": "head -> 7 -> 6 -> 8 -> null"
+     },
+     "explain": "Line 5 links 6 straight to 8, cutting 7 out. Line 6 points 7 at 6, and line 7 makes 7 the head. The first two nodes have swapped places: 7, 6, 8."
+    },
+    {
+     "type": "blanks",
+     "id": "change-remove",
+     "title": "Remove by value",
+     "prompt": "Finish <code>removeValue</code>. It removes the first node holding <code>value</code> and returns the head of the changed list.",
+     "files": [
+      [
+       "ListOps.java",
+       "public class ListOps {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    // O(1): the new node becomes the head.\n    public static Node addFirst(Node head, int value) {\n        Node node = new Node(value);\n        node.setNext(head);\n        return node;\n    }\n\n    // O(n): walk to the last node, then attach after it.\n    public static Node addLast(Node head, int value) {\n        Node node = new Node(value);\n        if (head == null) {\n            return node;\n        }\n        Node current = head;\n        while (current.getNext() != null) {\n            current = current.getNext();\n        }\n        current.setNext(node);\n        return head;\n    }\n\n    // O(1) once you have the node: link the new node in after it.\n    public static void insertAfter(Node before, int value) {\n        Node node = new Node(value);\n        node.setNext(before.getNext());\n        before.setNext(node);\n    }\n\n    // O(1): the second node becomes the head.\n    public static Node removeFirst(Node head) {\n        return head.getNext();\n    }\n\n    // O(1) once you have the node: skip over the node after it.\n    public static void removeAfter(Node before) {\n        before.setNext(before.getNext().getNext());\n    }\n\n    // O(n): find the node before the one to remove.\n    public static Node removeValue(Node head, int value) {\n        if (head == null) {\n            return null;\n        }\n        if (head.getData() == value) {\n            return [[newhead]];\n        }\n        Node current = head;\n        while (current.getNext() != null) {\n            if ([[found]] == value) {\n                current.setNext([[skip]]);\n                return head;\n            }\n            current = current.getNext();\n        }\n        return head;\n    }\n}\n"
+      ],
+      [
+       "RemoveTester.java",
+       "public class RemoveTester {\n    public static void main(String[] args) {\n        System.out.println(Show.chain(ListOps.removeValue(ListOps.build(4, 5, 6), 4)));\n        System.out.println(Show.chain(ListOps.removeValue(ListOps.build(4, 5, 6), 6)));\n        System.out.println(Show.chain(ListOps.removeValue(ListOps.build(4, 5, 6), 9)));\n    }\n}\n"
+      ]
+     ],
+     "run": "RemoveTester",
+     "blanks": {
+      "newhead": {
+       "accept": [
+        "head.getNext()"
+       ],
+       "solution": "head.getNext()",
+       "hint": "If the head is the one to remove, the second node becomes the head.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "null",
+         "shown": "null",
+         "why": "That throws away the whole list, not just its first node.",
+         "result": {
+          "kind": "ok",
+          "command": "java RemoveTester",
+          "stdout": "head -> null\nhead -> 4 -> 5 -> null\nhead -> 4 -> 5 -> 6 -> null"
+         }
+        }
+       ],
+       "width": 14
+      },
+      "found": {
+       "accept": [
+        "current.getNext().getData()"
+       ],
+       "solution": "current.getNext().getData()",
+       "hint": "Look one node ahead, so <code>current</code> is the node <strong>before</strong> the match.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "current.getData()",
+         "shown": "current.getData()",
+         "why": "By the time <code>current</code> holds the value, you've passed the node whose <code>next</code> needs changing, so the node <strong>after</strong> the match is removed instead.",
+         "result": {
+          "kind": "ok",
+          "command": "java RemoveTester",
+          "stdout": "head -> 5 -> 6 -> null\nhead -> 4 -> 5 -> 6 -> null\nhead -> 4 -> 5 -> 6 -> null"
+         }
+        }
+       ],
+       "width": 27
+      },
+      "skip": {
+       "accept": [
+        "current.getNext().getNext()"
+       ],
+       "solution": "current.getNext().getNext()",
+       "hint": "Link around the matching node.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "current.getNext()",
+         "shown": "current.getNext()",
+         "why": "That sets <code>next</code> to what it already was, so nothing is removed.",
+         "result": {
+          "kind": "ok",
+          "command": "java RemoveTester",
+          "stdout": "head -> 5 -> 6 -> null\nhead -> 4 -> 5 -> 6 -> null\nhead -> 4 -> 5 -> 6 -> null"
+         }
+        }
+       ],
+       "width": 27
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java RemoveTester",
+      "stdout": "head -> 5 -> 6 -> null\nhead -> 4 -> 5 -> null\nhead -> 4 -> 5 -> 6 -> null"
+     },
+     "explain": "Removing means linking the node before to the node after. Looking one node ahead keeps <code>current</code> on the node before."
+    },
+    {
+     "type": "quiz",
+     "id": "change-cost",
+     "question": "A linked list has only a <code>head</code> reference. Which operation is O(n)?",
+     "choices": [
+      "Adding a value at the front",
+      "Removing the first node",
+      "Adding a value at the end",
+      "Reading the first value"
+     ],
+     "answer": 2,
+     "explain": "Without a tail reference, adding at the end has to walk past every node to find the last one. The other three only touch the head."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-link-addlast",
+     "mode": "independent",
+     "title": "Add at the end",
+     "goal": "Write <code>AddLast</code> with <code>public static Node addLast(Node head, int value)</code>, which attaches a new node after the last node (no tail reference: walk there) and returns the head. Handle the empty list. <code>main</code> starts with <code>null</code>, adds 1, 2 and 3 at the end and prints the chain. <code>Node</code> and <code>Show</code> (with <code>Show.chain(head)</code>) are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "AddLast.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckAddLast.java",
+       "public class CheckAddLast {\n    public static void main(String[] args) {\n        Node head = new Node(5);\n        Node same = AddLast.addLast(head, 6);\n        System.out.println(Show.chain(same) + \" \" + (same == head));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckAddLast",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckAddLast.java Node.java Show.java",
+      "text": "CheckAddLast.java:4: error: cannot find symbol\n        Node same = AddLast.addLast(head, 6);\n                    ^\n  symbol:   variable AddLast\n  location: class CheckAddLast\n1 error"
+     },
+     "run": "AddLast",
+     "output": "head -> 1 -> 2 -> 3 -> null",
+     "testsOutput": "head -> 5 -> 6 -> null true",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "AddLast.java",
+       "public class AddLast {\n    public static Node addLast(Node head, int value) {\n        Node node = new Node(value);\n        if (head == null) {\n            return node;\n        }\n        Node current = head;\n        while (current.getNext() != null) {\n            current = current.getNext();\n        }\n        current.setNext(node);\n        return head;\n    }\n\n    public static void main(String[] args) {\n        Node head = null;\n        head = addLast(head, 1);\n        head = addLast(head, 2);\n        head = addLast(head, 3);\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-link-removeall",
+     "mode": "independent",
+     "title": "Remove every match",
+     "goal": "Write <code>RemoveAll</code> with <code>public static Node removeAll(Node head, int value)</code>, which removes <strong>every</strong> node holding <code>value</code> and returns the new head. First drop matching nodes at the front (<code>while (head != null &amp;&amp; head.getData() == value)</code>), then walk the rest looking one node ahead. <code>main</code> prints the result for 7, 7, 1, 7, 2, 7 with <code>value</code> 7. Copy this <code>build</code> helper into your class to make test lists: it's the add-at-front loop from the lessons. <code>Node</code> and <code>Show</code> (with <code>Show.chain(head)</code>) are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "RemoveAll.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckRemoveAll.java",
+       "public class CheckRemoveAll {\n    public static void main(String[] args) {\n        Node all = new Node(3);\n        all.setNext(new Node(3));\n        System.out.println(Show.chain(RemoveAll.removeAll(all, 3)));\n        Node h = new Node(1);\n        h.setNext(new Node(2));\n        h.getNext().setNext(new Node(2));\n        System.out.println(Show.chain(RemoveAll.removeAll(h, 2)));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRemoveAll",
+     "hints": [
+      "After removing the node ahead, <strong>don't</strong> move <code>current</code>: the new node ahead might match too."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckRemoveAll.java Node.java Show.java",
+      "text": "CheckRemoveAll.java:5: error: cannot find symbol\n        System.out.println(Show.chain(RemoveAll.removeAll(all, 3)));\n                                      ^\n  symbol:   variable RemoveAll\n  location: class CheckRemoveAll\nCheckRemoveAll.java:9: error: cannot find symbol\n        System.out.println(Show.chain(RemoveAll.removeAll(h, 2)));\n                                      ^\n  symbol:   variable RemoveAll\n  location: class CheckRemoveAll\n2 errors"
+     },
+     "run": "RemoveAll",
+     "output": "head -> 1 -> 2 -> null",
+     "testsOutput": "head -> null\nhead -> 1 -> null",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "RemoveAll.java",
+       "public class RemoveAll {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static Node removeAll(Node head, int value) {\n        while (head != null && head.getData() == value) {\n            head = head.getNext();\n        }\n        Node current = head;\n        while (current != null && current.getNext() != null) {\n            if (current.getNext().getData() == value) {\n                current.setNext(current.getNext().getNext());\n            } else {\n                current = current.getNext();\n            }\n        }\n        return head;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Show.chain(removeAll(build(7, 7, 1, 7, 2, 7), 7)));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-link-sorted",
+     "mode": "independent",
+     "title": "Insert in order",
+     "goal": "Write <code>Sorted</code> with <code>public static Node insertSorted(Node head, int value)</code>: the list is in increasing order, and the new node must go where it keeps it that way. Returns the head. Cases: empty list, new smallest value (new head), and somewhere after (find the last node whose data is less than <code>value</code>, then insert after it). <code>main</code> inserts 5, 1, 9 and 4 into an empty list and prints the chain. <code>Node</code> and <code>Show</code> (with <code>Show.chain(head)</code>) are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "Sorted.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckSorted.java",
+       "public class CheckSorted {\n    public static void main(String[] args) {\n        Node head = null;\n        int[] values = {3, 3, 0, 8, 6, -1};\n        for (int v : values) {\n            head = Sorted.insertSorted(head, v);\n        }\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSorted",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckSorted.java Node.java Show.java",
+      "text": "CheckSorted.java:6: error: cannot find symbol\n            head = Sorted.insertSorted(head, v);\n                   ^\n  symbol:   variable Sorted\n  location: class CheckSorted\n1 error"
+     },
+     "run": "Sorted",
+     "output": "head -> 1 -> 4 -> 5 -> 9 -> null",
+     "testsOutput": "head -> -1 -> 0 -> 3 -> 3 -> 6 -> 8 -> null",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Sorted.java",
+       "public class Sorted {\n    public static Node insertSorted(Node head, int value) {\n        Node node = new Node(value);\n        if (head == null || value <= head.getData()) {\n            node.setNext(head);\n            return node;\n        }\n        Node current = head;\n        while (current.getNext() != null && current.getNext().getData() < value) {\n            current = current.getNext();\n        }\n        node.setNext(current.getNext());\n        current.setNext(node);\n        return head;\n    }\n\n    public static void main(String[] args) {\n        Node head = null;\n        head = insertSorted(head, 5);\n        head = insertSorted(head, 1);\n        head = insertSorted(head, 9);\n        head = insertSorted(head, 4);\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    }
+   ]
+  },
+  "ws-linked": {
+   "id": "ws-linked",
+   "section": "linked",
+   "title": "Workshop: linked nodes",
+   "summary": "Work directly with nodes: build and measure chains, reverse one in place, clean up repeated values, and join and thin out lists.",
+   "goals": [
+    "Traverse with <code>getNext()</code> using for and while loops",
+    "Change <code>next</code> references in the right order so nothing is lost",
+    "Handle the empty list and the head as special cases"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: Reverse a chain"
+    },
+    {
+     "type": "write",
+     "id": "ws-u16-reverse",
+     "mode": "guided",
+     "title": "Reverse a chain",
+     "goal": "Write your own <code>Node</code>, then build, measure and finally reverse a chain of nodes without creating any new nodes.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Chain.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Nodes and text",
+       "text": "Create <code>Node</code> (an <code>int</code> data and a <code>Node next</code>, with <code>getData</code>, <code>getNext</code> and <code>setNext</code>). In <code>Chain</code>, copy the <code>build</code> helper and write <code>toText(Node head)</code>, which returns the values separated by single spaces (empty string for an empty list).",
+       "hint": "Add each value and a space, then <code>trim()</code> the end.",
+       "files": [
+        "Node.java",
+        "Chain.java"
+       ],
+       "run": "Chain",
+       "output": "3 1 4 1 5\n[]",
+       "checks": [],
+       "solution": [
+        [
+         "Node.java",
+         "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "Chain.java",
+         "public class Chain {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static String toText(Node head) {\n        String result = \"\";\n        for (Node current = head; current != null; current = current.getNext()) {\n            result += current.getData() + \" \";\n        }\n        return result.trim();\n    }\n\n    public static void main(String[] args) {\n        Node head = build(3, 1, 4, 1, 5);\n        System.out.println(toText(head));\n        System.out.println(\"[\" + toText(null) + \"]\");\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Size and sum",
+       "text": "Add <code>size(Node head)</code> and <code>sum(Node head)</code>, each with one traversal loop.",
+       "hint": null,
+       "files": [
+        "Node.java",
+        "Chain.java"
+       ],
+       "run": "Chain",
+       "output": "3 1 4 1 5\n5 values, sum 14",
+       "checks": [],
+       "solution": [
+        [
+         "Node.java",
+         "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "Chain.java",
+         "public class Chain {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static String toText(Node head) {\n        String result = \"\";\n        for (Node current = head; current != null; current = current.getNext()) {\n            result += current.getData() + \" \";\n        }\n        return result.trim();\n    }\n\n    public static int size(Node head) {\n        int count = 0;\n        for (Node current = head; current != null; current = current.getNext()) {\n            count++;\n        }\n        return count;\n    }\n\n    public static int sum(Node head) {\n        int total = 0;\n        for (Node current = head; current != null; current = current.getNext()) {\n            total += current.getData();\n        }\n        return total;\n    }\n\n    public static void main(String[] args) {\n        Node head = build(3, 1, 4, 1, 5);\n        System.out.println(toText(head));\n        System.out.println(size(head) + \" values, sum \" + sum(head));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Reverse in place",
+       "text": "Add <code>reverse(Node head)</code>, which returns the head of the reversed list by turning every <code>next</code> around. Walk with three references: <code>previous</code> (starts <code>null</code>), <code>current</code> (starts at head), and <code>next</code>, saved <strong>before</strong> you change <code>current</code>'s link. Each step: save <code>next</code>, point <code>current</code> back at <code>previous</code>, then move <code>previous</code> and <code>current</code> one step on.",
+       "hint": "At the end <code>current</code> is <code>null</code> and <code>previous</code> is the old last node, the new head. Saving <code>next</code> first matters: once you call <code>setNext(previous)</code>, the way forward is gone.",
+       "files": [
+        "Node.java",
+        "Chain.java"
+       ],
+       "run": "Chain",
+       "output": "3 1 4 1 5\n5 1 4 1 3\n[] 8",
+       "checks": [],
+       "solution": [
+        [
+         "Node.java",
+         "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "Chain.java",
+         "public class Chain {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static String toText(Node head) {\n        String result = \"\";\n        for (Node current = head; current != null; current = current.getNext()) {\n            result += current.getData() + \" \";\n        }\n        return result.trim();\n    }\n\n    public static int size(Node head) {\n        int count = 0;\n        for (Node current = head; current != null; current = current.getNext()) {\n            count++;\n        }\n        return count;\n    }\n\n    public static int sum(Node head) {\n        int total = 0;\n        for (Node current = head; current != null; current = current.getNext()) {\n            total += current.getData();\n        }\n        return total;\n    }\n\n    public static Node reverse(Node head) {\n        Node previous = null;\n        Node current = head;\n        while (current != null) {\n            Node next = current.getNext();\n            current.setNext(previous);\n            previous = current;\n            current = next;\n        }\n        return previous;\n    }\n\n    public static void main(String[] args) {\n        Node head = build(3, 1, 4, 1, 5);\n        System.out.println(toText(head));\n        head = reverse(head);\n        System.out.println(toText(head));\n        System.out.println(\"[\" + toText(reverse(null)) + \"] \" + toText(reverse(new Node(8))));\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: Clean up a sorted list"
+    },
+    {
+     "type": "write",
+     "id": "ws-u16-dedupe",
+     "mode": "guided",
+     "title": "Clean up a sorted list",
+     "goal": "Count values, remove repeats from a sorted list, and remove a node by position.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Dedupe.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Counting",
+       "text": "Create <code>Node</code>, then <code>Dedupe</code> with <code>build</code>, <code>toText</code> and <code>count(Node head, int value)</code>, which uses a <code>while</code> loop to count the nodes holding <code>value</code>.",
+       "hint": null,
+       "files": [
+        "Node.java",
+        "Dedupe.java"
+       ],
+       "run": "Dedupe",
+       "output": "3 0",
+       "checks": [],
+       "solution": [
+        [
+         "Node.java",
+         "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "Dedupe.java",
+         "public class Dedupe {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static String toText(Node head) {\n        String result = \"\";\n        for (Node current = head; current != null; current = current.getNext()) {\n            result += current.getData() + \" \";\n        }\n        return result.trim();\n    }\n\n    public static int count(Node head, int value) {\n        int count = 0;\n        Node current = head;\n        while (current != null) {\n            if (current.getData() == value) {\n                count++;\n            }\n            current = current.getNext();\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        Node head = build(1, 1, 2, 3, 3, 3, 4);\n        System.out.println(count(head, 3) + \" \" + count(head, 5));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Removing repeats",
+       "text": "In a sorted list, repeats sit next to each other. Write <code>removeRepeats(Node head)</code>: whenever the next node holds the same value as <code>current</code>, link around it; otherwise move on. The head never changes, so it returns nothing.",
+       "hint": "Only move <code>current</code> when the next node is different, or you'll miss the third 3.",
+       "files": [
+        "Node.java",
+        "Dedupe.java"
+       ],
+       "run": "Dedupe",
+       "output": "1 2 3 4",
+       "checks": [],
+       "solution": [
+        [
+         "Node.java",
+         "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "Dedupe.java",
+         "public class Dedupe {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static String toText(Node head) {\n        String result = \"\";\n        for (Node current = head; current != null; current = current.getNext()) {\n            result += current.getData() + \" \";\n        }\n        return result.trim();\n    }\n\n    public static int count(Node head, int value) {\n        int count = 0;\n        Node current = head;\n        while (current != null) {\n            if (current.getData() == value) {\n                count++;\n            }\n            current = current.getNext();\n        }\n        return count;\n    }\n\n    public static void removeRepeats(Node head) {\n        Node current = head;\n        while (current != null && current.getNext() != null) {\n            if (current.getNext().getData() == current.getData()) {\n                current.setNext(current.getNext().getNext());\n            } else {\n                current = current.getNext();\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Node head = build(1, 1, 2, 3, 3, 3, 4);\n        removeRepeats(head);\n        System.out.println(toText(head));\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Removing by position",
+       "text": "Add <code>removeAt(Node head, int index)</code>, which returns the new head. Index 0 removes the head; otherwise walk to the node <strong>before</strong> <code>index</code> (that's <code>index - 1</code> steps) and link around the next one.",
+       "hint": null,
+       "files": [
+        "Node.java",
+        "Dedupe.java"
+       ],
+       "run": "Dedupe",
+       "output": "1 2 3 4\n1 2 4\n2 4",
+       "checks": [],
+       "solution": [
+        [
+         "Node.java",
+         "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "Dedupe.java",
+         "public class Dedupe {\n    public static Node build(int... values) {\n        Node head = null;\n        for (int i = values.length - 1; i >= 0; i--) {\n            Node node = new Node(values[i]);\n            node.setNext(head);\n            head = node;\n        }\n        return head;\n    }\n\n    public static String toText(Node head) {\n        String result = \"\";\n        for (Node current = head; current != null; current = current.getNext()) {\n            result += current.getData() + \" \";\n        }\n        return result.trim();\n    }\n\n    public static int count(Node head, int value) {\n        int count = 0;\n        Node current = head;\n        while (current != null) {\n            if (current.getData() == value) {\n                count++;\n            }\n            current = current.getNext();\n        }\n        return count;\n    }\n\n    public static void removeRepeats(Node head) {\n        Node current = head;\n        while (current != null && current.getNext() != null) {\n            if (current.getNext().getData() == current.getData()) {\n                current.setNext(current.getNext().getNext());\n            } else {\n                current = current.getNext();\n            }\n        }\n    }\n\n    public static Node removeAt(Node head, int index) {\n        if (index == 0) {\n            return head.getNext();\n        }\n        Node before = head;\n        for (int i = 0; i < index - 1; i++) {\n            before = before.getNext();\n        }\n        before.setNext(before.getNext().getNext());\n        return head;\n    }\n\n    public static void main(String[] args) {\n        Node head = build(1, 1, 2, 3, 3, 3, 4);\n        removeRepeats(head);\n        System.out.println(toText(head));\n        head = removeAt(head, 2);\n        System.out.println(toText(head));\n        head = removeAt(head, 0);\n        System.out.println(toText(head));\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: Join two lists"
+    },
+    {
+     "type": "write",
+     "id": "ws-u16-concat",
+     "mode": "independent",
+     "title": "Join two lists",
+     "goal": "Write <code>Join</code> with <code>public static Node concat(Node a, Node b)</code>, which links the last node of <code>a</code> to the head of <code>b</code> and returns the head of the joined list. If <code>a</code> is empty, the result is just <code>b</code>. <code>main</code> joins 1 \u2192 2 with 3 \u2192 4 and prints the chain, then joins an empty list with 5. <code>Node</code> and <code>Show</code> are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "Join.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckJoin.java",
+       "public class CheckJoin {\n    public static void main(String[] args) {\n        Node a = new Node(7);\n        System.out.println(Show.chain(Join.concat(a, null)) + \" | \" + Show.chain(Join.concat(null, null)));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckJoin",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckJoin.java Node.java Show.java",
+      "text": "CheckJoin.java:4: error: cannot find symbol\n        System.out.println(Show.chain(Join.concat(a, null)) + \" | \" + Show.chain(Join.concat(null, null)));\n                                      ^\n  symbol:   variable Join\n  location: class CheckJoin\nCheckJoin.java:4: error: cannot find symbol\n        System.out.println(Show.chain(Join.concat(a, null)) + \" | \" + Show.chain(Join.concat(null, null)));\n                                                                                 ^\n  symbol:   variable Join\n  location: class CheckJoin\n2 errors"
+     },
+     "run": "Join",
+     "output": "head -> 1 -> 2 -> 3 -> 4 -> null\nhead -> 5 -> null",
+     "testsOutput": "head -> 7 -> null | head -> null",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Join.java",
+       "public class Join {\n    public static Node concat(Node a, Node b) {\n        if (a == null) {\n            return b;\n        }\n        Node current = a;\n        while (current.getNext() != null) {\n            current = current.getNext();\n        }\n        current.setNext(b);\n        return a;\n    }\n\n    public static void main(String[] args) {\n        Node a = new Node(1);\n        a.setNext(new Node(2));\n        Node b = new Node(3);\n        b.setNext(new Node(4));\n        System.out.println(Show.chain(concat(a, b)));\n        System.out.println(Show.chain(concat(null, new Node(5))));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: Keep every other node"
+    },
+    {
+     "type": "write",
+     "id": "ws-u16-everyother",
+     "mode": "independent",
+     "title": "Keep every other node",
+     "goal": "Write <code>Thin</code> with <code>public static void removeEveryOther(Node head)</code>, which removes the 2nd, 4th, 6th\u2026 nodes, keeping the 1st, 3rd, 5th\u2026 Walk with <code>current</code>: link it past its next node, then move to the node that is now next. <code>main</code> thins 1 to 7 and prints the chain. <code>Node</code> and <code>Show</code> are already in the editor.",
+     "requirements": [],
+     "files": [
+      "Node.java",
+      "Show.java",
+      "Thin.java"
+     ],
+     "starter": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckThin.java",
+       "public class CheckThin {\n    public static void main(String[] args) {\n        Thin.removeEveryOther(null);\n        Node h = new Node(1);\n        h.setNext(new Node(2));\n        Thin.removeEveryOther(h);\n        System.out.println(Show.chain(h));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckThin",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckThin.java Node.java Show.java",
+      "text": "CheckThin.java:3: error: cannot find symbol\n        Thin.removeEveryOther(null);\n        ^\n  symbol:   variable Thin\n  location: class CheckThin\nCheckThin.java:6: error: cannot find symbol\n        Thin.removeEveryOther(h);\n        ^\n  symbol:   variable Thin\n  location: class CheckThin\n2 errors"
+     },
+     "run": "Thin",
+     "output": "head -> 1 -> 3 -> 5 -> 7 -> null",
+     "testsOutput": "head -> 1 -> null",
+     "solution": [
+      [
+       "Node.java",
+       "public class Node {\n    private int data;\n    private Node next;\n\n    public Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n\n    public int getData() {\n        return data;\n    }\n\n    public Node getNext() {\n        return next;\n    }\n\n    public void setNext(Node next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "Show.java",
+       "public class Show {\n    // Prints a chain of nodes in the form head -> 7 -> 3 -> null.\n    public static String chain(Node head) {\n        String result = \"head\";\n        Node current = head;\n        while (current != null) {\n            result += \" -> \" + current.getData();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "Thin.java",
+       "public class Thin {\n    public static void removeEveryOther(Node head) {\n        Node current = head;\n        while (current != null && current.getNext() != null) {\n            current.setNext(current.getNext().getNext());\n            current = current.getNext();\n        }\n    }\n\n    public static void main(String[] args) {\n        Node head = new Node(1);\n        Node last = head;\n        for (int i = 2; i <= 7; i++) {\n            last.setNext(new Node(i));\n            last = last.getNext();\n        }\n        removeEveryOther(head);\n        System.out.println(Show.chain(head));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "NullPointerException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/NullPointerException.html",
+     "org": "Oracle, Java SE 21 API docs",
      "note": null
     }
    ]

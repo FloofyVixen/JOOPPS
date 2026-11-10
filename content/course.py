@@ -54,7 +54,7 @@ SECTIONS = [
      "lessons": ["bigo-growth", "bigo-code", "bigo-write", "ws-big-o"]},
     {"id": "linked", "title": "Linked Data Structures",
      "blurb": "Nodes with a data payload and a reference to the next node, starting from the head.",
-     "planned": ["Nodes and the head", "Traversing with getNext()", "Adding and removing nodes", "Workshop"]},
+     "lessons": ["link-nodes", "link-traverse", "link-change", "ws-linked"]},
     {"id": "linked-lists", "title": "Linked Lists as ArrayLists and Stacks",
      "blurb": "Use linked nodes to build a list and a stack, and compare them with their array versions.",
      "planned": ["A linked list with list operations", "LinkedStack: the top at the head", "Array versus linked performance", "Workshop"]},
