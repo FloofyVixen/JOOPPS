@@ -515,3 +515,100 @@ SHOW = """public class Show {
 }
 """
 NODE_FILES = {"Node.java": NODE, "Show.java": SHOW}
+
+SIMPLE_LIST = """public class SimpleLinkedList<T> {
+    private LinearNode<T> head;
+    private int count;
+
+    public SimpleLinkedList() {
+        head = null;
+        count = 0;
+    }
+
+    // Add at the end: walk to the last node (there is no tail reference).
+    public void add(T element) {
+        LinearNode<T> node = new LinearNode<>(element);
+        if (head == null) {
+            head = node;
+        } else {
+            LinearNode<T> current = head;
+            while (current.getNext() != null) {
+                current = current.getNext();
+            }
+            current.setNext(node);
+        }
+        count++;
+    }
+
+    // Insert so the new element ends up at position index.
+    public void add(int index, T element) {
+        if (index < 0 || index > count) {
+            throw new IndexOutOfBoundsException("Index " + index + ", size " + count);
+        }
+        LinearNode<T> node = new LinearNode<>(element);
+        if (index == 0) {
+            node.setNext(head);
+            head = node;
+        } else {
+            LinearNode<T> before = nodeAt(index - 1);
+            node.setNext(before.getNext());
+            before.setNext(node);
+        }
+        count++;
+    }
+
+    public T get(int index) {
+        checkIndex(index);
+        return nodeAt(index).getElement();
+    }
+
+    public T remove(int index) {
+        checkIndex(index);
+        T result;
+        if (index == 0) {
+            result = head.getElement();
+            head = head.getNext();
+        } else {
+            LinearNode<T> before = nodeAt(index - 1);
+            result = before.getNext().getElement();
+            before.setNext(before.getNext().getNext());
+        }
+        count--;
+        return result;
+    }
+
+    public int size() {
+        return count;
+    }
+
+    public boolean isEmpty() {
+        return count == 0;
+    }
+
+    private LinearNode<T> nodeAt(int index) {
+        LinearNode<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.getNext();
+        }
+        return current;
+    }
+
+    private void checkIndex(int index) {
+        if (index < 0 || index >= count) {
+            throw new IndexOutOfBoundsException("Index " + index + ", size " + count);
+        }
+    }
+
+    @Override
+    public String toString() {
+        String result = "head";
+        LinearNode<T> current = head;
+        while (current != null) {
+            result += " -> " + current.getElement();
+            current = current.getNext();
+        }
+        return result + " -> null";
+    }
+}
+"""
+LIST_FILES = {"LinearNode.java": LINEAR_NODE, "SimpleLinkedList.java": SIMPLE_LIST}

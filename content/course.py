@@ -57,7 +57,7 @@ SECTIONS = [
      "lessons": ["link-nodes", "link-traverse", "link-change", "ws-linked"]},
     {"id": "linked-lists", "title": "Linked Lists as ArrayLists and Stacks",
      "blurb": "Use linked nodes to build a list and a stack, and compare them with their array versions.",
-     "planned": ["A linked list with list operations", "LinkedStack: the top at the head", "Array versus linked performance", "Workshop"]},
+     "lessons": ["llist-class", "lstack", "lcompare", "ws-linked-lists"]},
     {"id": "queues", "title": "Introduction to Queues",
      "blurb": "First in, first out: enqueue, dequeue and getFront, and what queues are good for.",
      "planned": ["The queue: first in, first out", "Tracing a queue on paper", "Using a queue", "Workshop"]},

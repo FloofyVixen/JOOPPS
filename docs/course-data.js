@@ -181,11 +181,11 @@ window.COURSE = {
    "id": "linked-lists",
    "title": "Linked Lists as ArrayLists and Stacks",
    "blurb": "Use linked nodes to build a list and a stack, and compare them with their array versions.",
-   "planned": [
-    "A linked list with list operations",
-    "LinkedStack: the top at the head",
-    "Array versus linked performance",
-    "Workshop"
+   "lessons": [
+    "llist-class",
+    "lstack",
+    "lcompare",
+    "ws-linked-lists"
    ]
   },
   {
@@ -22575,6 +22575,1622 @@ window.COURSE = {
     {
      "title": "NullPointerException",
      "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/NullPointerException.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "llist-class": {
+   "id": "llist-class",
+   "section": "linked-lists",
+   "title": "A linked list with list operations",
+   "summary": "Wrap the nodes in a class and you get a list with the same methods as <code>ArrayList</code> (add, get, remove, size), built on linked nodes instead of an array.",
+   "goals": [
+    "Keep <code>head</code> and <code>count</code> private inside a list class",
+    "Use a generic node, <code>LinearNode&lt;T&gt;</code>, to store any type",
+    "Implement add, add at an index, get, remove and size with nodes",
+    "Compare the same calls on an <code>ArrayList</code> and a linked list"
+   ],
+   "cos225": "The Exam 2 guide asks you to compare array-based and linked lists. This lesson builds a linked list with the <code>ArrayList</code>-style operations; the next two use linked nodes for a stack and compare the costs.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "From loose nodes to a list class"
+    },
+    {
+     "type": "p",
+     "html": "In the last unit, the head was a local variable and every method had to return the new head. A list class keeps <code>head</code> (and a <code>count</code> of nodes) as private fields, so its methods can change them directly, and outside code just calls <code>add</code> and <code>get</code>, never touching a node."
+    },
+    {
+     "type": "p",
+     "html": "The node is now generic, so a list can hold any type. It's the same as <code>Node</code>, with <code>T element</code> in place of <code>int data</code>:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "SimpleLinkedList"
+    },
+    {
+     "type": "p",
+     "html": "Every method here uses something from unit 16. <code>nodeAt(index)</code> walks <code>index</code> steps from the head; <code>add(index, ...)</code> and <code>remove(index)</code> use it to find the node <strong>before</strong> the position and relink around it. Position 0 is the special case, because there the head itself changes."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "ListDemo.java",
+       "public class ListDemo {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> names = new SimpleLinkedList<>();\n        names.add(\"Ana\");\n        names.add(\"Ben\");\n        names.add(\"Cy\");\n        System.out.println(names + \" size \" + names.size());\n        names.add(1, \"Dee\");\n        System.out.println(names);\n        System.out.println(names.get(2));\n        System.out.println(names.remove(0) + \" removed: \" + names);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java ListDemo",
+      "stdout": "head -> Ana -> Ben -> Cy -> null size 3\nhead -> Ana -> Dee -> Ben -> Cy -> null\nBen\nAna removed: head -> Dee -> Ben -> Cy -> null"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>count</code> is updated by every add and remove, so <code>size()</code> is O(1): it doesn't walk the list.",
+      "<code>nodeAt</code> and <code>checkIndex</code> are <code>private</code> helpers. Outside code can't reach the nodes.",
+      "<code>toString</code> prints the chain, so <code>System.out.println(names)</code> shows the nodes in order."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Same methods, different insides"
+    },
+    {
+     "type": "p",
+     "html": "Because the methods match, code that adds, gets and removes works with either an <code>ArrayList</code> or this class, and gets the same answers:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "SameCalls.java",
+       "import java.util.ArrayList;\n\npublic class SameCalls {\n    public static void main(String[] args) {\n        ArrayList<String> array = new ArrayList<>();\n        SimpleLinkedList<String> linked = new SimpleLinkedList<>();\n        String[] words = {\"red\", \"green\", \"blue\"};\n        for (String w : words) {\n            array.add(w);\n            linked.add(w);\n        }\n        array.add(0, \"white\");\n        linked.add(0, \"white\");\n        array.remove(2);\n        linked.remove(2);\n        for (int i = 0; i < array.size(); i++) {\n            System.out.println(array.get(i) + \" \" + linked.get(i));\n        }\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java SameCalls",
+      "stdout": "white white\nred red\nblue blue"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "p",
+     "html": "What differs is the cost. <code>get(i)</code> on an <code>ArrayList</code> reads <code>array[i]</code> directly; on a linked list it walks <code>i</code> nodes. Adding at index 0 shifts every value in an <code>ArrayList</code>, but is one relink in a linked list. Lesson 3 of this unit puts the costs side by side."
+    },
+    {
+     "type": "p",
+     "html": "Bad indexes are refused the same way <code>ArrayList</code> refuses them:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "BadIndex.java",
+       "public class BadIndex {\n    public static void main(String[] args) {\n        SimpleLinkedList<Integer> list = new SimpleLinkedList<>();\n        list.add(5);\n        System.out.println(list.get(1));\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "runtime",
+      "command": "java BadIndex",
+      "stdout": "",
+      "text": "Exception in thread \"main\" java.lang.IndexOutOfBoundsException: Index 1, size 1\n\tat SimpleLinkedList.checkIndex(SimpleLinkedList.java:80)\n\tat SimpleLinkedList.get(SimpleLinkedList.java:43)\n\tat BadIndex.main(BadIndex.java:5)"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "ll-trace",
+     "kind": "linked",
+     "prompt": "Indexes count from the head, starting at 0. After each insert or removal, the indexes of later nodes change.",
+     "question": "Which diagram shows the list at the end?",
+     "files": [
+      [
+       "ListTrace.java",
+       "public class ListTrace {\n    public static void main(String[] args) {\n        SimpleLinkedList<Integer> list = new SimpleLinkedList<>();\n        list.add(10);\n        list.add(20);\n        list.add(0, 5);\n        list.add(2, 15);\n        list.remove(1);\n        list.add(30);\n        System.out.println(list);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> 5 -> 15 -> 20 -> 30 -> null",
+      "head -> 5 -> 10 -> 20 -> 30 -> null",
+      "head -> 10 -> 15 -> 20 -> 30 -> null",
+      "head -> 5 -> 10 -> 15 -> 30 -> null"
+     ],
+     "answer": 0,
+     "result": {
+      "kind": "ok",
+      "command": "java ListTrace",
+      "stdout": "head -> 5 -> 15 -> 20 -> 30 -> null"
+     },
+     "explain": "10, 20; then 5 at index 0: 5, 10, 20; then 15 at index 2: 5, 10, 15, 20. Removing index 1 takes 10: 5, 15, 20. Adding 30 at the end: 5, 15, 20, 30."
+    },
+    {
+     "type": "blanks",
+     "id": "ll-insert",
+     "title": "Insert at an index",
+     "prompt": "Finish the middle of <code>add(int index, T element)</code>.",
+     "files": [
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            [[newhead]];\n        } else {\n            LinearNode<T> before = nodeAt([[beforeidx]]);\n            node.setNext([[link]]);\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "InsertTester.java",
+       "public class InsertTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        list.add(0, \"b\");\n        list.add(0, \"a\");\n        list.add(2, \"d\");\n        list.add(2, \"c\");\n        System.out.println(list + \" \" + list.size());\n    }\n}\n"
+      ]
+     ],
+     "run": "InsertTester",
+     "blanks": {
+      "newhead": {
+       "accept": [
+        "head=node"
+       ],
+       "solution": "head = node",
+       "hint": "At index 0 the new node becomes the head.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "node=head",
+         "shown": "node = head",
+         "why": "That changes the local variable <code>node</code>, not the field: the list never gets its new first node.",
+         "result": {
+          "kind": "runtime",
+          "command": "java InsertTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"LinearNode.getNext()\" because \"<local2>\" is null\n\tat SimpleLinkedList.nodeAt(SimpleLinkedList.java:73)\n\tat SimpleLinkedList.add(SimpleLinkedList.java:35)\n\tat InsertTester.main(InsertTester.java:6)"
+         }
+        }
+       ],
+       "width": 11
+      },
+      "beforeidx": {
+       "accept": [
+        "index-1"
+       ],
+       "solution": "index - 1",
+       "hint": "You need the node just before the new position.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "index",
+         "shown": "index",
+         "why": "Then the new node goes in one place too late: <code>c</code> ends up after <code>d</code>.",
+         "result": {
+          "kind": "runtime",
+          "command": "java InsertTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"LinearNode.getNext()\" because \"<local4>\" is null\n\tat SimpleLinkedList.add(SimpleLinkedList.java:36)\n\tat InsertTester.main(InsertTester.java:6)"
+         }
+        }
+       ],
+       "width": 9
+      },
+      "link": {
+       "accept": [
+        "before.getNext()"
+       ],
+       "solution": "before.getNext()",
+       "hint": "The new node takes over whatever came after <code>before</code>.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "null",
+         "shown": "null",
+         "why": "That cuts off every node after the new one.",
+         "result": {
+          "kind": "ok",
+          "command": "java InsertTester",
+          "stdout": "head -> a -> b -> c -> null 4"
+         }
+        }
+       ],
+       "width": 16
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java InsertTester",
+      "stdout": "head -> a -> b -> c -> d -> null 4"
+     },
+     "explain": "Find the node before the position, point the new node at what came after it, then point <code>before</code> at the new node."
+    },
+    {
+     "type": "quiz",
+     "id": "ll-size",
+     "question": "Why is <code>size()</code> O(1) in <code>SimpleLinkedList</code>, when counting nodes takes a full traversal?",
+     "choices": [
+      "Because linked lists can't grow",
+      "Because the class keeps a <code>count</code> field, updated by every add and remove",
+      "Because Java caches method results",
+      "Because <code>head</code> stores the size"
+     ],
+     "answer": 1,
+     "explain": "Updating <code>count</code> costs one step per add or remove, and saves walking the whole list every time someone asks for the size."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-ll-indexof",
+     "mode": "independent",
+     "title": "indexOf",
+     "goal": "Add <code>public int indexOf(T target)</code> to <code>SimpleLinkedList</code>: the index of the first element that <code>equals</code> the target, or -1. Traverse with <code>getNext()</code>, counting as you go. <code>IndexTester</code> adds <code>x</code>, <code>y</code>, <code>z</code>, <code>y</code> and prints <code>indexOf(&quot;y&quot;)</code>, <code>indexOf(&quot;z&quot;)</code> and <code>indexOf(&quot;w&quot;)</code> on one line. <code>LinearNode</code> and <code>SimpleLinkedList</code> (from the lesson) are already in the editor; add the method to <code>SimpleLinkedList</code>.",
+     "requirements": [],
+     "files": [
+      "LinearNode.java",
+      "SimpleLinkedList.java",
+      "IndexTester.java"
+     ],
+     "starter": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckIndexOf.java",
+       "public class CheckIndexOf {\n    public static void main(String[] args) {\n        SimpleLinkedList<Integer> list = new SimpleLinkedList<>();\n        System.out.println(list.indexOf(3));\n        list.add(1000);\n        list.add(3);\n        System.out.println(list.indexOf(1000) + \" \" + list.indexOf(3));\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckIndexOf",
+     "hints": [
+      "Compare with <code>equals</code>, not <code>==</code>: two <code>Integer</code> objects holding 1000 aren't necessarily the same object."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckIndexOf.java LinearNode.java SimpleLinkedList.java",
+      "text": "CheckIndexOf.java:4: error: cannot find symbol\n        System.out.println(list.indexOf(3));\n                               ^\n  symbol:   method indexOf(int)\n  location: variable list of type SimpleLinkedList<Integer>\nCheckIndexOf.java:7: error: cannot find symbol\n        System.out.println(list.indexOf(1000) + \" \" + list.indexOf(3));\n                               ^\n  symbol:   method indexOf(int)\n  location: variable list of type SimpleLinkedList<Integer>\nCheckIndexOf.java:7: error: cannot find symbol\n        System.out.println(list.indexOf(1000) + \" \" + list.indexOf(3));\n                                                          ^\n  symbol:   method indexOf(int)\n  location: variable list of type SimpleLinkedList<Integer>\n3 errors"
+     },
+     "run": "IndexTester",
+     "output": "1 2 -1",
+     "testsOutput": "-1\n0 1",
+     "solution": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int indexOf(T target) {\n        int index = 0;\n        LinearNode<T> current = head;\n        while (current != null) {\n            if (current.getElement().equals(target)) {\n                return index;\n            }\n            index++;\n            current = current.getNext();\n        }\n        return -1;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "IndexTester.java",
+       "public class IndexTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        list.add(\"x\");\n        list.add(\"y\");\n        list.add(\"z\");\n        list.add(\"y\");\n        System.out.println(list.indexOf(\"y\") + \" \" + list.indexOf(\"z\") + \" \" + list.indexOf(\"w\"));\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-ll-set",
+     "mode": "independent",
+     "title": "set",
+     "goal": "Add <code>public T set(int index, T element)</code> to <code>SimpleLinkedList</code>, which replaces the element at <code>index</code> and returns the old one, like <code>ArrayList.set</code>. Use the private helpers <code>checkIndex</code> and <code>nodeAt</code>. You'll also need a <code>setElement</code> method in <code>LinearNode</code>: add it. <code>SetTester</code> adds <code>a</code>, <code>b</code>, <code>c</code>, sets index 1 to <code>B</code>, and prints the returned value and the list. <code>LinearNode</code> and <code>SimpleLinkedList</code> (from the lesson) are already in the editor; add the method to <code>SimpleLinkedList</code>.",
+     "requirements": [],
+     "files": [
+      "LinearNode.java",
+      "SimpleLinkedList.java",
+      "SetTester.java"
+     ],
+     "starter": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckSet.java",
+       "public class CheckSet {\n    public static void main(String[] args) {\n        SimpleLinkedList<Integer> list = new SimpleLinkedList<>();\n        list.add(1);\n        System.out.println(list.set(0, 9) + \" \" + list + \" \" + list.size());\n        try {\n            list.set(1, 5);\n        } catch (IndexOutOfBoundsException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckSet",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckSet.java LinearNode.java SimpleLinkedList.java",
+      "text": "CheckSet.java:5: error: cannot find symbol\n        System.out.println(list.set(0, 9) + \" \" + list + \" \" + list.size());\n                               ^\n  symbol:   method set(int,int)\n  location: variable list of type SimpleLinkedList<Integer>\nCheckSet.java:7: error: cannot find symbol\n            list.set(1, 5);\n                ^\n  symbol:   method set(int,int)\n  location: variable list of type SimpleLinkedList<Integer>\n2 errors"
+     },
+     "run": "SetTester",
+     "output": "b\nhead -> a -> B -> c -> null",
+     "testsOutput": "1 head -> 9 -> null 1\nIndex 1, size 1",
+     "solution": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public void setElement(T element) {\n        this.element = element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public T set(int index, T element) {\n        checkIndex(index);\n        LinearNode<T> node = nodeAt(index);\n        T old = node.getElement();\n        node.setElement(element);\n        return old;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "SetTester.java",
+       "public class SetTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        list.add(\"a\");\n        list.add(\"b\");\n        list.add(\"c\");\n        System.out.println(list.set(1, \"B\"));\n        System.out.println(list);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-ll-removeelement",
+     "mode": "independent",
+     "title": "Remove by value",
+     "goal": "Add <code>public boolean removeElement(T target)</code> to <code>SimpleLinkedList</code>: remove the first element that <code>equals</code> the target and return <code>true</code>, or return <code>false</code> if there is none. Handle the head separately, and remember to update <code>count</code>. <code>RemoveTester</code> adds 1, 2, 3, 2, removes 2 twice and 7 once (printing each result on one line), then prints the list and its size. <code>LinearNode</code> and <code>SimpleLinkedList</code> (from the lesson) are already in the editor; add the method to <code>SimpleLinkedList</code>.",
+     "requirements": [],
+     "files": [
+      "LinearNode.java",
+      "SimpleLinkedList.java",
+      "RemoveTester.java"
+     ],
+     "starter": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckRemoveElement.java",
+       "public class CheckRemoveElement {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        System.out.println(list.removeElement(\"a\"));\n        list.add(\"a\");\n        System.out.println(list.removeElement(\"a\") + \" \" + list + \" \" + list.size());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRemoveElement",
+     "hints": [],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckRemoveElement.java LinearNode.java SimpleLinkedList.java",
+      "text": "CheckRemoveElement.java:4: error: cannot find symbol\n        System.out.println(list.removeElement(\"a\"));\n                               ^\n  symbol:   method removeElement(String)\n  location: variable list of type SimpleLinkedList<String>\nCheckRemoveElement.java:6: error: cannot find symbol\n        System.out.println(list.removeElement(\"a\") + \" \" + list + \" \" + list.size());\n                               ^\n  symbol:   method removeElement(String)\n  location: variable list of type SimpleLinkedList<String>\n2 errors"
+     },
+     "run": "RemoveTester",
+     "output": "true true false\nhead -> 1 -> 3 -> null 2",
+     "testsOutput": "false\ntrue head -> null 0",
+     "solution": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public boolean removeElement(T target) {\n        if (head == null) {\n            return false;\n        }\n        if (head.getElement().equals(target)) {\n            head = head.getNext();\n            count--;\n            return true;\n        }\n        LinearNode<T> current = head;\n        while (current.getNext() != null) {\n            if (current.getNext().getElement().equals(target)) {\n                current.setNext(current.getNext().getNext());\n                count--;\n                return true;\n            }\n            current = current.getNext();\n        }\n        return false;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "RemoveTester.java",
+       "public class RemoveTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<Integer> list = new SimpleLinkedList<>();\n        list.add(1);\n        list.add(2);\n        list.add(3);\n        list.add(2);\n        System.out.println(list.removeElement(2) + \" \" + list.removeElement(2) + \" \" + list.removeElement(7));\n        System.out.println(list + \" \" + list.size());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "List<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "Generic Types",
+     "url": "https://docs.oracle.com/javase/tutorial/java/generics/types.html",
+     "org": "Oracle, The Java Tutorials",
+     "note": null
+    }
+   ]
+  },
+  "lstack": {
+   "id": "lstack",
+   "section": "linked-lists",
+   "title": "LinkedStack: the top at the head",
+   "summary": "A stack built from linked nodes keeps its top at the head of the chain, where adding and removing are O(1). No array, so it never fills up.",
+   "goals": [
+    "Implement push, pop and peek on linked nodes",
+    "Explain why the top of a linked stack is the head, not the last node",
+    "Draw a linked stack and the same stack as an array"
+   ],
+   "cos225": "The Exam 2 guide asks you to contrast array and linked stacks and say where the top is located. For an array stack it's the end of the array; for a linked stack it's the head.",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "Which end is the top?"
+    },
+    {
+     "type": "p",
+     "html": "A stack only works at one end, so pick the end of a linked list that's cheap to change. At the <strong>head</strong>, adding is <code>addFirst</code> and removing is <code>removeFirst</code>: both O(1). At the <strong>last</strong> node, adding means walking to the end, and removing is worse: you'd need the node <strong>before</strong> the last one, so you'd walk the whole list for every pop. So a linked stack's top is its head."
+    },
+    {
+     "type": "h",
+     "html": "LinkedStack"
+    },
+    {
+     "type": "p",
+     "html": "It implements the same <code>StackADT&lt;T&gt;</code> as <code>ArrayStack</code>, so code using one can use the other. <code>top</code> is the head node, and <code>count</code> keeps <code>size()</code> O(1)."
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "stdout": ""
+     },
+     "showResult": false,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "list",
+     "items": [
+      "<code>push</code> is add-at-front: the new node points at the old top, then becomes the top.",
+      "<code>pop</code> saves the top's element, then moves <code>top</code> to the next node. The old top node is no longer referenced.",
+      "<code>isEmpty</code> checks <code>top == null</code>. There's no capacity and no <code>expandCapacity</code>: every push makes exactly one new node."
+     ]
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "LinkedDemo.java",
+       "public class LinkedDemo {\n    public static void main(String[] args) {\n        StackADT<String> s = new LinkedStack<>();\n        s.push(\"red\");\n        s.push(\"green\");\n        s.push(\"blue\");\n        System.out.println(s);\n        System.out.println(s.pop() + \" \" + s.peek() + \" \" + s.size());\n        System.out.println(s);\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java LinkedDemo",
+      "stdout": "head -> blue -> green -> red -> null\nblue green 2\nhead -> green -> red -> null"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "Its <code>toString</code> prints the chain from the top, so the most recent push comes first."
+    },
+    {
+     "type": "h",
+     "html": "One stack, two drawings"
+    },
+    {
+     "type": "p",
+     "html": "The same pushes into an <code>ArrayStack</code> and a <code>LinkedStack</code> give the same stack, drawn two ways. In the array, the top is the <strong>last</strong> used index. In the chain, the top is the <strong>head</strong>:"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "BothStacks.java",
+       "public class BothStacks {\n    public static void main(String[] args) {\n        StackADT<Integer> a = new ArrayStack<>();\n        StackADT<Integer> b = new LinkedStack<>();\n        for (int i = 1; i <= 3; i++) {\n            a.push(i * 10);\n            b.push(i * 10);\n        }\n        System.out.println(a);\n        System.out.println(b);\n        System.out.println(a.pop() + \" \" + b.pop());\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java BothStacks",
+      "stdout": "bottom [10, 20, 30] top\nhead -> 30 -> 20 -> 10 -> null\n30 30"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": null
+    },
+    {
+     "type": "diagram",
+     "kind": "stack",
+     "state": "bottom [10, 20, 30] top",
+     "label": null,
+     "caption": "As a stack (and as <code>ArrayStack</code> stores it): 10 at the bottom, 30 on top."
+    },
+    {
+     "type": "diagram",
+     "kind": "linked",
+     "state": "head -> 30 -> 20 -> 10 -> null",
+     "label": null,
+     "caption": "As <code>LinkedStack</code> stores it: the top, 30, is the head, and the bottom, 10, is the last node."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "trace",
+     "id": "lstack-trace",
+     "kind": "linked",
+     "prompt": "Draw the chain of nodes, with the top as the head.",
+     "question": "Which diagram shows the stack's nodes at the end?",
+     "files": [
+      [
+       "LTrace.java",
+       "public class LTrace {\n    public static void main(String[] args) {\n        LinkedStack<Character> s = new LinkedStack<>();\n        s.push('a');\n        s.push('b');\n        s.push('c');\n        s.pop();\n        s.push('d');\n        s.push(s.peek());\n        System.out.println(s);\n    }\n}\n"
+      ]
+     ],
+     "choices": [
+      "head -> a -> b -> d -> d -> null",
+      "head -> d -> d -> b -> a -> null",
+      "head -> d -> b -> a -> null",
+      "head -> d -> c -> b -> a -> null"
+     ],
+     "answer": 1,
+     "result": {
+      "kind": "ok",
+      "command": "java LTrace",
+      "stdout": "head -> d -> d -> b -> a -> null"
+     },
+     "explain": "After a, b, c the chain is c, b, a. Popping removes c. Pushing d gives d, b, a. <code>s.push(s.peek())</code> pushes a second d: d, d, b, a."
+    },
+    {
+     "type": "blanks",
+     "id": "lstack-blanks",
+     "title": "Push and pop",
+     "prompt": "Fill in <code>push</code> and <code>pop</code>.",
+     "files": [
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public LinkedStack() {\n        top = null;\n        count = 0;\n    }\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        [[link]];\n        [[move]];\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        [[popmove]];\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n\n    // The chain of nodes from the top: the head of the list is the top of the stack.\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = top;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "LStackTester.java",
+       "public class LStackTester {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new LinkedStack<>();\n        for (int i = 1; i <= 4; i++) {\n            s.push(i);\n        }\n        System.out.println(s.pop() + \" \" + s.pop() + \" \" + s.size());\n        System.out.println(s);\n    }\n}\n"
+      ]
+     ],
+     "run": "LStackTester",
+     "blanks": {
+      "link": {
+       "accept": [
+        "node.setNext(top)"
+       ],
+       "solution": "node.setNext(top)",
+       "hint": "The new node sits on top of the old top.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "top.setNext(node)",
+         "shown": "top.setNext(node)",
+         "why": "That attaches the new node <strong>below</strong> the old top, and on an empty stack <code>top</code> is <code>null</code>, so it crashes.",
+         "result": {
+          "kind": "runtime",
+          "command": "java LStackTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"LinearNode.setNext(LinearNode)\" because \"this.top\" is null\n\tat LinkedStack.push(LinkedStack.java:15)\n\tat LStackTester.main(LStackTester.java:5)"
+         }
+        }
+       ],
+       "width": 17
+      },
+      "move": {
+       "accept": [
+        "top=node"
+       ],
+       "solution": "top = node",
+       "hint": "The new node is now the top.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "node=top",
+         "shown": "node = top",
+         "why": "That changes the local variable, not the field, so <code>top</code> never moves and the push is lost.",
+         "result": {
+          "kind": "runtime",
+          "command": "java LStackTester",
+          "stdout": "",
+          "text": "Exception in thread \"main\" java.util.EmptyStackException\n\tat LinkedStack.pop(LinkedStack.java:23)\n\tat LStackTester.main(LStackTester.java:7)"
+         }
+        }
+       ],
+       "width": 10
+      },
+      "popmove": {
+       "accept": [
+        "top=top.getNext()"
+       ],
+       "solution": "top = top.getNext()",
+       "hint": "The node under the top becomes the top.",
+       "exact": false,
+       "wrong": [
+        {
+         "answer": "top.setNext(null)",
+         "shown": "top.setNext(null)",
+         "why": "That cuts off everything under the top, and the top itself stays, so the next pop returns the same value.",
+         "result": {
+          "kind": "ok",
+          "command": "java LStackTester",
+          "stdout": "4 4 2\nhead -> 4 -> null"
+         }
+        }
+       ],
+       "width": 19
+      }
+     },
+     "result": {
+      "kind": "ok",
+      "command": "java LStackTester",
+      "stdout": "4 3 2\nhead -> 2 -> 1 -> null"
+     },
+     "explain": "Push: link the new node to the old top, then move <code>top</code> to it. Pop: move <code>top</code> to the next node."
+    },
+    {
+     "type": "quiz",
+     "id": "lstack-why",
+     "question": "Why does <code>LinkedStack</code> keep its top at the head of the chain?",
+     "choices": [
+      "Because the head is the only node that can hold data",
+      "Because adding and removing at the head are O(1), while removing the last node is O(n) with only a head reference",
+      "Because the bottom must always be <code>null</code>",
+      "So that <code>toString</code> prints in order"
+     ],
+     "answer": 1,
+     "explain": "At the head, push and pop just relink one node. To pop the last node you'd have to find the node before it by walking the whole list."
+    },
+    {
+     "type": "quiz",
+     "id": "lstack-full",
+     "question": "What happens when you push onto a <code>LinkedStack</code> that already holds a million values?",
+     "choices": [
+      "It throws an exception because it's full",
+      "It copies all the nodes into a bigger array",
+      "It creates one new node and links it in, the same as any other push",
+      "It walks to the end of the list first"
+     ],
+     "answer": 2,
+     "explain": "A linked stack has no capacity. Every push is one <code>new</code> and two reference changes."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-lstack-scratch",
+     "mode": "independent",
+     "title": "LinkedStack from scratch",
+     "goal": "Write <code>LinkedStack&lt;T&gt;</code>, which implements <code>StackADT&lt;T&gt;</code> with <code>LinearNode&lt;T&gt;</code>s (both already in the editor): a private <code>top</code> node and a <code>count</code>. Push and pop at the head; <code>pop</code> and <code>peek</code> throw <code>EmptyStackException</code> when empty. <code>LinkedTester</code> pushes 1 to 5, then pops three times and prints the popped values and the size on one line.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "LinearNode.java",
+      "LinkedStack.java",
+      "LinkedTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckLinked.java",
+       "import java.util.EmptyStackException;\n\npublic class CheckLinked {\n    public static void main(String[] args) {\n        StackADT<String> s = new LinkedStack<>();\n        System.out.println(s.isEmpty() + \" \" + s.size());\n        s.push(\"only\");\n        System.out.println(s.peek() + \" \" + s.pop() + \" \" + s.isEmpty());\n        try {\n            s.peek();\n        } catch (EmptyStackException e) {\n            System.out.println(\"empty\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckLinked",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "LinearNode<T>",
+       "message": "Store the stack in <code>LinearNode&lt;T&gt;</code> nodes.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckLinked.java LinearNode.java StackADT.java",
+      "text": "CheckLinked.java:5: error: cannot find symbol\n        StackADT<String> s = new LinkedStack<>();\n                                 ^\n  symbol:   class LinkedStack\n  location: class CheckLinked\n1 error"
+     },
+     "run": "LinkedTester",
+     "output": "5 4 3 2",
+     "testsOutput": "true 0\nonly only true\nempty",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "LinkedStack.java",
+       "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        return count;\n    }\n}\n"
+      ],
+      [
+       "LinkedTester.java",
+       "public class LinkedTester {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new LinkedStack<>();\n        for (int i = 1; i <= 5; i++) {\n            s.push(i);\n        }\n        System.out.println(s.pop() + \" \" + s.pop() + \" \" + s.pop() + \" \" + s.size());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-lstack-nocount",
+     "mode": "independent",
+     "title": "A stack without a count",
+     "goal": "Write <code>NoCountStack&lt;T&gt;</code>, a linked stack (implementing <code>StackADT&lt;T&gt;</code>, already in the editor with <code>LinearNode&lt;T&gt;</code>) with <strong>only</strong> a <code>top</code> field: no <code>count</code>. Its <code>size()</code> has to traverse the nodes to count them, which makes it O(n) instead of O(1). <code>NoCountTester</code> pushes <code>a</code>, <code>b</code>, <code>c</code>, prints <code>size()</code>, pops once and prints <code>size()</code> again.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "LinearNode.java",
+      "NoCountStack.java",
+      "NoCountTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckNoCount.java",
+       "public class CheckNoCount {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new NoCountStack<>();\n        System.out.println(s.size() + \" \" + s.isEmpty());\n        for (int i = 0; i < 100; i++) {\n            s.push(i);\n        }\n        System.out.println(s.size() + \" \" + s.peek());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckNoCount",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "^(?![\\s\\S]*private\\s+int\\b)",
+       "message": "There's no <code>int</code> field keeping a count: <code>size()</code> counts the nodes each time.",
+       "file": "NoCountStack.java"
+      }
+     ],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckNoCount.java LinearNode.java StackADT.java",
+      "text": "CheckNoCount.java:3: error: cannot find symbol\n        StackADT<Integer> s = new NoCountStack<>();\n                                  ^\n  symbol:   class NoCountStack\n  location: class CheckNoCount\n1 error"
+     },
+     "run": "NoCountTester",
+     "output": "3\n2",
+     "testsOutput": "0 true\n100 99",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "NoCountStack.java",
+       "import java.util.EmptyStackException;\n\npublic class NoCountStack<T> implements StackADT<T> {\n    private LinearNode<T> top;\n\n    @Override\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        return result;\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    @Override\n    public int size() {\n        int count = 0;\n        for (LinearNode<T> current = top; current != null; current = current.getNext()) {\n            count++;\n        }\n        return count;\n    }\n}\n"
+      ],
+      [
+       "NoCountTester.java",
+       "public class NoCountTester {\n    public static void main(String[] args) {\n        StackADT<String> s = new NoCountStack<>();\n        s.push(\"a\");\n        s.push(\"b\");\n        s.push(\"c\");\n        System.out.println(s.size());\n        s.pop();\n        System.out.println(s.size());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "EmptyStackException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/EmptyStackException.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "lcompare": {
+   "id": "lcompare",
+   "section": "linked-lists",
+   "title": "Array versus linked performance",
+   "summary": "Arrays are fast at reaching any position; linked lists are fast at changing the front. Knowing which operations are O(1) and which are O(n) for each tells you which to use.",
+   "goals": [
+    "State the big O of get, add and remove at each end for array and linked lists",
+    "Explain why looping with <code>get(i)</code> over a linked list is O(n\u00b2)",
+    "Compare the memory each structure uses",
+    "Say where the top of an array stack and a linked stack is, and why"
+   ],
+   "cos225": "The Exam 2 guide: contrast array and linked list implementations of stacks and queues, and where the top is located. Expect matching questions on which operations are O(1) and which are O(n).",
+   "blocks": [
+    {
+     "type": "h",
+     "html": "The cost of each operation"
+    },
+    {
+     "type": "p",
+     "html": "An array keeps values side by side, so it can jump straight to any index, but adding or removing anywhere except the end shifts the values after it. A linked list can only be entered at the head, so reaching index <code>i</code> means walking <code>i</code> nodes, but once you're at a node, linking in or out is one or two reference changes."
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>Read by index</strong>: array O(1); linked O(n).",
+      "<strong>Add or remove at the front</strong>: array O(n); linked O(1).",
+      "<strong>Add at the end</strong>: array O(1) (on average, counting the occasional doubling); linked O(n) with only a head reference.",
+      "<strong>Add or remove in the middle</strong>: O(n) for both. The array shifts values; the linked list walks to the spot.",
+      "<strong>Size</strong>: O(1) for both, as long as the class keeps a count."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "Java's own <code>LinkedList</code> keeps references to both ends (it's doubly linked), so its documentation says operations that index into it traverse from whichever end is closer. The list you write for this course, with only a head, always starts from the front."
+    },
+    {
+     "type": "h",
+     "html": "The O(n\u00b2) loop"
+    },
+    {
+     "type": "p",
+     "html": "A loop that calls <code>get(i)</code> for every index is fine for an array, O(n) in total. On a linked list each <code>get(i)</code> walks from the head, so the loop does 0 + 1 + 2 + \u2026 + (n \u2212 1) moves: O(n\u00b2). Walking the chain once does the same job in O(n):"
+    },
+    {
+     "type": "code",
+     "files": [
+      [
+       "IndexLoop.java",
+       "public class IndexLoop {\n    public static long moves = 0;\n\n    // get(index) on a chain of nodes: walk index steps from the head.\n    public static int get(Node head, int index) {\n        Node current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n            moves++;\n        }\n        return current.getData();\n    }\n\n    public static void main(String[] args) {\n        int n = 1000;\n        Node head = null;\n        for (int i = n; i >= 1; i--) {\n            Node node = new Node(i);\n            node.setNext(head);\n            head = node;\n        }\n\n        long total = 0;\n        for (int i = 0; i < n; i++) {\n            total += get(head, i);\n        }\n        System.out.println(\"by index: sum \" + total + \", \" + moves + \" moves\");\n\n        moves = 0;\n        total = 0;\n        for (Node current = head; current != null; current = current.getNext()) {\n            total += current.getData();\n            moves++;\n        }\n        System.out.println(\"by walking: sum \" + total + \", \" + moves + \" moves\");\n    }\n}\n"
+      ]
+     ],
+     "result": {
+      "kind": "ok",
+      "command": "java IndexLoop",
+      "stdout": "by index: sum 500500, 499500 moves\nby walking: sum 500500, 1000 moves"
+     },
+     "showResult": true,
+     "collapsed": false,
+     "caption": null,
+     "after": "Same sum, 500 times more moves. To visit every value of a linked list, traverse it with <code>getNext()</code> (or Java's for-each loop, which does that for you), not with <code>get(i)</code>."
+    },
+    {
+     "type": "h",
+     "html": "Memory"
+    },
+    {
+     "type": "list",
+     "items": [
+      "An array is one block. A growable array usually has spare capacity: after doubling, up to half its slots can be empty.",
+      "A linked list has no spare slots, but every value has its own node object, which costs an extra <code>next</code> reference plus the object's own overhead."
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Where the top goes"
+    },
+    {
+     "type": "p",
+     "html": "Both stack implementations put the top where pushing and popping are O(1):"
+    },
+    {
+     "type": "list",
+     "items": [
+      "<strong>ArrayStack</strong>: the top is at the <strong>end</strong> of the used part of the array, index <code>top - 1</code>. At index 0, every push and pop would shift the whole array.",
+      "<strong>LinkedStack</strong>: the top is the <strong>head</strong>. At the last node, every pop would have to walk the list to find the node before it."
+     ]
+    },
+    {
+     "type": "p",
+     "html": "So both give O(1) push, pop and peek. The differences are elsewhere: the array occasionally pays O(n) to grow and may hold empty slots; the linked stack allocates a node per push and never fills up."
+    },
+    {
+     "type": "h",
+     "html": "Practice"
+    },
+    {
+     "type": "match",
+     "id": "cmp-match",
+     "prompt": "Match each operation with its big O.",
+     "options": [
+      "O(1)",
+      "O(n)"
+     ],
+     "items": [
+      {
+       "code": null,
+       "html": "<code>get(i)</code> on an <code>ArrayList</code>",
+       "answer": 0,
+       "why": "It reads <code>array[i]</code> directly."
+      },
+      {
+       "code": null,
+       "html": "<code>get(i)</code> on a linked list",
+       "answer": 1,
+       "why": "It walks <code>i</code> nodes from the head."
+      },
+      {
+       "code": null,
+       "html": "Adding at index 0 of an <code>ArrayList</code>",
+       "answer": 1,
+       "why": "Every value shifts one slot right."
+      },
+      {
+       "code": null,
+       "html": "Adding at index 0 of a linked list",
+       "answer": 0,
+       "why": "The new node becomes the head: one relink."
+      },
+      {
+       "code": null,
+       "html": "Adding at the end of an <code>ArrayList</code> (array not full)",
+       "answer": 0,
+       "why": "It writes the next free slot."
+      },
+      {
+       "code": null,
+       "html": "Adding at the end of a linked list with only a head reference",
+       "answer": 1,
+       "why": "It walks to the last node first."
+      },
+      {
+       "code": null,
+       "html": "Removing the first value of an <code>ArrayList</code>",
+       "answer": 1,
+       "why": "Every later value shifts one slot left."
+      },
+      {
+       "code": null,
+       "html": "Removing the first node of a linked list",
+       "answer": 0,
+       "why": "<code>head = head.getNext()</code>."
+      },
+      {
+       "code": null,
+       "html": "<code>push</code> on <code>ArrayStack</code> (array not full)",
+       "answer": 0,
+       "why": null
+      },
+      {
+       "code": null,
+       "html": "<code>pop</code> on <code>LinkedStack</code>",
+       "answer": 0,
+       "why": null
+      }
+     ],
+     "explain": "Arrays win at indexing and at the end; linked lists win at the front. Stacks use the fast end of each."
+    },
+    {
+     "type": "quiz",
+     "id": "cmp-choose",
+     "question": "A program mostly reads values by position (<code>get(i)</code> with many different <code>i</code>s) and rarely adds or removes. Which list fits best?",
+     "choices": [
+      "A linked list, because it never runs out of room",
+      "An array-based list such as <code>ArrayList</code>, because <code>get(i)</code> is O(1)",
+      "Either: they have the same big O for everything",
+      "A linked stack"
+     ],
+     "answer": 1,
+     "explain": "Reading by position is O(1) for an array and O(n) for a linked list."
+    },
+    {
+     "type": "quiz",
+     "id": "cmp-front",
+     "question": "A program keeps adding and removing at the front of a long list. Which is the better fit?",
+     "choices": [
+      "An array-based list",
+      "A linked list",
+      "An array-based list with its top at index 0",
+      "It makes no difference"
+     ],
+     "answer": 1,
+     "explain": "At the front, a linked list changes one reference (O(1)); an array shifts every value (O(n))."
+    },
+    {
+     "type": "h",
+     "html": "Write it yourself"
+    },
+    {
+     "type": "p",
+     "html": "Now write code with no blanks to fill in. Create each file in the editor, write the whole program, and press <strong>Run</strong>. Your code is compiled and run for real, and the task passes when the output and checks match."
+    },
+    {
+     "type": "write",
+     "id": "w-cmp-arraylist-stack",
+     "mode": "independent",
+     "title": "A stack on an ArrayList",
+     "goal": "Write <code>ArrayListStack&lt;T&gt;</code>, implementing <code>StackADT&lt;T&gt;</code> (already in the editor) with a private <code>java.util.ArrayList&lt;T&gt;</code>. Put the top at the <strong>end</strong> of the list, so <code>push</code> is <code>add(element)</code> and <code>pop</code> is <code>remove(size() - 1)</code>, both O(1). <code>pop</code> and <code>peek</code> throw <code>EmptyStackException</code> when empty. <code>ALStackTester</code> pushes <code>x</code>, <code>y</code>, <code>z</code>, then prints <code>pop()</code>, <code>peek()</code> and <code>size()</code> on one line.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "ArrayListStack.java",
+      "ALStackTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckALStack.java",
+       "import java.util.EmptyStackException;\n\npublic class CheckALStack {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new ArrayListStack<>();\n        try {\n            s.pop();\n        } catch (EmptyStackException e) {\n            System.out.println(\"empty\");\n        }\n        s.push(4);\n        s.push(5);\n        System.out.println(s.pop() + s.pop() + \" \" + s.isEmpty());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckALStack",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "size\\(\\)\\s*-\\s*1",
+       "message": "The top is the last index, <code>size() - 1</code>.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckALStack.java StackADT.java",
+      "text": "CheckALStack.java:5: error: cannot find symbol\n        StackADT<Integer> s = new ArrayListStack<>();\n                                  ^\n  symbol:   class ArrayListStack\n  location: class CheckALStack\n1 error"
+     },
+     "run": "ALStackTester",
+     "output": "z y 2",
+     "testsOutput": "empty\n9 true",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "ArrayListStack.java",
+       "import java.util.ArrayList;\nimport java.util.EmptyStackException;\n\npublic class ArrayListStack<T> implements StackADT<T> {\n    private ArrayList<T> items = new ArrayList<>();\n\n    @Override\n    public void push(T element) {\n        items.add(element);\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return items.remove(items.size() - 1);\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return items.get(items.size() - 1);\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return items.isEmpty();\n    }\n\n    @Override\n    public int size() {\n        return items.size();\n    }\n}\n"
+      ],
+      [
+       "ALStackTester.java",
+       "public class ALStackTester {\n    public static void main(String[] args) {\n        StackADT<String> s = new ArrayListStack<>();\n        s.push(\"x\");\n        s.push(\"y\");\n        s.push(\"z\");\n        System.out.println(s.pop() + \" \" + s.peek() + \" \" + s.size());\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "write",
+     "id": "w-cmp-linkedlist-stack",
+     "mode": "independent",
+     "title": "A stack on Java's LinkedList",
+     "goal": "Write <code>LinkedListStack&lt;T&gt;</code>, implementing <code>StackADT&lt;T&gt;</code> (already in the editor) with a private <code>java.util.LinkedList&lt;T&gt;</code>. This time the top is the <strong>front</strong>: <code>push</code> is <code>addFirst</code>, <code>pop</code> is <code>removeFirst</code>, and <code>peek</code> is <code>getFirst</code>, all O(1) for a linked list. Check <code>isEmpty()</code> first and throw <code>EmptyStackException</code>, since <code>LinkedList</code> would throw a different exception. <code>LLStackTester</code> pushes 1, 2, 3, then prints <code>pop()</code>, <code>peek()</code> and <code>size()</code> on one line.",
+     "requirements": [],
+     "files": [
+      "StackADT.java",
+      "LinkedListStack.java",
+      "LLStackTester.java"
+     ],
+     "starter": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckLLStack.java",
+       "import java.util.EmptyStackException;\n\npublic class CheckLLStack {\n    public static void main(String[] args) {\n        StackADT<String> s = new LinkedListStack<>();\n        try {\n            s.peek();\n        } catch (EmptyStackException e) {\n            System.out.println(\"empty\");\n        }\n        s.push(\"a\");\n        s.push(\"b\");\n        System.out.println(s.pop() + s.pop() + \" \" + s.size());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckLLStack",
+     "hints": [],
+     "checks": [
+      {
+       "pattern": "addFirst",
+       "message": "Push at the front with <code>addFirst</code>.",
+       "file": null
+      }
+     ],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckLLStack.java StackADT.java",
+      "text": "CheckLLStack.java:5: error: cannot find symbol\n        StackADT<String> s = new LinkedListStack<>();\n                                 ^\n  symbol:   class LinkedListStack\n  location: class CheckLLStack\n1 error"
+     },
+     "run": "LLStackTester",
+     "output": "3 2 2",
+     "testsOutput": "empty\nba 0",
+     "solution": [
+      [
+       "StackADT.java",
+       "public interface StackADT<T> {\n    void push(T element);\n\n    T pop();\n\n    T peek();\n\n    boolean isEmpty();\n\n    int size();\n}\n"
+      ],
+      [
+       "LinkedListStack.java",
+       "import java.util.EmptyStackException;\nimport java.util.LinkedList;\n\npublic class LinkedListStack<T> implements StackADT<T> {\n    private LinkedList<T> items = new LinkedList<>();\n\n    @Override\n    public void push(T element) {\n        items.addFirst(element);\n    }\n\n    @Override\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return items.removeFirst();\n    }\n\n    @Override\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return items.getFirst();\n    }\n\n    @Override\n    public boolean isEmpty() {\n        return items.isEmpty();\n    }\n\n    @Override\n    public int size() {\n        return items.size();\n    }\n}\n"
+      ],
+      [
+       "LLStackTester.java",
+       "public class LLStackTester {\n    public static void main(String[] args) {\n        StackADT<Integer> s = new LinkedListStack<>();\n        s.push(1);\n        s.push(2);\n        s.push(3);\n        System.out.println(s.pop() + \" \" + s.peek() + \" \" + s.size());\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "1.4 Analysis of Algorithms",
+     "url": "https://algs4.cs.princeton.edu/14analysis/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "LinkedList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    }
+   ]
+  },
+  "ws-linked-lists": {
+   "id": "ws-linked-lists",
+   "section": "linked-lists",
+   "title": "Workshop: linked lists and stacks",
+   "summary": "Write a linked list with list operations and a linked stack, use the stack to match HTML tags, and add the operations that show off what a singly linked list is bad at: removing the last node and reversing.",
+   "goals": [
+    "Write a generic linked list class with add, get, remove and toString",
+    "Write a linked stack with its top at the head",
+    "Explain which operations are O(1) and which are O(n) on each"
+   ],
+   "cos225": null,
+   "blocks": [
+    {
+     "type": "h",
+     "html": "How this workshop works"
+    },
+    {
+     "type": "p",
+     "html": "Two guided tasks build a program one step at a time; a step is done when your output matches, and your code carries over to the next step. Then two independent tasks give you only the goal, the expected output and a test file. Create every file yourself with <strong>New file</strong>."
+    },
+    {
+     "type": "h",
+     "html": "Guided 1: A linked list from scratch"
+    },
+    {
+     "type": "write",
+     "id": "ws-u17-list",
+     "mode": "guided",
+     "title": "A linked list from scratch",
+     "goal": "Write <code>SimpleLinkedList&lt;T&gt;</code> yourself, one group of operations at a time. Create <code>LinearNode&lt;T&gt;</code> too.",
+     "requirements": [],
+     "files": [
+      "LinearNode.java",
+      "SimpleLinkedList.java",
+      "ListTester.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Adding and printing",
+       "text": "Create <code>LinearNode&lt;T&gt;</code> (an element, a <code>next</code>, <code>getElement</code>, <code>getNext</code>, <code>setNext</code>). In <code>SimpleLinkedList&lt;T&gt;</code>, keep a private <code>head</code> and <code>count</code>. Write <code>add(T)</code> (at the end, walking from the head), <code>size()</code> and <code>toString()</code> in the <code>head -&gt; ... -&gt; null</code> format.",
+       "hint": null,
+       "files": [
+        "LinearNode.java",
+        "SimpleLinkedList.java",
+        "ListTester.java"
+       ],
+       "run": "ListTester",
+       "output": "head -> milk -> eggs -> rice -> null 3",
+       "checks": [],
+       "solution": [
+        [
+         "LinearNode.java",
+         "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "SimpleLinkedList.java",
+         "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+        ],
+        [
+         "ListTester.java",
+         "public class ListTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        list.add(\"milk\");\n        list.add(\"eggs\");\n        list.add(\"rice\");\n        System.out.println(list + \" \" + list.size());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Getting by index",
+       "text": "Add <code>get(int index)</code>: throw <code>IndexOutOfBoundsException(&quot;Index &quot; + index + &quot;, size &quot; + count)</code> for a bad index, otherwise walk <code>index</code> steps from the head.",
+       "hint": null,
+       "files": [
+        "LinearNode.java",
+        "SimpleLinkedList.java",
+        "ListTester.java"
+       ],
+       "run": "ListTester",
+       "output": "0: milk\n1: eggs\n2: rice\nIndex 3, size 3",
+       "checks": [],
+       "solution": [
+        [
+         "LinearNode.java",
+         "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "SimpleLinkedList.java",
+         "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current.getElement();\n    }\n\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+        ],
+        [
+         "ListTester.java",
+         "public class ListTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        list.add(\"milk\");\n        list.add(\"eggs\");\n        list.add(\"rice\");\n        for (int i = 0; i < list.size(); i++) {\n            System.out.println(i + \": \" + list.get(i));\n        }\n        try {\n            list.get(3);\n        } catch (IndexOutOfBoundsException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Removing by index",
+       "text": "Add <code>remove(int index)</code>, which returns the removed element. Index 0 moves the head; any other index walks to the node <strong>before</strong> it and links around. Update <code>count</code>.",
+       "hint": null,
+       "files": [
+        "LinearNode.java",
+        "SimpleLinkedList.java",
+        "ListTester.java"
+       ],
+       "run": "ListTester",
+       "output": "rice head -> milk -> eggs -> tea -> null\nmilk head -> eggs -> tea -> null\ntea head -> eggs -> null 1",
+       "checks": [],
+       "solution": [
+        [
+         "LinearNode.java",
+         "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "SimpleLinkedList.java",
+         "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current.getElement();\n    }\n\n    public T remove(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = head;\n            for (int i = 0; i < index - 1; i++) {\n                before = before.getNext();\n            }\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+        ],
+        [
+         "ListTester.java",
+         "public class ListTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        list.add(\"milk\");\n        list.add(\"eggs\");\n        list.add(\"rice\");\n        list.add(\"tea\");\n        System.out.println(list.remove(2) + \" \" + list);\n        System.out.println(list.remove(0) + \" \" + list);\n        System.out.println(list.remove(1) + \" \" + list + \" \" + list.size());\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Guided 2: A linked stack at work"
+    },
+    {
+     "type": "write",
+     "id": "ws-u17-stack",
+     "mode": "guided",
+     "title": "A linked stack at work",
+     "goal": "Write a <code>LinkedStack&lt;T&gt;</code>, use it as an undo history, then use it to check that HTML tags are properly nested.",
+     "requirements": [],
+     "files": [
+      "LinearNode.java",
+      "LinkedStack.java",
+      "UndoTester.java",
+      "Matcher.java"
+     ],
+     "starter": [],
+     "tests": [],
+     "testsRun": null,
+     "hints": [],
+     "checks": [],
+     "steps": [
+      {
+       "title": "Push and peek",
+       "text": "Create <code>LinearNode&lt;T&gt;</code> and <code>LinkedStack&lt;T&gt;</code> with a <code>top</code> node and a <code>count</code>. Write <code>push</code> (at the head), <code>peek</code>, <code>isEmpty</code> and <code>size</code>.",
+       "hint": null,
+       "files": [
+        "LinearNode.java",
+        "LinkedStack.java",
+        "UndoTester.java"
+       ],
+       "run": "UndoTester",
+       "output": "fill red 2 false",
+       "checks": [],
+       "solution": [
+        [
+         "LinearNode.java",
+         "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "LinkedStack.java",
+         "public class LinkedStack<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    public T peek() {\n        return top.getElement();\n    }\n\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    public int size() {\n        return count;\n    }\n}\n"
+        ],
+        [
+         "UndoTester.java",
+         "public class UndoTester {\n    public static void main(String[] args) {\n        LinkedStack<String> history = new LinkedStack<>();\n        history.push(\"draw circle\");\n        history.push(\"fill red\");\n        System.out.println(history.peek() + \" \" + history.size() + \" \" + history.isEmpty());\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Pop, and undo",
+       "text": "Add <code>pop</code>. <code>pop</code> and <code>peek</code> throw <code>EmptyStackException</code> on an empty stack. Undo every action, most recent first.",
+       "hint": null,
+       "files": [
+        "LinearNode.java",
+        "LinkedStack.java",
+        "UndoTester.java"
+       ],
+       "run": "UndoTester",
+       "output": "undo add border\nundo fill red\nundo draw circle",
+       "checks": [],
+       "solution": [
+        [
+         "LinearNode.java",
+         "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "LinkedStack.java",
+         "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    public int size() {\n        return count;\n    }\n}\n"
+        ],
+        [
+         "UndoTester.java",
+         "public class UndoTester {\n    public static void main(String[] args) {\n        LinkedStack<String> history = new LinkedStack<>();\n        history.push(\"draw circle\");\n        history.push(\"fill red\");\n        history.push(\"add border\");\n        while (!history.isEmpty()) {\n            System.out.println(\"undo \" + history.pop());\n        }\n    }\n}\n"
+        ]
+       ]
+      },
+      {
+       "title": "Matching tags",
+       "text": "In <code>Matcher</code>, write <code>matches(String html)</code> for tags separated by spaces, like <code>&lt;p&gt; &lt;b&gt; &lt;/b&gt; &lt;/p&gt;</code>. Push each opening tag's name; at each closing tag, the stack must be non-empty and its popped name must be equal. At the end, nothing may be left open.",
+       "hint": "<code>tag.substring(1, tag.length() - 1)</code> turns <code>&lt;p&gt;</code> into <code>p</code>; for <code>&lt;/p&gt;</code>, start at 2.",
+       "files": [
+        "LinearNode.java",
+        "LinkedStack.java",
+        "Matcher.java"
+       ],
+       "run": "Matcher",
+       "output": "true\nfalse\nfalse",
+       "checks": [],
+       "solution": [
+        [
+         "LinearNode.java",
+         "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+        ],
+        [
+         "LinkedStack.java",
+         "import java.util.EmptyStackException;\n\npublic class LinkedStack<T> {\n    private LinearNode<T> top;\n    private int count;\n\n    public void push(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        node.setNext(top);\n        top = node;\n        count++;\n    }\n\n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T result = top.getElement();\n        top = top.getNext();\n        count--;\n        return result;\n    }\n\n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.getElement();\n    }\n\n    public boolean isEmpty() {\n        return top == null;\n    }\n\n    public int size() {\n        return count;\n    }\n}\n"
+        ],
+        [
+         "Matcher.java",
+         "public class Matcher {\n    public static boolean matches(String html) {\n        LinkedStack<String> open = new LinkedStack<>();\n        for (String tag : html.split(\" \")) {\n            if (tag.startsWith(\"</\")) {\n                if (open.isEmpty()) {\n                    return false;\n                }\n                String name = tag.substring(2, tag.length() - 1);\n                if (!open.pop().equals(name)) {\n                    return false;\n                }\n            } else {\n                open.push(tag.substring(1, tag.length() - 1));\n            }\n        }\n        return open.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(matches(\"<p> <b> </b> </p>\"));\n        System.out.println(matches(\"<p> <b> </p> </b>\"));\n        System.out.println(matches(\"<div> <p> </p>\"));\n    }\n}\n"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 1: Remove the last element"
+    },
+    {
+     "type": "write",
+     "id": "ws-u17-removelast",
+     "mode": "independent",
+     "title": "Remove the last element",
+     "goal": "Add <code>public T removeLast()</code> to <code>SimpleLinkedList</code> (already in the editor with <code>LinearNode</code>). It throws a <code>NoSuchElementException</code> (import it from <code>java.util</code>) on an empty list. With only a head reference, you have to walk to the <strong>second-to-last</strong> node to cut off the last one, so it's O(n): this is why a linked stack doesn't keep its top at the end. A one-node list is a special case. <code>RemoveLastTester</code> adds 1, 2, 3, then prints two <code>removeLast()</code> results and the list.",
+     "requirements": [],
+     "files": [
+      "LinearNode.java",
+      "SimpleLinkedList.java",
+      "RemoveLastTester.java"
+     ],
+     "starter": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckRemoveLast.java",
+       "import java.util.NoSuchElementException;\n\npublic class CheckRemoveLast {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        list.add(\"only\");\n        System.out.println(list.removeLast() + \" \" + list + \" \" + list.size());\n        try {\n            list.removeLast();\n        } catch (NoSuchElementException e) {\n            System.out.println(\"empty\");\n        }\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckRemoveLast",
+     "hints": [
+      "Loop <code>while (current.getNext().getNext() != null)</code> stops on the second-to-last node."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckRemoveLast.java LinearNode.java SimpleLinkedList.java",
+      "text": "CheckRemoveLast.java:7: error: cannot find symbol\n        System.out.println(list.removeLast() + \" \" + list + \" \" + list.size());\n                               ^\n  symbol:   method removeLast()\n  location: variable list of type SimpleLinkedList<String>\nCheckRemoveLast.java:9: error: cannot find symbol\n            list.removeLast();\n                ^\n  symbol:   method removeLast()\n  location: variable list of type SimpleLinkedList<String>\n2 errors"
+     },
+     "run": "RemoveLastTester",
+     "output": "3 2 head -> 1 -> null",
+     "testsOutput": "only head -> null 0\nempty",
+     "solution": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "import java.util.NoSuchElementException;\n\npublic class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public T removeLast() {\n        if (head == null) {\n            throw new NoSuchElementException();\n        }\n        T result;\n        if (head.getNext() == null) {\n            result = head.getElement();\n            head = null;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext().getNext() != null) {\n                current = current.getNext();\n            }\n            result = current.getNext().getElement();\n            current.setNext(null);\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "RemoveLastTester.java",
+       "public class RemoveLastTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<Integer> list = new SimpleLinkedList<>();\n        list.add(1);\n        list.add(2);\n        list.add(3);\n        System.out.println(list.removeLast() + \" \" + list.removeLast() + \" \" + list);\n    }\n}\n"
+      ]
+     ]
+    },
+    {
+     "type": "h",
+     "html": "Independent 2: Reverse the list"
+    },
+    {
+     "type": "write",
+     "id": "ws-u17-reverse",
+     "mode": "independent",
+     "title": "Reverse the list",
+     "goal": "Add <code>public void reverse()</code> to <code>SimpleLinkedList</code> (already in the editor with <code>LinearNode</code>), which reverses the list in place by turning every <code>next</code> reference around, then sets <code>head</code> to the old last node. No new nodes. <code>ReverseTester</code> adds <code>a</code> to <code>e</code>, reverses and prints the list, then prints <code>get(0)</code>.",
+     "requirements": [],
+     "files": [
+      "LinearNode.java",
+      "SimpleLinkedList.java",
+      "ReverseTester.java"
+     ],
+     "starter": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ]
+     ],
+     "tests": [
+      [
+       "CheckReverse.java",
+       "public class CheckReverse {\n    public static void main(String[] args) {\n        SimpleLinkedList<Integer> empty = new SimpleLinkedList<>();\n        empty.reverse();\n        SimpleLinkedList<Integer> two = new SimpleLinkedList<>();\n        two.add(1);\n        two.add(2);\n        two.reverse();\n        two.add(3);\n        System.out.println(empty + \" | \" + two + \" \" + two.size());\n    }\n}\n"
+      ]
+     ],
+     "testsRun": "CheckReverse",
+     "hints": [
+      "Save <code>next</code> before you change <code>current</code>'s link, or you lose the rest of the list."
+     ],
+     "checks": [],
+     "starterResult": {
+      "kind": "compile",
+      "command": "javac CheckReverse.java LinearNode.java SimpleLinkedList.java",
+      "text": "CheckReverse.java:4: error: cannot find symbol\n        empty.reverse();\n             ^\n  symbol:   method reverse()\n  location: variable empty of type SimpleLinkedList<Integer>\nCheckReverse.java:8: error: cannot find symbol\n        two.reverse();\n           ^\n  symbol:   method reverse()\n  location: variable two of type SimpleLinkedList<Integer>\n2 errors"
+     },
+     "run": "ReverseTester",
+     "output": "head -> e -> d -> c -> b -> a -> null\ne",
+     "testsOutput": "head -> null | head -> 2 -> 1 -> 3 -> null 3",
+     "solution": [
+      [
+       "LinearNode.java",
+       "public class LinearNode<T> {\n    private T element;\n    private LinearNode<T> next;\n\n    public LinearNode(T element) {\n        this.element = element;\n        this.next = null;\n    }\n\n    public T getElement() {\n        return element;\n    }\n\n    public LinearNode<T> getNext() {\n        return next;\n    }\n\n    public void setNext(LinearNode<T> next) {\n        this.next = next;\n    }\n}\n"
+      ],
+      [
+       "SimpleLinkedList.java",
+       "public class SimpleLinkedList<T> {\n    private LinearNode<T> head;\n    private int count;\n\n    public SimpleLinkedList() {\n        head = null;\n        count = 0;\n    }\n\n    // Add at the end: walk to the last node (there is no tail reference).\n    public void add(T element) {\n        LinearNode<T> node = new LinearNode<>(element);\n        if (head == null) {\n            head = node;\n        } else {\n            LinearNode<T> current = head;\n            while (current.getNext() != null) {\n                current = current.getNext();\n            }\n            current.setNext(node);\n        }\n        count++;\n    }\n\n    // Insert so the new element ends up at position index.\n    public void add(int index, T element) {\n        if (index < 0 || index > count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n        LinearNode<T> node = new LinearNode<>(element);\n        if (index == 0) {\n            node.setNext(head);\n            head = node;\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            node.setNext(before.getNext());\n            before.setNext(node);\n        }\n        count++;\n    }\n\n    public T get(int index) {\n        checkIndex(index);\n        return nodeAt(index).getElement();\n    }\n\n    public T remove(int index) {\n        checkIndex(index);\n        T result;\n        if (index == 0) {\n            result = head.getElement();\n            head = head.getNext();\n        } else {\n            LinearNode<T> before = nodeAt(index - 1);\n            result = before.getNext().getElement();\n            before.setNext(before.getNext().getNext());\n        }\n        count--;\n        return result;\n    }\n\n    public void reverse() {\n        LinearNode<T> previous = null;\n        LinearNode<T> current = head;\n        while (current != null) {\n            LinearNode<T> next = current.getNext();\n            current.setNext(previous);\n            previous = current;\n            current = next;\n        }\n        head = previous;\n    }\n\n    public int size() {\n        return count;\n    }\n\n    public boolean isEmpty() {\n        return count == 0;\n    }\n\n    private LinearNode<T> nodeAt(int index) {\n        LinearNode<T> current = head;\n        for (int i = 0; i < index; i++) {\n            current = current.getNext();\n        }\n        return current;\n    }\n\n    private void checkIndex(int index) {\n        if (index < 0 || index >= count) {\n            throw new IndexOutOfBoundsException(\"Index \" + index + \", size \" + count);\n        }\n    }\n\n    @Override\n    public String toString() {\n        String result = \"head\";\n        LinearNode<T> current = head;\n        while (current != null) {\n            result += \" -> \" + current.getElement();\n            current = current.getNext();\n        }\n        return result + \" -> null\";\n    }\n}\n"
+      ],
+      [
+       "ReverseTester.java",
+       "public class ReverseTester {\n    public static void main(String[] args) {\n        SimpleLinkedList<String> list = new SimpleLinkedList<>();\n        for (String s : new String[] {\"a\", \"b\", \"c\", \"d\", \"e\"}) {\n            list.add(s);\n        }\n        list.reverse();\n        System.out.println(list);\n        System.out.println(list.get(0));\n    }\n}\n"
+      ]
+     ]
+    }
+   ],
+   "sources": [
+    {
+     "title": "1.3 Bags, Queues, and Stacks",
+     "url": "https://algs4.cs.princeton.edu/13stacks/",
+     "org": "Princeton University, Algorithms (Sedgewick & Wayne)",
+     "note": null
+    },
+    {
+     "title": "Stacks",
+     "url": "https://opendsa-server.cs.vt.edu/ODSA/Books/CS2/html/StackArray.html",
+     "org": "Virginia Tech, OpenDSA",
+     "note": null
+    },
+    {
+     "title": "ArrayList<E>",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html",
+     "org": "Oracle, Java SE 21 API docs",
+     "note": null
+    },
+    {
+     "title": "EmptyStackException",
+     "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/EmptyStackException.html",
      "org": "Oracle, Java SE 21 API docs",
      "note": null
     }
